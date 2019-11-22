@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LWSwnS.Core;
+using System;
 
 namespace LWSwnS
 {
@@ -6,7 +7,13 @@ namespace LWSwnS
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Console.WriteLine("Test Field");
+            LWSwnSServerCore a = new LWSwnSServerCore("0.0.0.0", 80, 9341);
+            a.StartListenWeb();
+            while (Console.ReadLine()!="Exit")
+            {
+
+            }
         }
     }
 }
