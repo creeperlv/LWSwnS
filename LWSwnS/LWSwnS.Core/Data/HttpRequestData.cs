@@ -6,14 +6,19 @@ using System.Text;
 
 namespace LWSwnS.Core.Data
 {
-    public class HttpRequestData
+    public class HttpRequestData:EventArgs
     {
         public string requestUrl;
         public string UA;
         public HttpRequestType RequestType;
+
+        public bool willCancelNextHandle = false;
+        public StreamWriter streamWriter;
     }
     public class HttpResponseData
     {
+        public bool SkipWhole;
+        public bool ContentOnly;
         public byte[] content;
         public string StatusLine = "HTTP/1.1 200 OK";
         public string Additional = "HTTP/1.1 200 OK";

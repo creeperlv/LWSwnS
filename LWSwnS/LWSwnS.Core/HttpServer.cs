@@ -12,11 +12,35 @@ namespace LWSwnS.Core
 {
     public class HttpServer
     {
-        List<TcpClientProcessor> tcpClients = new List<TcpClientProcessor>();
+        public List<TcpClientProcessor> tcpClients = new List<TcpClientProcessor>();
         TcpListener TCPListener;
+        public event EventHandler<HttpRequestData> OnRequest;   
         public HttpServer(TcpListener listener)
         {
             TCPListener = listener;
+            OnRequest += (a, b) => {
+                var RealUrl = URLConventor.Convert(b.requestUrl.Trim());
+                Console.WriteLine("Request:" + RealUrl);
+                HttpResponseData httpResponseData = new HttpResponseData();
+                if (File.Exists(RealUrl))
+                {
+                    httpResponseData.content = File.ReadAllBytes(RealUrl);
+                }
+                else if (File.Exists(Path.Combine(RealUrl, "index.htm")))
+                {
+                    httpResponseData.content = File.ReadAllBytes(Path.Combine(RealUrl, "index.htm"));
+                }
+                else if (File.Exists(Path.Combine(RealUrl, "index.html")))
+                {
+                    httpResponseData.content = File.ReadAllBytes(Path.Combine(RealUrl, "index.html"));
+                }
+                else
+                {
+                    httpResponseData.content = File.ReadAllBytes("./404.html");
+                }
+                httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
+                httpResponseData.Send(ref b.streamWriter);
+            };
         }
         bool WebStop = false;
         public void StartListen()
@@ -27,10 +51,15 @@ namespace LWSwnS.Core
                 while (WebStop == false)
                 {
                     var a = TCPListener.AcceptTcpClient();
-                    var c = new TcpClientProcessor(a);
+                    var c = new TcpClientProcessor(a,this);
                     tcpClients.Add(c);
                 }
             });
+        }
+        public void HandleRequest(HttpRequestData data)
+        {
+
+            this.OnRequest(this, data);
         }
     }
     public class TcpClientProcessor
@@ -39,8 +68,10 @@ namespace LWSwnS.Core
         StreamReader streamReader;
         StreamWriter streamWriter;
         TcpClient currentClient;
-        public TcpClientProcessor(TcpClient client)
+        HttpServer FatherServer;
+        public TcpClientProcessor(TcpClient client,HttpServer server)
         {
+            FatherServer = server;
             currentClient = client;
             networkStream = currentClient.GetStream();
             //networkStream.CanTimeout = true;
@@ -61,10 +92,16 @@ namespace LWSwnS.Core
             networkStream.Close();
             networkStream.Dispose();
             System.GC.Collect();
+            FinalizeStop();
         }
         public void SoftStop()
         {
             willStop = true;
+        }
+        public void FinalizeStop()
+        {
+            FatherServer.tcpClients.Remove(this);
+            GC.Collect();
         }
         HttpRequestData ReceiveMessage()
         {
@@ -99,6 +136,7 @@ namespace LWSwnS.Core
                     }
                 }
             }
+            requestData.streamWriter = this.streamWriter;
             Console.WriteLine("Read Completed, Lines:"+LS.Count);
             return requestData;
         }
@@ -112,36 +150,18 @@ namespace LWSwnS.Core
                 try
                 {
                     var rec = ReceiveMessage();
-                    var RealUrl = URLConventor.Convert(rec.requestUrl.Trim());
-                    Console.WriteLine("Request:"+RealUrl);
-                    HttpResponseData httpResponseData = new HttpResponseData();
-                    if (File.Exists(RealUrl))
-                    {
-                        httpResponseData.content = File.ReadAllBytes(RealUrl);
-                    }
-                    else if(File.Exists(Path.Combine(RealUrl, "index.htm")))
-                    {
-                        httpResponseData.content = File.ReadAllBytes(Path.Combine(RealUrl, "index.htm"));
-                    }
-                    else if(File.Exists(Path.Combine(RealUrl, "index.html")))
-                    {
-                        httpResponseData.content = File.ReadAllBytes(Path.Combine(RealUrl, "index.html"));
-                    }else
-                    {
-                        httpResponseData.content = File.ReadAllBytes("./404.html");
-                    }
-                    httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
-                    httpResponseData.Send(ref streamWriter);
-                    httpResponseData = null;
-                    System.GC.Collect();
-                    StopImmediately();
+                    FatherServer.HandleRequest(rec);
+                    //httpResponseData = null;
+                    GC.Collect();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     Console.WriteLine("Disastrous Error!");
                     StopImmediately();
                 }
             }
+            StopImmediately();
+
             System.GC.Collect();
         }
 

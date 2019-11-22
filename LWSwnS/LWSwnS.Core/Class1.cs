@@ -23,7 +23,7 @@ namespace LWSwnS.Core
             {
 
                 var ip = IPAddress.Parse(Address);
-                var Endpoint = new IPEndPoint(ip, WebPort);
+                var Endpoint = new IPEndPoint(ip, ShellPort);
                 Shell = new TcpListener(Endpoint);
 
             }
