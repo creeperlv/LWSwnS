@@ -143,7 +143,6 @@ namespace LWSwnS.Core
                 }
             }
             requestData.streamWriter = this.streamWriter;
-            Console.WriteLine("Read Completed, Lines:" + LS.Count);
             return requestData;
         }
 

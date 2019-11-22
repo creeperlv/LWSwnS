@@ -6,3 +6,5 @@ LWSwnS/LWSwnS.Core/bin/
 LWSwnS/LWSwnS/bin/
 /LWSwnS/LWSwnS.Configuration/obj
 /LWSwnS/LWSwnS.Api/obj
+/LWSwnS/LWSwnS.Configuration/bin/Debug/netstandard2.0
+/LWSwnS/LWSwnS.Api/bin/Debug/netstandard2.0

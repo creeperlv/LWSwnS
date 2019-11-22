@@ -8,6 +8,7 @@ namespace LWSwnS.Core.Data
 {
     public class URLConventor
     {
+        public static string RootFolder=".";
         static Dictionary<string, string> Rule = new Dictionary<string, string>();
         public static void InitRules()
         {
@@ -22,7 +23,7 @@ namespace LWSwnS.Core.Data
                     return Path.Combine(item.Value, Str.Substring(item.Key.Length));
                 }
             }
-            return ("."+Str);
+            return (RootFolder + Str);
         }
     }
 }

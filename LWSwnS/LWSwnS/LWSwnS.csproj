@@ -6,6 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LWSwnS.Api\LWSwnS.Api.csproj" />
+    <ProjectReference Include="..\LWSwnS.Configuration\LWSwnS.Configuration.csproj" />
     <ProjectReference Include="..\LWSwnS.Core\LWSwnS.Core.csproj" />
   </ItemGroup>
 
