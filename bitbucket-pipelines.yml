@@ -8,8 +8,6 @@ image: mcr.microsoft.com/dotnet/core/sdk:3.0
 pipelines:
   default:
     - step:
-        caches:
-          - dotnetcore
         script: # Modify the comma`nds below to build your repository.
           - export PROJECT_NAME=LWSwNS
           - export TEST_NAME=LWSwNS
