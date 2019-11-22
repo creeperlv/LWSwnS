@@ -10,6 +10,7 @@ namespace LWSwnS
             Console.WriteLine("Test Field");
             LWSwnSServerCore a = new LWSwnSServerCore("0.0.0.0", 80, 9341);
             a.StartListenWeb();
+            a.StartListenShell();
             while (Console.ReadLine()!="Exit")
             {
 

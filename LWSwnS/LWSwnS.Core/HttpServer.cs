@@ -17,7 +17,6 @@ namespace LWSwnS.Core
         public HttpServer(TcpListener listener)
         {
             TCPListener = listener;
-
         }
         bool WebStop = false;
         public void StartListen()
@@ -44,6 +43,9 @@ namespace LWSwnS.Core
         {
             currentClient = client;
             networkStream = currentClient.GetStream();
+            //networkStream.CanTimeout = true;
+            networkStream.ReadTimeout=3000;
+            networkStream.WriteTimeout= 3000;
             streamReader = new StreamReader(networkStream);
             streamWriter = new StreamWriter(networkStream);
             Task.Run(MainThread);
@@ -54,8 +56,11 @@ namespace LWSwnS.Core
             willStop = true;
             streamReader.Close();
             streamReader.Dispose();
+            streamWriter.Close();
+            streamWriter.Dispose();
             networkStream.Close();
             networkStream.Dispose();
+            System.GC.Collect();
         }
         public void SoftStop()
         {
@@ -68,11 +73,11 @@ namespace LWSwnS.Core
             string s;
             while ((s = streamReader.ReadLine()) != "")
             {
-                
                 LS.Add(s);
             }
             for (int i = 0; i < LS.Count; i++)
             {
+                //Console.WriteLine(LS[i]);
                 if (i == 0)
                 {
                     if (LS[i].StartsWith("GET "))
@@ -101,19 +106,17 @@ namespace LWSwnS.Core
         void MainThread()
         {
             //Receive-Response
+            Console.WriteLine("New Thread Started.");
             while (willStop == false)
             {
                 try
                 {
                     var rec = ReceiveMessage();
                     var RealUrl = URLConventor.Convert(rec.requestUrl.Trim());
-                    Console.WriteLine("Resuest location:" + RealUrl);
+                    Console.WriteLine("Request:"+RealUrl);
                     HttpResponseData httpResponseData = new HttpResponseData();
-                    Console.WriteLine("Resuest location:" + Path.Combine(RealUrl, "index.htm"));
-                    Console.WriteLine("Resuest location:" + Path.Combine(RealUrl, "index.html"));
                     if (File.Exists(RealUrl))
                     {
-                        Console.WriteLine("It is a file");
                         httpResponseData.content = File.ReadAllBytes(RealUrl);
                     }
                     else if(File.Exists(Path.Combine(RealUrl, "index.htm")))
@@ -125,31 +128,21 @@ namespace LWSwnS.Core
                         httpResponseData.content = File.ReadAllBytes(Path.Combine(RealUrl, "index.html"));
                     }else
                     {
-                        throw new Exception("Wrong Request");
+                        httpResponseData.content = File.ReadAllBytes("./404.html");
                     }
-
-
                     httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
                     httpResponseData.Send(ref streamWriter);
-
+                    httpResponseData = null;
+                    System.GC.Collect();
+                    StopImmediately();
                 }
                 catch (Exception e)
                 {
-                    try
-                    {
-
-                        HttpResponseData httpResponseData = new HttpResponseData();
-                        httpResponseData.StatusLine = "HTTP/1.1 404 Error";
-                        httpResponseData.content = System.Text.Encoding.Default.GetBytes($"<html><body><p>Error: {e.Message}</p></body><html>");
-                        httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
-                        httpResponseData.Send(ref streamWriter);
-                    }
-                    catch (Exception)
-                    {
-                        Console.WriteLine("Disastrous Error!");
-                    }
+                    Console.WriteLine("Disastrous Error!");
+                    StopImmediately();
                 }
             }
+            System.GC.Collect();
         }
 
     }
