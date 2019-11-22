@@ -7,9 +7,10 @@ namespace LWSwnS.Core
 {
     public class ShellServer
     {
-        ShellServer(TcpClient tcpClient)
+        TcpListener tcpListener;
+        public ShellServer(TcpListener listener)
         {
-
+            tcpListener = listener;
         }
         public void StartListen()
         {

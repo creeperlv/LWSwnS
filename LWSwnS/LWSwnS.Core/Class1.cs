@@ -39,7 +39,7 @@ namespace LWSwnS.Core
         }
         public void StartListenShell()
         {
-            shellServer = new ShellServer(Web);
+            shellServer = new ShellServer(Shell);
             shellServer.StartListen();
         }
     }
