@@ -14,11 +14,12 @@ namespace LWSwnS.Core
     {
         public List<TcpClientProcessor> tcpClients = new List<TcpClientProcessor>();
         TcpListener TCPListener;
-        public event EventHandler<HttpRequestData> OnRequest;   
+        public event EventHandler<HttpRequestData> OnRequest;
         public HttpServer(TcpListener listener)
         {
             TCPListener = listener;
-            OnRequest += (a, b) => {
+            OnRequest += (a, b) =>
+            {
                 var RealUrl = URLConventor.Convert(b.requestUrl.Trim());
                 Console.WriteLine("Request:" + RealUrl);
                 HttpResponseData httpResponseData = new HttpResponseData();
@@ -42,6 +43,10 @@ namespace LWSwnS.Core
                 httpResponseData.Send(ref b.streamWriter);
             };
         }
+        public void Stop()
+        {
+
+        }
         bool WebStop = false;
         public void StartListen()
         {
@@ -51,7 +56,7 @@ namespace LWSwnS.Core
                 while (WebStop == false)
                 {
                     var a = TCPListener.AcceptTcpClient();
-                    var c = new TcpClientProcessor(a,this);
+                    var c = new TcpClientProcessor(a, this);
                     tcpClients.Add(c);
                 }
             });
@@ -69,14 +74,14 @@ namespace LWSwnS.Core
         StreamWriter streamWriter;
         TcpClient currentClient;
         HttpServer FatherServer;
-        public TcpClientProcessor(TcpClient client,HttpServer server)
+        public TcpClientProcessor(TcpClient client, HttpServer server)
         {
             FatherServer = server;
             currentClient = client;
             networkStream = currentClient.GetStream();
             //networkStream.CanTimeout = true;
-            networkStream.ReadTimeout=3000;
-            networkStream.WriteTimeout= 3000;
+            networkStream.ReadTimeout = 3000;
+            networkStream.WriteTimeout = 3000;
             streamReader = new StreamReader(networkStream);
             streamWriter = new StreamWriter(networkStream);
             Task.Run(MainThread);
@@ -105,7 +110,7 @@ namespace LWSwnS.Core
         }
         HttpRequestData ReceiveMessage()
         {
-            HttpRequestData requestData=new HttpRequestData();
+            HttpRequestData requestData = new HttpRequestData();
             List<String> LS = new List<string>();
             string s;
             while ((s = streamReader.ReadLine()) != "")
@@ -121,7 +126,8 @@ namespace LWSwnS.Core
                     {
                         requestData.requestUrl = LS[i].Substring("GET ".Length, LS[i].Length - "GET ".Length - " HTTP/1.1".Length);
                         requestData.RequestType = HttpRequestType.GET;
-                    }else
+                    }
+                    else
                     if (LS[i].StartsWith("POST "))
                     {
                         requestData.requestUrl = LS[i].Substring("POST ".Length, LS[i].Length - "POST ".Length - " HTTP/1.1".Length);
@@ -137,7 +143,7 @@ namespace LWSwnS.Core
                 }
             }
             requestData.streamWriter = this.streamWriter;
-            Console.WriteLine("Read Completed, Lines:"+LS.Count);
+            Console.WriteLine("Read Completed, Lines:" + LS.Count);
             return requestData;
         }
 
@@ -161,8 +167,7 @@ namespace LWSwnS.Core
                 }
             }
             StopImmediately();
-
-            System.GC.Collect();
+            GC.Collect();
         }
 
     }
