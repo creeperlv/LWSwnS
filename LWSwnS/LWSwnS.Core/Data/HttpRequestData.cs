@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
 
 namespace LWSwnS.Core.Data
 {
-    public class HttpRequestData:EventArgs
+    public class HttpRequestData:CancelEventArgs
     {
         public string requestUrl;
         public string UA;

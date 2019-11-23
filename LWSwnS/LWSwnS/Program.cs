@@ -1,4 +1,5 @@
-﻿using LWSwnS.Configuration;
+﻿using LWSwnS.Api.Modules;
+using LWSwnS.Configuration;
 using LWSwnS.Core;
 using LWSwnS.Core.Data;
 using System;
@@ -25,11 +26,21 @@ namespace LWSwnS
                 a.StartListenWeb();
             if (serverConfiguration.isShellEnabled)
                 a.StartListenShell();
+            Console.WriteLine("Core Server Started.");
+            Console.WriteLine("Init Modules");
             foreach (var item in serverConfiguration.AllowedModules)
             {
                 Modules modules = new Modules("./Modules");
-                modules.LoadFromAssemblyPath("./Modules/"+item);
+                var asm=modules.LoadFromAssemblyPath("./Modules/"+item);
+                var types=asm.GetTypes();
+                
+                foreach (var t in types)
+                {
+                    //t.
+                }
+                //ModuleManager.ExtModules.Add()
             }
+            Console.WriteLine("Modules loaded.");
             while (Console.ReadLine().ToUpper() != "EXIT")
             {
 
