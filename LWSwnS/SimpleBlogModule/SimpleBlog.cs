@@ -64,7 +64,7 @@ namespace SimpleBlogModule
                             catch (Exception)
                             {
                             }
-                            var link = "./" + item.Name;
+                            var link = "/posts/" + item.Name;
                             PostItems.Add(temp.Replace("[POSTLINK]", link).Replace("[POSTTITLE]", Title)
                                 .Replace("[POSTDATE]", item.CreationTime.ToString()).Replace("[FILESIZE]", ((double)item.Length) / 1024.0 + " KB"));
                         }
@@ -83,6 +83,11 @@ namespace SimpleBlogModule
                     }
                     var content = File.ReadAllText("./Modules/netstandard2.0/PostList.html").Replace("[BLOGNAME]", BlogName).Replace("[POSTLIST]", List);
                     httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
+                }
+                else if (b.requestUrl.ToUpper().EndsWith("PNG")| b.requestUrl.ToUpper().EndsWith("WEBP")|b.requestUrl.ToUpper().EndsWith("JPG")| b.requestUrl.ToUpper().EndsWith("MP4"))
+                {
+                    var location = b.requestUrl.Substring("/POSTS/".Length);
+                    httpResponseData.content = File.ReadAllBytes(location);
                 }
                 else if (b.requestUrl.ToUpper().StartsWith("/POSTS"))
                 {

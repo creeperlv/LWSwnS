@@ -15,8 +15,13 @@ namespace SimpleBlogModule
             ModuleDescription moduleDescription = new ModuleDescription();
             moduleDescription.Name = "SimpleBlog-ShellCommands";
             moduleDescription.version = new Version(0, 0, 1, 0);
-            CommandHandler.RegisterCommand("SimpleBlog:Add-Post", (string fileName, object content, StreamWriter writer) => { 
-            
+            CommandHandler.RegisterCommand("SimpleBlog:Add-Post", (string fileName, object content, StreamWriter writer) =>
+            {
+                string FilePath = Path.Combine(new DirectoryInfo("./Padth").FullName, fileName);
+                if (!File.Exists(FilePath)) {
+                    File.Create(FilePath).Close();
+                }
+                File.WriteAllText(FilePath, (string)content);
             });
             return moduleDescription;
         }
