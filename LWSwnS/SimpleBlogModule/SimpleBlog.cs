@@ -13,7 +13,6 @@ namespace SimpleBlogModule
     {
         public ModuleDescription InitModule()
         {
-            Console.WriteLine("Blog Initialize.");
             ModuleDescription moduleDescription = new ModuleDescription();
             moduleDescription.Name = "SimpleBlog";
             moduleDescription.version = new Version(0, 0, 1, 0);

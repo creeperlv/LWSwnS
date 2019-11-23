@@ -65,5 +65,21 @@ namespace LWSwnS.Configuration
             }
             return serverConfiguration;
         }
+        public static void SaveToFile(ServerConfiguration serverConfiguration,string path)
+        {
+            string content="[Auto-Generated LWSwnS Configuration]";
+            content += "\r\nIP="+serverConfiguration.IP;
+            content += "\r\nWebPort=" + serverConfiguration.WebPort;
+            content += "\r\nShellPort=" + serverConfiguration.ShellPort;
+            content += "\r\nisWebEnabled=" + serverConfiguration.isWebEnabled;
+            content += "\r\nisShellEnabled=" + serverConfiguration.isShellEnabled;
+            content += "\r\nWebRoot=" + serverConfiguration.WebContentRoot;
+            content += "\r\nShellPassword=" + serverConfiguration.ShellPassword;
+            foreach (var item in serverConfiguration.AllowedModules)
+            {
+                content += "\r\nAllowedModule="+item;
+            }
+            File.WriteAllText(path,content);
+        }
     }
 }

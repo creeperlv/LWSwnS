@@ -15,23 +15,10 @@ namespace LWSwnS.Core
         TcpListener TCPListener;
         bool ShellStop=false;
         public List<ShellClientProcessor> shellClients = new List<ShellClientProcessor>();
-        public Dictionary<string, Action<string, object,StreamWriter>> Commands = new Dictionary<string, Action<string, object, StreamWriter>>();
+        public static Dictionary<string, Action<string, object,StreamWriter>> Commands = new Dictionary<string, Action<string, object, StreamWriter>>();
         public ShellServer(TcpListener listener)
         {
             TCPListener = listener;
-            ApiManager.AddFunction("REGCMD", (UniParamater p) => {
-                var name = p[0] as String;
-                var action = p[1] as Action<string, object, StreamWriter>;
-                if (Commands.ContainsKey(name))
-                {
-                    Commands[name] = action;
-                }
-                else
-                {
-                    Commands.Add(name, action);
-                }
-                return new UniResult();
-            });
         }
         public void StartListen()
         {
@@ -143,7 +130,7 @@ namespace LWSwnS.Core
                     BinaryFormatter binary = new BinaryFormatter();
                     obj = binary.Deserialize(memoryStream);
                 }
-                foreach (var item in FatherServer.Commands)
+                foreach (var item in ShellServer.Commands)
                 {
                     if (item.Key == name)
                     {

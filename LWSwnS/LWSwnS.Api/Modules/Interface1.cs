@@ -9,6 +9,10 @@ namespace LWSwnS.Api.Modules
     {
         ModuleDescription InitModule();
     }
+    public interface FirstInit
+    {
+        void Init();
+    }
     public class ModuleDescription
     {
         public string Name;
