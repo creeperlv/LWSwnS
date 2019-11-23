@@ -25,6 +25,11 @@ namespace LWSwnS
                 a.StartListenWeb();
             if (serverConfiguration.isShellEnabled)
                 a.StartListenShell();
+            foreach (var item in serverConfiguration.AllowedModules)
+            {
+                Modules modules = new Modules("./Modules");
+                modules.LoadFromAssemblyPath("./Modules/"+item);
+            }
             while (Console.ReadLine().ToUpper() != "EXIT")
             {
 

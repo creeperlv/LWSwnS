@@ -1,4 +1,5 @@
-﻿using LWSwnS.Core.Data;
+﻿using LWSwnS.Api;
+using LWSwnS.Core.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,6 +18,7 @@ namespace LWSwnS.Core
         public event EventHandler<HttpRequestData> OnRequest;
         public HttpServer(TcpListener listener)
         {
+            ApiManager.AddFunction("AddOnReq", (UniParamater p) => { OnRequest += p[0] as EventHandler<HttpRequestData>; return new UniResult(); });
             TCPListener = listener;
             OnRequest += (a, b) =>
             {
