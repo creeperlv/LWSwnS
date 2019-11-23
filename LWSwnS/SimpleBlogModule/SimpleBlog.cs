@@ -11,6 +11,10 @@ namespace SimpleBlogModule
 {
     public class SimpleBlog : ExtModule
     {
+        public void SortFileByTime(ref FileInfo[] FList)
+        {
+            Array.Sort(FList, delegate (FileInfo x, FileInfo y) { return y.CreationTime.CompareTo(x.CreationTime); });
+        }
         public ModuleDescription InitModule()
         {
             ModuleDescription moduleDescription = new ModuleDescription();
@@ -40,20 +44,18 @@ namespace SimpleBlogModule
                 {
                     var temp = File.ReadAllText("./Modules/netstandard2.0/PostItemTemplate.html");
                     DirectoryInfo directory = new DirectoryInfo("./Posts/");
-                    var f = directory.GetFiles();
+                    var f = directory.GetFiles(); 
+                    SortFileByTime(ref f);
                     List<string> PostItems = new List<string>();
-                    
                     foreach (var item in f)
                     {
                         try
                         {
-
                             var sr = item.OpenRead();
                             var SR = new StreamReader(sr);
                             var Title = SR.ReadLine();
                             try
                             {
-
                                 SR.Close();
                                 SR.Dispose();
                                 sr.Close();
@@ -64,7 +66,7 @@ namespace SimpleBlogModule
                             }
                             var link = "./" + item.Name;
                             PostItems.Add(temp.Replace("[POSTLINK]", link).Replace("[POSTTITLE]", Title)
-                                .Replace("[POSTDATE]",item.CreationTime.ToString()).Replace("[FILESIZE]",((double)item.Length)/1024.0+" KB"));
+                                .Replace("[POSTDATE]", item.CreationTime.ToString()).Replace("[FILESIZE]", ((double)item.Length) / 1024.0 + " KB"));
                         }
                         catch (Exception)
                         {
@@ -79,7 +81,7 @@ namespace SimpleBlogModule
                     {
                         List = "<p style=\"32\">No Posts<p>";
                     }
-                        var content = File.ReadAllText("./Modules/netstandard2.0/PostList.html").Replace("[BLOGNAME]", BlogName).Replace("[POSTLIST]", List);
+                    var content = File.ReadAllText("./Modules/netstandard2.0/PostList.html").Replace("[BLOGNAME]", BlogName).Replace("[POSTLIST]", List);
                     httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
                 }
                 else if (b.requestUrl.ToUpper().StartsWith("/POSTS"))
@@ -104,9 +106,7 @@ namespace SimpleBlogModule
                                 MDContent += item;
                             }
                         }
-                        var content = File.ReadAllText("./Modules/netstandard2.0/Template.html").Replace("[POSTNAME]", title).Replace("[BLOGNAME]",BlogName).Replace("[POSTCONTENT]", Markdig.Markdown.ToHtml(MDContent));
-                        //.Replace("[MODULE_VERSION]", moduleDescription.version.ToString());
-
+                        var content = File.ReadAllText("./Modules/netstandard2.0/Template.html").Replace("[POSTNAME]", title).Replace("[BLOGNAME]", BlogName).Replace("[POSTCONTENT]", Markdig.Markdown.ToHtml(MDContent));
                         httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
                     }
                     catch (Exception)
