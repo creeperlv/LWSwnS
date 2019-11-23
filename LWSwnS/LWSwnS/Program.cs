@@ -3,6 +3,7 @@ using LWSwnS.Configuration;
 using LWSwnS.Core;
 using LWSwnS.Core.Data;
 using System;
+using System.IO;
 
 namespace LWSwnS
 {
@@ -10,6 +11,7 @@ namespace LWSwnS
     {
         static void Main(string[] args)
         {
+            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("LWSwnS - Lite Web Server with uNsafe Shell");
             ServerConfiguration serverConfiguration = new ServerConfiguration();
             try
@@ -30,17 +32,35 @@ namespace LWSwnS
             Console.WriteLine("Init Modules");
             foreach (var item in serverConfiguration.AllowedModules)
             {
-                Modules modules = new Modules("./Modules");
-                var asm=modules.LoadFromAssemblyPath("./Modules/"+item);
-                var types=asm.GetTypes();
-                
-                foreach (var t in types)
+                try
                 {
-                    //t.
+
+                    Modules modules = new Modules((new FileInfo("./Modules/" + item)).DirectoryName);
+                    var asm = modules.LoadFromAssemblyPath((new FileInfo("./Modules/" + item)).FullName);
+                    var types = asm.GetTypes();
+                    Console.WriteLine("Load:" + (new FileInfo("./Modules/" + item)).FullName);
+                    foreach (var t in types)
+                    {
+                        //t.
+                        if (typeof(ExtModule).IsAssignableFrom(t))
+                        {
+                            ExtModule extModule = Activator.CreateInstance(t) as ExtModule;
+                            var ModDesc = extModule.InitModule();
+                            ModDesc.targetAssembly = asm;
+                            ModuleManager.ExtModules.Add(ModDesc);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Failed on loading:" + item);
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
                 //ModuleManager.ExtModules.Add()
             }
             Console.WriteLine("Modules loaded.");
+            Console.WriteLine(ModuleManager.ExtModules.Count + " Module(s) in total.");
             while (Console.ReadLine().ToUpper() != "EXIT")
             {
 

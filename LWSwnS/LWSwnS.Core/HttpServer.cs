@@ -13,16 +13,33 @@ namespace LWSwnS.Core
 {
     public class HttpServer
     {
+        public List<string> URLPrefix = new List<string>();
         public List<TcpClientProcessor> tcpClients = new List<TcpClientProcessor>();
         TcpListener TCPListener;
         public event EventHandler<HttpRequestData> OnRequest;
         public HttpServer(TcpListener listener)
         {
-            ApiManager.AddFunction("AddOnReq", (UniParamater p) => { OnRequest += p[0] as EventHandler<HttpRequestData>; return new UniResult(); });
+            ApiManager.AddFunction("IgnoreUrl", (UniParamater a) =>
+            {
+                URLPrefix.Add(a[0] as String);
+                return new UniResult();
+            });
+            ApiManager.AddFunction("AddOnReq", (UniParamater p) =>
+            {
+                OnRequest += p[0] as EventHandler<HttpRequestData>;
+                return new UniResult();
+            });
             TCPListener = listener;
             OnRequest += (a, b) =>
             {
                 var RealUrl = URLConventor.Convert(b.requestUrl.Trim());
+                foreach (var item in URLPrefix)
+                {
+                    if (b.requestUrl.ToUpper().StartsWith(item.ToUpper()))
+                    {
+                        return;
+                    }
+                }
                 Console.WriteLine("Request:" + RealUrl);
                 HttpResponseData httpResponseData = new HttpResponseData();
                 if (File.Exists(RealUrl))
@@ -92,13 +109,37 @@ namespace LWSwnS.Core
         public void StopImmediately()
         {
             willStop = true;
-            streamReader.Close();
-            streamReader.Dispose();
-            streamWriter.Close();
-            streamWriter.Dispose();
-            networkStream.Close();
-            networkStream.Dispose();
-            System.GC.Collect();
+            try
+            {
+
+                streamReader.Close();
+                streamReader.Dispose();
+
+            }
+            catch (Exception)
+            {
+            }
+            try
+            {
+
+                streamWriter.Close();
+                streamWriter.Dispose();
+
+            }
+            catch (Exception)
+            {
+            }
+            try
+            {
+
+                networkStream.Close();
+                networkStream.Dispose();
+
+            }
+            catch (Exception)
+            {
+            }
+            GC.Collect();
             FinalizeStop();
         }
         public void SoftStop()
@@ -107,8 +148,16 @@ namespace LWSwnS.Core
         }
         public void FinalizeStop()
         {
-            FatherServer.tcpClients.Remove(this);
-            GC.Collect();
+            try
+            {
+
+                FatherServer.tcpClients.Remove(this);
+                GC.Collect();
+            }
+            catch (Exception)
+            {
+
+            }
         }
         HttpRequestData ReceiveMessage()
         {

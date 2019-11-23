@@ -8,3 +8,6 @@ LWSwnS/LWSwnS/bin/
 /LWSwnS/LWSwnS.Api/obj
 /LWSwnS/LWSwnS.Configuration/bin/Debug/netstandard2.0
 /LWSwnS/LWSwnS.Api/bin/Debug/netstandard2.0
+/LWSwnS/SimpleBlogModule/obj/Debug/netstandard2.0
+/LWSwnS/SimpleBlogModule/bin/Debug/netstandard2.0
+/LWSwnS/SimpleBlogModule/obj

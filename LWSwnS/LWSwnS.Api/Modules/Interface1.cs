@@ -7,11 +7,12 @@ namespace LWSwnS.Api.Modules
 {
     public interface ExtModule
     {
-        void InitModule();
+        ModuleDescription InitModule();
     }
     public class ModuleDescription
     {
         public string Name;
+        public Version version = new Version(0,0,0,0);
         public Assembly targetAssembly;
     }
 }
