@@ -200,7 +200,6 @@ namespace LWSwnS.Core
         void MainThread()
         {
             //Receive-Response
-            Console.WriteLine("New Thread Started.");
             while (willStop == false)
             {
                 try

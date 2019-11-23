@@ -43,6 +43,7 @@ namespace SimpleBlogModule
                     DirectoryInfo directory = new DirectoryInfo("./Posts/");
                     var f = directory.GetFiles();
                     List<string> PostItems = new List<string>();
+                    
                     foreach (var item in f)
                     {
                         try
@@ -75,7 +76,11 @@ namespace SimpleBlogModule
                     {
                         List += item;
                     }
-                    var content = File.ReadAllText("./Modules/netstandard2.0/PostList.html").Replace("[BLOGNAME]", BlogName).Replace("[POSTLIST]", List);
+                    if (f.Length == 0)
+                    {
+                        List = "<p style=\"32\">No Posts<p>";
+                    }
+                        var content = File.ReadAllText("./Modules/netstandard2.0/PostList.html").Replace("[BLOGNAME]", BlogName).Replace("[POSTLIST]", List);
                     httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
                 }
                 else if (b.requestUrl.ToUpper().StartsWith("/POSTS"))

@@ -21,6 +21,7 @@ namespace LWSwnS
             catch (Exception)
             {
             }
+            ShellServer.ShellPassword = serverConfiguration.ShellPassword;
             URLConventor.RootFolder = serverConfiguration.WebContentRoot;
             //LWSwnSServerCore a = new LWSwnSServerCore(serverConfiguration.IP, serverConfiguration.WebPort, serverConfiguration.ShellPort);
             LWSwnSServerCore a = new LWSwnSServerCore(serverConfiguration.IP, serverConfiguration.WebPort, serverConfiguration.ShellPort);

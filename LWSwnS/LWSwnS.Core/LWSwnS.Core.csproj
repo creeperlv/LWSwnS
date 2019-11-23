@@ -8,4 +8,12 @@
     <ProjectReference Include="..\LWSwnS.Api\LWSwnS.Api.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Encryption\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NETCore.Encrypt" Version="2.0.8" />
+  </ItemGroup>
+
 </Project>

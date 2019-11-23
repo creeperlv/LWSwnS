@@ -8,6 +8,7 @@ namespace LWSwnS.Configuration
     {
         public string WebContentRoot = ".";
         public string IP = "0.0.0.0";
+        public string ShellPassword = "";
         public int WebPort = 8080;
         public int ShellPort = 14134;
         public bool isWebEnabled = true;
@@ -30,6 +31,11 @@ namespace LWSwnS.Configuration
                 if (item.StartsWith("IP="))
                 {
                     serverConfiguration.IP = item.Substring("IP=".Length);
+                }
+                else
+                if (item.StartsWith("ShellPassword="))
+                {
+                    serverConfiguration.ShellPassword = item.Substring("ShellPassword=".Length);
                 }
                 else
                 if (item.StartsWith("WebPort="))
