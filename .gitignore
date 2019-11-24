@@ -11,3 +11,5 @@ LWSwnS/LWSwnS/bin/
 /LWSwnS/SimpleBlogModule/obj/Debug/netstandard2.0
 /LWSwnS/SimpleBlogModule/bin/Debug/netstandard2.0
 /LWSwnS/SimpleBlogModule/obj
+/LWSwnS/LWSwnS.ShellClient/bin/Debug/netcoreapp3.1
+/LWSwnS/LWSwnS.ShellClient/obj

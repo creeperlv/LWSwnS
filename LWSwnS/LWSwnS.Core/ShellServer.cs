@@ -1,4 +1,5 @@
 ﻿using LWSwnS.Api;
+using LWSwnS.Api.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,18 +12,26 @@ namespace LWSwnS.Core
 {
     public class ShellServer
     {
+        public static Version ShellServerVersion = new Version("1.0.0.0");
         public static string ShellPassword;
         TcpListener TCPListener;
-        bool ShellStop=false;
+        bool ShellStop = false;
         public List<ShellClientProcessor> shellClients = new List<ShellClientProcessor>();
-        public static Dictionary<string, Action<string, object,StreamWriter>> Commands = new Dictionary<string, Action<string, object, StreamWriter>>();
+        public static Dictionary<string, Action<string, object, StreamWriter>> Commands = new Dictionary<string, Action<string, object, StreamWriter>>();
         public ShellServer(TcpListener listener)
         {
             TCPListener = listener;
         }
         public void StartListen()
         {
-
+            Commands.Add("Get-Shell-Server-Version", (string a, object b, StreamWriter sw) =>
+            {
+                Console.WriteLine("Someone trying to get version.");
+                ShellFeedbackData shellFeedbackData = new ShellFeedbackData();
+                shellFeedbackData.StatusLine = ShellServerVersion.ToString();
+                shellFeedbackData.writer = sw;
+                shellFeedbackData.SendBack();
+            });
             Task.Run(() =>
             {
                 TCPListener.Start();
@@ -44,14 +53,12 @@ namespace LWSwnS.Core
         NetworkStream networkStream;
         StreamReader streamReader;
         StreamWriter streamWriter;
-        public ShellClientProcessor(TcpClient tcpClient,ShellServer server)
+        public ShellClientProcessor(TcpClient tcpClient, ShellServer server)
         {
             client = tcpClient;
             FatherServer = server;
             networkStream = client.GetStream();
             //networkStream.CanTimeout = true;
-            networkStream.ReadTimeout = 3000;
-            networkStream.WriteTimeout = 3000;
             streamReader = new StreamReader(networkStream);
             streamWriter = new StreamWriter(networkStream);
             Task.Run(MainProcess);
@@ -115,27 +122,54 @@ namespace LWSwnS.Core
 
             while (willStop == false)
             {
-                var str = streamReader.ReadLine();
-                var content=NETCore.Encrypt.EncryptProvider.AESDecrypt(str, ShellServer.ShellPassword);
-                StringReader stringReader = new StringReader(content);
-                var cmd=stringReader.ReadLine();
-                var name = cmd.Substring(0,cmd.IndexOf(' '));
-                var parameter = cmd.Substring(cmd.IndexOf(' ')+1);
-                var doc=stringReader.ReadToEnd();
-                object obj = null;
-                if (doc != "NULL")
+                try
                 {
-                    var data = Convert.FromBase64String(doc);
-                    MemoryStream memoryStream = new MemoryStream(data);
-                    BinaryFormatter binary = new BinaryFormatter();
-                    obj = binary.Deserialize(memoryStream);
-                }
-                foreach (var item in ShellServer.Commands)
-                {
-                    if (item.Key == name)
+
+                    var str = streamReader.ReadLine();
+                    var content = NETCore.Encrypt.EncryptProvider.AESDecrypt(str, ShellServer.ShellPassword);
+                    StringReader stringReader = new StringReader(content);
+                    var cmd = stringReader.ReadLine();
+                    var name = cmd.Substring(0, cmd.IndexOf(' '));
+                    var parameter = cmd.Substring(cmd.IndexOf(' ') + 1);
+                    var doc = stringReader.ReadToEnd();
+                    object obj = null;
+                    if (!doc.StartsWith( "NULL"))
                     {
-                        item.Value(parameter, obj,streamWriter);
+                        var data = Convert.FromBase64String(doc);
+
+                        MemoryStream memoryStream = new MemoryStream(data);
+                        BinaryFormatter binary = new BinaryFormatter();
+                        obj = binary.Deserialize(memoryStream);
                     }
+                    bool isReacted=false;
+                    foreach (var item in ShellServer.Commands)
+                    {
+                        if (item.Key == name)
+                        {
+                            try
+                            {
+                                item.Value(parameter, obj, streamWriter);
+                                isReacted = true;
+                            }
+                            catch (Exception)
+                            {
+                            }
+                        }
+                    }
+                    if (isReacted == false)
+                    {
+                        ShellFeedbackData shellFeedbackData = new ShellFeedbackData();
+                        shellFeedbackData.StatusLine = "Error: No such a command!";
+                        shellFeedbackData.writer = streamWriter;
+                        shellFeedbackData.SendBack();
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Error in shell server:" + e.Message);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    StopImmediately();
                 }
                 //if ()
                 //{

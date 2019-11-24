@@ -1,4 +1,5 @@
 ﻿using LWSwnS.Api;
+using LWSwnS.Api.Data;
 using LWSwnS.Api.Modules;
 using LWSwnS.Configuration;
 using LWSwnS.Core;
@@ -102,17 +103,19 @@ namespace LWSwnS
                 Console.WriteLine("the generated AES key:");
                 Console.ForegroundColor = ConsoleColor.Green;
                 string KEY = NETCore.Encrypt.EncryptProvider.CreateAesKey().Key;
+                serverConfiguration.ShellPassword = KEY;
                 Console.WriteLine(KEY);
                 Console.ForegroundColor = ConsoleColor.White;
             }
             {
-
+                
                 Console.Write("Press ");
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.Write(" ENTER ");
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("to continue.");
                 Console.ReadLine();
+                ConfigurationLoader.SaveToFile(serverConfiguration, "./Server.ini");
                 Console.Clear();
             }
         }
@@ -150,6 +153,7 @@ namespace LWSwnS
             {
             }
             InitApis();
+            ShellDataExchange.AES_PW = serverConfiguration.ShellPassword;
             ShellServer.ShellPassword = serverConfiguration.ShellPassword;
             URLConventor.RootFolder = serverConfiguration.WebContentRoot;
             //LWSwnSServerCore a = new LWSwnSServerCore(serverConfiguration.IP, serverConfiguration.WebPort, serverConfiguration.ShellPort);

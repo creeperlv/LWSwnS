@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleBlogModule", "SimpleB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{B6D233A1-4D01-4FDB-9418-568291D262A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LWSwnS.ShellClient", "LWSwnS.ShellClient\LWSwnS.ShellClient.csproj", "{A3A859F4-ED03-4401-B376-55CC538B9EF2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,12 +48,17 @@ Global
 		{42DFAE1C-DA0E-4D8B-967C-27570B501E11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{42DFAE1C-DA0E-4D8B-967C-27570B501E11}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{42DFAE1C-DA0E-4D8B-967C-27570B501E11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3A859F4-ED03-4401-B376-55CC538B9EF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3A859F4-ED03-4401-B376-55CC538B9EF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3A859F4-ED03-4401-B376-55CC538B9EF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3A859F4-ED03-4401-B376-55CC538B9EF2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{42DFAE1C-DA0E-4D8B-967C-27570B501E11} = {270630FB-A7E2-455E-952B-38DCEA02AB14}
+		{A3A859F4-ED03-4401-B376-55CC538B9EF2} = {B6D233A1-4D01-4FDB-9418-568291D262A7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C8C4AB2E-6906-4A7D-AF56-C45397F946CC}
