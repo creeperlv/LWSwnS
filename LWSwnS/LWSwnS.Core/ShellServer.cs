@@ -32,6 +32,10 @@ namespace LWSwnS.Core
                 shellFeedbackData.writer = sw;
                 shellFeedbackData.SendBack();
             });
+            Commands.Add("Stop-Server", (string a, object b, StreamWriter sw) =>
+            {
+                Environment.Exit(0);
+            });
             Task.Run(() =>
             {
                 TCPListener.Start();

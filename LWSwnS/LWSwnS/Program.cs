@@ -7,7 +7,6 @@ using LWSwnS.Core.Data;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
-
 namespace LWSwnS
 {
     class Program
@@ -242,6 +241,11 @@ namespace LWSwnS
                                 Console.ForegroundColor = ConsoleColor.White;
                             }
                         }
+                        serverConfiguration.AllowedModules.Add(item);
+                        ConfigurationLoader.SaveToFile(serverConfiguration, "./Server.ini");
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write("Module is now allowed to be executed.");
+                        Console.ForegroundColor = ConsoleColor.White;
                     }
                     catch (Exception)
                     {

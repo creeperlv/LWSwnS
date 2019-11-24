@@ -12,6 +12,8 @@ namespace LWSwnS.Configuration
         public int WebPort = 8080;
         public int ShellPort = 14134;
         public bool isWebEnabled = true;
+        public bool UseHttps = false;
+        public string HttpsCert = "";
         public bool isShellEnabled = true;
         public List<string> AllowedModules = new List<string>();
     }
