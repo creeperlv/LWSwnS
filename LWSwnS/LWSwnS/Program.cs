@@ -123,7 +123,7 @@ namespace LWSwnS
 
             ApiManager.AddFunction("REGCMD", (UniParamater p) => {
                 var name = p[0] as String;
-                var action = p[1] as Action<string, object, StreamWriter>;
+                var action = p[1] as Func<string, object, StreamWriter,bool>;
                 if (ShellServer.Commands.ContainsKey(name))
                 {
                     ShellServer.Commands[name] = action;

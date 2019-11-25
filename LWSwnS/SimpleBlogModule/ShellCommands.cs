@@ -1,4 +1,5 @@
-﻿using LWSwnS.Api.Modules;
+﻿using LWSwnS.Api.Data;
+using LWSwnS.Api.Modules;
 using LWSwnS.Api.Shell;
 using LWSwnS.Core;
 using System;
@@ -22,6 +23,10 @@ namespace SimpleBlogModule
                     File.Create(FilePath).Close();
                 }
                 File.WriteAllText(FilePath, (string)content);
+                ShellFeedbackData shellFeedbackData = new ShellFeedbackData();
+                shellFeedbackData.writer = writer;
+                shellFeedbackData.SendBack();
+                return true;
             });
             return moduleDescription;
         }

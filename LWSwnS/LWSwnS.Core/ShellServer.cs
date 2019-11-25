@@ -17,7 +17,7 @@ namespace LWSwnS.Core
         TcpListener TCPListener;
         bool ShellStop = false;
         public List<ShellClientProcessor> shellClients = new List<ShellClientProcessor>();
-        public static Dictionary<string, Action<string, object, StreamWriter>> Commands = new Dictionary<string, Action<string, object, StreamWriter>>();
+        public static Dictionary<string, Func<string, object, StreamWriter, bool>> Commands = new Dictionary<string, Func<string, object, StreamWriter, bool>>();
         public ShellServer(TcpListener listener)
         {
             TCPListener = listener;
@@ -31,10 +31,12 @@ namespace LWSwnS.Core
                 shellFeedbackData.StatusLine = ShellServerVersion.ToString();
                 shellFeedbackData.writer = sw;
                 shellFeedbackData.SendBack();
+                return true;
             });
             Commands.Add("Stop-Server", (string a, object b, StreamWriter sw) =>
             {
                 Environment.Exit(0);
+                return false;
             });
             Task.Run(() =>
             {
@@ -137,7 +139,7 @@ namespace LWSwnS.Core
                     var parameter = cmd.Substring(cmd.IndexOf(' ') + 1);
                     var doc = stringReader.ReadToEnd();
                     object obj = null;
-                    if (!doc.StartsWith( "NULL"))
+                    if (!doc.StartsWith("NULL"))
                     {
                         var data = Convert.FromBase64String(doc);
 
@@ -145,14 +147,16 @@ namespace LWSwnS.Core
                         BinaryFormatter binary = new BinaryFormatter();
                         obj = binary.Deserialize(memoryStream);
                     }
-                    bool isReacted=false;
+                    bool isReacted = false;
+                    bool isShellResponsed = false;
                     foreach (var item in ShellServer.Commands)
                     {
                         if (item.Key == name)
                         {
                             try
                             {
-                                item.Value(parameter, obj, streamWriter);
+                                bool isResponsed = item.Value(parameter, obj, streamWriter);
+                                if (isResponsed == true) isShellResponsed = true;
                                 isReacted = true;
                             }
                             catch (Exception)
@@ -166,6 +170,14 @@ namespace LWSwnS.Core
                         shellFeedbackData.StatusLine = "Error: No such a command!";
                         shellFeedbackData.writer = streamWriter;
                         shellFeedbackData.SendBack();
+                    }
+                    else if (isShellResponsed==false)
+                    {
+
+                        ShellFeedbackData shellFeedbackData = new ShellFeedbackData();
+                        shellFeedbackData.writer = streamWriter;
+                        shellFeedbackData.SendBack();
+
                     }
                 }
                 catch (Exception e)

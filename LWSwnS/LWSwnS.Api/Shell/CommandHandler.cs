@@ -7,7 +7,7 @@ namespace LWSwnS.Api.Shell
 {
     public class CommandHandler
     {
-        public static void RegisterCommand(string CommandName, Action<String, Object, StreamWriter> cmd)
+        public static void RegisterCommand(string CommandName, Func<String, Object, StreamWriter,bool> cmd)
         {
             UniParamater paramater = new UniParamater();
             paramater.Add(CommandName);
