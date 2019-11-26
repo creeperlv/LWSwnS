@@ -4,6 +4,7 @@ using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Xml.Schema;
 
 namespace LWSwnS.ShellClient
@@ -12,10 +13,28 @@ namespace LWSwnS.ShellClient
     {
         static byte[] Obj2Byte(object obj)
         {
-            byte[] buff = new byte[Marshal.SizeOf(obj)];
-            IntPtr ptr = Marshal.UnsafeAddrOfPinnedArrayElement(buff, 0);
-            Marshal.StructureToPtr(obj, ptr, true);
-            return buff;
+            try
+            {
+
+                byte[] buff = new byte[Marshal.SizeOf(obj)];
+                IntPtr ptr = Marshal.UnsafeAddrOfPinnedArrayElement(buff, 0);
+                Marshal.StructureToPtr(obj, ptr, true);
+                return buff;
+            }
+            catch (Exception)
+            {
+
+                if (obj.GetType() == typeof(string))
+                {
+                    return Encoding.UTF8.GetBytes(obj.ToString());
+                }
+                else
+                {
+
+                    byte[] buff = ShellDataExchange.ObjectToBytes(obj);
+                    return buff;
+                }
+            }
         }
         static void OOBE()
         {
