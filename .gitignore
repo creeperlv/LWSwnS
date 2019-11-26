@@ -13,3 +13,5 @@ LWSwnS/LWSwnS/bin/
 /LWSwnS/SimpleBlogModule/obj
 /LWSwnS/LWSwnS.ShellClient/bin
 /LWSwnS/LWSwnS.ShellClient/obj
+/LWSwnS/PowerShellModule/bin/Debug/netcoreapp3.0
+/LWSwnS/PowerShellModule/obj

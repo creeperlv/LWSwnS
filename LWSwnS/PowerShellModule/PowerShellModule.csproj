@@ -1,15 +1,18 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\LWSwnS\bin\Debug\netcoreapp3.0\Modules\PowerShellModule</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Markdig" Version="0.18.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="3.0.1" />
-    <PackageReference Include="NETCore.Encrypt" Version="2.0.8" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="Microsoft.PowerShell.Commands.Diagnostics" Version="6.2.3" />
     <PackageReference Include="Microsoft.PowerShell.SDK" Version="6.2.3" />
     <PackageReference Include="Microsoft.WSMan.Management" Version="6.2.3" />
@@ -19,6 +22,15 @@
     <ProjectReference Include="..\LWSwnS.Api\LWSwnS.Api.csproj" />
     <ProjectReference Include="..\LWSwnS.Configuration\LWSwnS.Configuration.csproj" />
     <ProjectReference Include="..\LWSwnS.Core\LWSwnS.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ScriptItem.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Template.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

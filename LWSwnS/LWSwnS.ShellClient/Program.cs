@@ -3,12 +3,20 @@ using LWSwnS.Configuration;
 using System;
 using System.IO;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Xml.Schema;
 
 namespace LWSwnS.ShellClient
 {
     class Program
     {
+        static byte[] Obj2Byte(object obj)
+        {
+            byte[] buff = new byte[Marshal.SizeOf(obj)];
+            IntPtr ptr = Marshal.UnsafeAddrOfPinnedArrayElement(buff, 0);
+            Marshal.StructureToPtr(obj, ptr, true);
+            return buff;
+        }
         static void OOBE()
         {
             Console.Write("Please enter the ");
@@ -49,6 +57,7 @@ namespace LWSwnS.ShellClient
                 {
                     OOBE();
                 }
+            if (!Directory.Exists("./ReceiveDatas/")) { Directory.CreateDirectory("./ReceiveDatas/"); }
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("LWSwnS Shell Client");
             Console.ForegroundColor = ConsoleColor.Green;
@@ -105,7 +114,8 @@ namespace LWSwnS.ShellClient
                                 if (Feedback.DataBody != null)
                                 {
                                     Console.WriteLine("Received Object:\r\n" + Feedback.DataBody.ToString());
-                                    File.WriteAllBytes($"./ReceiveDatas/{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}-{DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}.object", ShellDataExchange.ObjectToBytes(Feedback.DataBody));
+                                    File.Create($"./ReceiveDatas/{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}-{DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}.object").Close();
+                                    File.WriteAllBytes($"./ReceiveDatas/{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}-{DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}.object", Obj2Byte(Feedback.DataBody));
 
                                 }
                             }
@@ -128,7 +138,8 @@ namespace LWSwnS.ShellClient
                                 if (Feedback.DataBody != null)
                                 {
                                     Console.WriteLine("Received Object:\r\n" + Feedback.DataBody.ToString());
-                                    File.WriteAllBytes($"./ReceiveDatas/{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}-{DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}.object", ShellDataExchange.ObjectToBytes(Feedback.DataBody));
+                                    File.Create($"./ReceiveDatas/{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}-{DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}.object").Close();
+                                    File.WriteAllBytes($"./ReceiveDatas/{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}-{DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}.object", Obj2Byte(Feedback.DataBody));
 
                                 }
                             }

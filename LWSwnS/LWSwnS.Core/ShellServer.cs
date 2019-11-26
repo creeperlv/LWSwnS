@@ -147,12 +147,14 @@ namespace LWSwnS.Core
                         BinaryFormatter binary = new BinaryFormatter();
                         obj = binary.Deserialize(memoryStream);
                     }
+                    Console.WriteLine("Receive Command:"+name+".");
                     bool isReacted = false;
                     bool isShellResponsed = false;
                     foreach (var item in ShellServer.Commands)
                     {
                         if (item.Key == name)
                         {
+                            Console.WriteLine("Run command:"+name);
                             try
                             {
                                 bool isResponsed = item.Value(parameter, obj, streamWriter);

@@ -19,7 +19,7 @@ namespace SimpleBlogModule
         {
             ModuleDescription moduleDescription = new ModuleDescription();
             moduleDescription.Name = "SimpleBlog";
-            moduleDescription.version = new Version(0, 0, 1, 0);
+            moduleDescription.version = new Version(0, 0, 2, 0);
             UniversalConfiguration config = new UniversalConfiguration();
             try
             {
@@ -39,91 +39,94 @@ namespace SimpleBlogModule
             WebServer.AddIgnoreUrlPrefix("/POSTS");
             EventHandler<HttpRequestData> a = (object sender, HttpRequestData b) =>
             {
-                HttpResponseData httpResponseData = new HttpResponseData();
-                if (b.requestUrl.Trim().ToUpper().Equals("/POSTS") | b.requestUrl.Trim().ToUpper().Equals("/POSTS/"))
+                if (b.requestUrl.ToUpper().StartsWith("/POSTS"))
                 {
-                    var temp = File.ReadAllText("./Modules/netstandard2.0/PostItemTemplate.html");
-                    DirectoryInfo directory = new DirectoryInfo("./Posts/");
-                    var f = directory.GetFiles(); 
-                    SortFileByTime(ref f);
-                    List<string> PostItems = new List<string>();
-                    foreach (var item in f)
+
+                    HttpResponseData httpResponseData = new HttpResponseData();
+                    if (b.requestUrl.Trim().ToUpper().Equals("/POSTS") | b.requestUrl.Trim().ToUpper().Equals("/POSTS/"))
                     {
-                        try
+                        var temp = File.ReadAllText("./Modules/netstandard2.0/PostItemTemplate.html");
+                        DirectoryInfo directory = new DirectoryInfo("./Posts/");
+                        var f = directory.GetFiles();
+                        SortFileByTime(ref f);
+                        List<string> PostItems = new List<string>();
+                        foreach (var item in f)
                         {
-                            var sr = item.OpenRead();
-                            var SR = new StreamReader(sr);
-                            var Title = SR.ReadLine();
                             try
                             {
-                                SR.Close();
-                                SR.Dispose();
-                                sr.Close();
-                                sr.Dispose();
+                                var sr = item.OpenRead();
+                                var SR = new StreamReader(sr);
+                                var Title = SR.ReadLine();
+                                try
+                                {
+                                    SR.Close();
+                                    SR.Dispose();
+                                    sr.Close();
+                                    sr.Dispose();
+                                }
+                                catch (Exception)
+                                {
+                                }
+                                var link = "/posts/" + item.Name;
+                                PostItems.Add(temp.Replace("[POSTLINK]", link).Replace("[POSTTITLE]", Title)
+                                    .Replace("[POSTDATE]", item.CreationTime.ToString()).Replace("[FILESIZE]", ((double)item.Length) / 1024.0 + " KB"));
                             }
                             catch (Exception)
                             {
                             }
-                            var link = "/posts/" + item.Name;
-                            PostItems.Add(temp.Replace("[POSTLINK]", link).Replace("[POSTTITLE]", Title)
-                                .Replace("[POSTDATE]", item.CreationTime.ToString()).Replace("[FILESIZE]", ((double)item.Length) / 1024.0 + " KB"));
+                        }
+                        var List = "";
+                        foreach (var item in PostItems)
+                        {
+                            List += item;
+                        }
+                        if (f.Length == 0)
+                        {
+                            List = "<p style=\"32\">No Posts<p>";
+                        }
+                        var content = File.ReadAllText("./Modules/netstandard2.0/PostList.html").Replace("[BLOGNAME]", BlogName).Replace("[POSTLIST]", List);
+                        httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
+                    }
+                    else if (b.requestUrl.ToUpper().EndsWith("PNG") | b.requestUrl.ToUpper().EndsWith("WEBP") | b.requestUrl.ToUpper().EndsWith("JPG") | b.requestUrl.ToUpper().EndsWith("MP4"))
+                    {
+                        var location = b.requestUrl.Substring("/POSTS/".Length);
+                        httpResponseData.content = File.ReadAllBytes(location);
+                    }
+                    else if (b.requestUrl.ToUpper().StartsWith("/POSTS"))
+                    {
+                        try
+                        {
+
+                            var location = b.requestUrl.Substring("/POSTS/".Length);
+                            var lines = File.ReadAllLines("./Posts/" + location).ToList();
+                            var title = lines[0];
+                            lines.RemoveAt(0);
+                            var MDContent = "";
+                            foreach (var item in lines)
+                            {
+                                if (MDContent == "")
+                                {
+                                    MDContent += item;
+                                }
+                                else
+                                {
+                                    MDContent += Environment.NewLine;
+                                    MDContent += item;
+                                }
+                            }
+                            var content = File.ReadAllText("./Modules/netstandard2.0/Template.html").Replace("[POSTNAME]", title).Replace("[BLOGNAME]", BlogName).Replace("[POSTCONTENT]", Markdig.Markdown.ToHtml(MDContent));
+                            httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
                         }
                         catch (Exception)
                         {
+                            var content = File.ReadAllText("./Modules/netstandard2.0/UnderCounstruction.html").Replace("[MODULE_NAME]", moduleDescription.Name).Replace("[MODULE_VERSION]", moduleDescription.version.ToString());
+                            httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
                         }
                     }
-                    var List = "";
-                    foreach (var item in PostItems)
-                    {
-                        List += item;
-                    }
-                    if (f.Length == 0)
-                    {
-                        List = "<p style=\"32\">No Posts<p>";
-                    }
-                    var content = File.ReadAllText("./Modules/netstandard2.0/PostList.html").Replace("[BLOGNAME]", BlogName).Replace("[POSTLIST]", List);
-                    httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
-                }
-                else if (b.requestUrl.ToUpper().EndsWith("PNG")| b.requestUrl.ToUpper().EndsWith("WEBP")|b.requestUrl.ToUpper().EndsWith("JPG")| b.requestUrl.ToUpper().EndsWith("MP4"))
-                {
-                    var location = b.requestUrl.Substring("/POSTS/".Length);
-                    httpResponseData.content = File.ReadAllBytes(location);
-                }
-                else if (b.requestUrl.ToUpper().StartsWith("/POSTS"))
-                {
-                    try
-                    {
-
-                        var location = b.requestUrl.Substring("/POSTS/".Length);
-                        var lines = File.ReadAllLines("./Posts/" + location).ToList();
-                        var title = lines[0];
-                        lines.RemoveAt(0);
-                        var MDContent = "";
-                        foreach (var item in lines)
-                        {
-                            if (MDContent == "")
-                            {
-                                MDContent += item;
-                            }
-                            else
-                            {
-                                MDContent += Environment.NewLine;
-                                MDContent += item;
-                            }
-                        }
-                        var content = File.ReadAllText("./Modules/netstandard2.0/Template.html").Replace("[POSTNAME]", title).Replace("[BLOGNAME]", BlogName).Replace("[POSTCONTENT]", Markdig.Markdown.ToHtml(MDContent));
-                        httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
-                    }
-                    catch (Exception)
-                    {
-                        var content = File.ReadAllText("./Modules/netstandard2.0/UnderCounstruction.html").Replace("[MODULE_NAME]", moduleDescription.Name).Replace("[MODULE_VERSION]", moduleDescription.version.ToString());
-                        httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
-                    }
-
                     b.Cancel = true;
+                    httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
+                    httpResponseData.Send(ref b.streamWriter);
                 }
-                httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
-                httpResponseData.Send(ref b.streamWriter);
             };
             WebServer.AddHttpRequestHandler(a);
             return moduleDescription;

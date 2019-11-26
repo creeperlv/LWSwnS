@@ -7,6 +7,9 @@ using LWSwnS.Core.Data;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Reflection;
+using System.Runtime.Loader;
+
 namespace LWSwnS
 {
     class Program
@@ -122,7 +125,7 @@ namespace LWSwnS
         {
 
             ApiManager.AddFunction("REGCMD", (UniParamater p) => {
-                var name = p[0] as String;
+                var name = p[0] as string;
                 var action = p[1] as Func<string, object, StreamWriter,bool>;
                 if (ShellServer.Commands.ContainsKey(name))
                 {
@@ -132,6 +135,7 @@ namespace LWSwnS
                 {
                     ShellServer.Commands.Add(name, action);
                 }
+                Console.WriteLine("Added Command:"+name);
                 return new UniResult();
             });
         }
@@ -171,8 +175,9 @@ namespace LWSwnS
                 {
 
                     Modules modules = new Modules((new FileInfo("./Modules/" + item)).DirectoryName);
-                    
                     var asm = modules.LoadFromAssemblyPath((new FileInfo("./Modules/" + item)).FullName);
+                    //AssemblyLoadContext.Default.LoadFromAssemblyPath
+                    //Console.WriteLine(ra);
                     var types = asm.GetTypes();
                     Console.Write("\tLoad: ");
                     Console.ForegroundColor = ConsoleColor.Green;
@@ -199,10 +204,10 @@ namespace LWSwnS
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Failed on loading:" + item);
+                    Console.WriteLine("Failed on loading:" + item+"\r\n"+e.Message);
                     Console.ForegroundColor = ConsoleColor.White;
                 }
                 //ModuleManager.ExtModules.Add()
@@ -232,7 +237,7 @@ namespace LWSwnS
                         foreach (var t in types)
                         {
                             //t.
-                            if (typeof(ExtModule).IsAssignableFrom(t))
+                            if (typeof(FirstInit).IsAssignableFrom(t))
                             {
                                 FirstInit extModule = Activator.CreateInstance(t) as FirstInit;
                                 extModule.Init();
