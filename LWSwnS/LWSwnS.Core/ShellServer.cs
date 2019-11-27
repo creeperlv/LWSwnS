@@ -13,7 +13,7 @@ namespace LWSwnS.Core
     public class ShellServer
     {
         public static Version ShellServerVersion = new Version("1.0.0.0");
-        public static string ShellPassword;
+        //public static string ShellPassword;
         TcpListener TCPListener;
         bool ShellStop = false;
         public List<ShellClientProcessor> shellClients = new List<ShellClientProcessor>();
@@ -132,7 +132,7 @@ namespace LWSwnS.Core
                 {
 
                     var str = streamReader.ReadLine();
-                    var content = NETCore.Encrypt.EncryptProvider.AESDecrypt(str, ShellServer.ShellPassword);
+                    var content = NETCore.Encrypt.EncryptProvider.AESDecrypt(str, LWSwnS.Configuration.ServerConfiguration.CurrentConfiguration.ShellPassword);
                     StringReader stringReader = new StringReader(content);
                     var cmd = stringReader.ReadLine();
                     var name = cmd.Substring(0, cmd.IndexOf(' '));

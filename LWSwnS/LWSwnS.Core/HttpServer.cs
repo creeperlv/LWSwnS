@@ -14,6 +14,7 @@ namespace LWSwnS.Core
     public class HttpServer
     {
         public List<string> URLPrefix = new List<string>();
+        public List<string> ExemptedFileTypes = new List<string>();
         public List<TcpClientProcessor> tcpClients = new List<TcpClientProcessor>();
         TcpListener TCPListener;
         public event EventHandler<HttpRequestData> OnRequest;
@@ -22,6 +23,11 @@ namespace LWSwnS.Core
             ApiManager.AddFunction("IgnoreUrl", (UniParamater a) =>
             {
                 URLPrefix.Add(a[0] as String);
+                return new UniResult();
+            });
+            ApiManager.AddFunction("ExemptFT", (UniParamater a) =>
+            {
+                ExemptedFileTypes.Add(a[0] as String);
                 return new UniResult();
             });
             ApiManager.AddFunction("AddOnReq", (UniParamater p) =>
@@ -36,6 +42,12 @@ namespace LWSwnS.Core
                 foreach (var item in URLPrefix)
                 {
                     if (b.requestUrl.ToUpper().StartsWith(item.ToUpper()))
+                    {
+                        return;
+                    }
+                }foreach (var item in ExemptedFileTypes)
+                {
+                    if (b.requestUrl.ToUpper().EndsWith(item.ToUpper()))
                     {
                         return;
                     }

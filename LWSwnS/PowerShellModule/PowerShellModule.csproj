@@ -25,6 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="ScriptFileItem.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="ScriptItem.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

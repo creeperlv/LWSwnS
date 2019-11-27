@@ -51,10 +51,10 @@ namespace LWSwnS
             {
 
             }
-            ServerConfiguration serverConfiguration = new ServerConfiguration();
-            serverConfiguration.IP = ip;
-            serverConfiguration.WebPort = WebP;
-            serverConfiguration.ShellPort = ShellPort;
+            ServerConfiguration.CurrentConfiguration= new ServerConfiguration();
+            ServerConfiguration.CurrentConfiguration.IP = ip;
+            ServerConfiguration.CurrentConfiguration.WebPort = WebP;
+            ServerConfiguration.CurrentConfiguration.ShellPort = ShellPort;
             {
                 Console.Write("Do you want to");
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -63,7 +63,7 @@ namespace LWSwnS
                 Console.WriteLine("WebServer?(Y for yes.)");
                 if (Console.ReadLine().ToUpper().Equals("Y"))
                 {
-                    serverConfiguration.isWebEnabled = true;
+                    ServerConfiguration.CurrentConfiguration.isWebEnabled = true;
                     {
                         Console.Write("Please specify will the ");
                         Console.ForegroundColor = ConsoleColor.Green;
@@ -80,10 +80,10 @@ namespace LWSwnS
                         {
                             Directory.CreateDirectory(root);
                         }
-                        serverConfiguration.WebContentRoot = root;
+                        ServerConfiguration.CurrentConfiguration.WebContentRoot = root;
                     }
                 }
-                else serverConfiguration.isWebEnabled = false;
+                else ServerConfiguration.CurrentConfiguration.isWebEnabled = false;
             }
             {
                 Console.Write("Do you want to");
@@ -93,9 +93,9 @@ namespace LWSwnS
                 Console.WriteLine("ShellServer?(Y for yes.)");
                 if (Console.ReadLine().ToUpper().Equals("Y"))
                 {
-                    serverConfiguration.isShellEnabled = true;
+                    ServerConfiguration.CurrentConfiguration.isShellEnabled = true;
                 }
-                else serverConfiguration.isShellEnabled = false;
+                else ServerConfiguration.CurrentConfiguration.isShellEnabled = false;
             }
             {
                 Console.Write("Please ");
@@ -105,7 +105,7 @@ namespace LWSwnS
                 Console.WriteLine("the generated AES key:");
                 Console.ForegroundColor = ConsoleColor.Green;
                 string KEY = NETCore.Encrypt.EncryptProvider.CreateAesKey().Key;
-                serverConfiguration.ShellPassword = KEY;
+                ServerConfiguration.CurrentConfiguration.ShellPassword = KEY;
                 Console.WriteLine(KEY);
                 Console.ForegroundColor = ConsoleColor.White;
             }
@@ -117,7 +117,7 @@ namespace LWSwnS
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("to continue.");
                 Console.ReadLine();
-                ConfigurationLoader.SaveToFile(serverConfiguration, "./Server.ini");
+                ConfigurationLoader.SaveToFile(ServerConfiguration.CurrentConfiguration, "./Server.ini");
                 Console.Clear();
             }
         }
@@ -147,29 +147,28 @@ namespace LWSwnS
             {
                 FirstInitialize();
             }
-            ServerConfiguration serverConfiguration = new ServerConfiguration();
             try
             {
-                serverConfiguration = ConfigurationLoader.LoadFromFile("./Server.ini");
+                ServerConfiguration.CurrentConfiguration= ConfigurationLoader.LoadFromFile("./Server.ini");
             }
             catch (Exception)
             {
             }
             InitApis();
-            ShellDataExchange.AES_PW = serverConfiguration.ShellPassword;
-            ShellServer.ShellPassword = serverConfiguration.ShellPassword;
-            URLConventor.RootFolder = serverConfiguration.WebContentRoot;
-            //LWSwnSServerCore a = new LWSwnSServerCore(serverConfiguration.IP, serverConfiguration.WebPort, serverConfiguration.ShellPort);
-            LWSwnSServerCore a = new LWSwnSServerCore(serverConfiguration.IP, serverConfiguration.WebPort, serverConfiguration.ShellPort);
-            if (serverConfiguration.isWebEnabled)
+            ShellDataExchange.AES_PW = ServerConfiguration.CurrentConfiguration.ShellPassword;
+            //ShellServer.ShellPassword = ServerConfiguration.CurrentConfiguration.ShellPassword;
+            URLConventor.RootFolder = ServerConfiguration.CurrentConfiguration.WebContentRoot;
+            //LWSwnSServerCore a = new LWSwnSServerCore(ServerConfiguration.CurrentConfiguration.IP, ServerConfiguration.CurrentConfiguration.WebPort, ServerConfiguration.CurrentConfiguration.ShellPort);
+            LWSwnSServerCore a = new LWSwnSServerCore(ServerConfiguration.CurrentConfiguration.IP, ServerConfiguration.CurrentConfiguration.WebPort, ServerConfiguration.CurrentConfiguration.ShellPort);
+            if (ServerConfiguration.CurrentConfiguration.isWebEnabled)
                 a.StartListenWeb();
-            if (serverConfiguration.isShellEnabled)
+            if (ServerConfiguration.CurrentConfiguration.isShellEnabled)
                 a.StartListenShell();
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Core Server Started.");
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("Loading Modules");
-            foreach (var item in serverConfiguration.AllowedModules)
+            foreach (var item in ServerConfiguration.CurrentConfiguration.AllowedModules)
             {
                 try
                 {
@@ -246,8 +245,8 @@ namespace LWSwnS
                                 Console.ForegroundColor = ConsoleColor.White;
                             }
                         }
-                        serverConfiguration.AllowedModules.Add(item);
-                        ConfigurationLoader.SaveToFile(serverConfiguration, "./Server.ini");
+                        ServerConfiguration.CurrentConfiguration.AllowedModules.Add(item);
+                        ConfigurationLoader.SaveToFile(ServerConfiguration.CurrentConfiguration, "./Server.ini");
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.Write("Module is now allowed to be executed.");
                         Console.ForegroundColor = ConsoleColor.White;

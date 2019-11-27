@@ -13,6 +13,13 @@ namespace LWSwnS.Api.Web
             uniParamater.Add(s);
             ApiManager.Functions["IgnoreUrl"](uniParamater);
         }
+        public static void AddExemptFileType(string s)
+        {
+            if (!s.StartsWith(".")) s = "." + s;
+            UniParamater uniParamater = new UniParamater();
+            uniParamater.Add(s);
+            ApiManager.Functions["ExemptFT"](uniParamater);
+        }
         /// <summary>
         /// Still use EventHandler<HttpResponseData>
         /// </summary>

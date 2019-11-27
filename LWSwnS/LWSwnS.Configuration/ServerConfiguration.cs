@@ -6,6 +6,7 @@ namespace LWSwnS.Configuration
 {
     public class ServerConfiguration
     {
+        public static ServerConfiguration CurrentConfiguration=new ServerConfiguration();
         public string WebContentRoot = ".";
         public string IP = "0.0.0.0";
         public string ShellPassword = "";
