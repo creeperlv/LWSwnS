@@ -74,6 +74,7 @@ namespace PowerShellModule
     public class PSInstance
     {
         public string file;
+        public string ResultContent;
         public string para;
         public bool isCompleted = false;
         public PSInstance(string file, string para)
@@ -106,6 +107,7 @@ namespace PowerShellModule
                             Result += Environment.NewLine + item;
                         }
                     }
+                    ResultContent = Result;
                     Console.WriteLine(Result);
                 }
                 ps.Dispose();

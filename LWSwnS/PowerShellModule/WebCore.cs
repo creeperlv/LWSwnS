@@ -18,6 +18,7 @@ namespace PowerShellModule
             module.version = new Version(0, 0, 1, 0);
             WebServer.AddIgnoreUrlPrefix(VariablesPool.config.Get("WebHost", "/PS"));
             string HostHTML = File.ReadAllText("./Modules/PowerShellModule/netcoreapp3.0/Template.html");
+            string ContentHostHTML = File.ReadAllText("./Modules/PowerShellModule/netcoreapp3.0/ContentTemplate.html");
             string ItemHTML = File.ReadAllText("./Modules/PowerShellModule/netcoreapp3.0/ScriptItem.html");
             string FileItemHTML = File.ReadAllText("./Modules/PowerShellModule/netcoreapp3.0/ScriptFileItem.html");
             EventHandler<HttpRequestData> a = (object sender, HttpRequestData b) =>
@@ -33,14 +34,16 @@ namespace PowerShellModule
                         string items = "";
                         if (VariablesPool.PSInstances.Count == 0)
                         {
-                            string itemHTML = ItemHTML.Replace("[ScriptName]", "No Script Running").Replace("[ScriptParameter]", "").Replace("[StatusText]", "").Replace("[StatusColor]", "#2288EE");
+                            string itemHTML = ItemHTML.Replace("[ScriptName]", "No Script Running").Replace("[ScriptParameter]", "").Replace("[ScriptResult]", "")
+                            .Replace("[StoppedDisplay]", "None").Replace("[StatusText]", "").Replace("[StatusColor]", "#2288EE");
                             items += itemHTML;
                         }
                         string htmlbody = HostHTML;
                         foreach (var item in VariablesPool.PSInstances)
                         {
                             string itemHTML = ItemHTML.Replace("[ScriptName]", item.file).Replace("[ScriptParameter]", item.para).Replace("[StatusText]",
-                                !item.isCompleted ? "Running" : "Stopped").Replace("[StatusColor]", !item.isCompleted ? "#00AA00" : "#2288EE");
+                                !item.isCompleted ? "Running" : "Stopped").Replace("[StatusColor]", !item.isCompleted ? "#00AA00" : "#2288EE").Replace("[StoppedDisplay]",item.isCompleted?"Block":"None")
+                                .Replace("[ScriptIndex]",VariablesPool.PSInstances.IndexOf(item)+"");
                             items += itemHTML;
                         }
                         httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody.Replace("[ScriptList]", items));
@@ -55,7 +58,7 @@ namespace PowerShellModule
                             string itemHTML = FileItemHTML.Replace("[ScriptName]", "No Scripts").Replace("[ScriptParameter]", "").Replace("[ScriptSize]", "");
                             items += itemHTML;
                         }
-                        string htmlbody = HostHTML;
+                        string htmlbody = ContentHostHTML;
                         foreach (var item in fs)
                         {
                             string itemHTML = FileItemHTML.Replace("[ScriptName]", item.Name).Replace("[ScriptSize]", (double)item.Length/1024.0+"KB");
@@ -64,22 +67,22 @@ namespace PowerShellModule
                         httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody.Replace("[ScriptList]", items));
                     }else if (url.ToUpper().StartsWith("/View-Script:".ToUpper()))
                     {
-
-                        string items = "";
-                        DirectoryInfo pss = new DirectoryInfo("./PSScripts/");
-                        var fs = pss.EnumerateFiles("*.ps1").ToList();
-                        if (fs.Count== 0)
-                        {
-                            string itemHTML = FileItemHTML.Replace("[ScriptName]", "No Scripts").Replace("[ScriptParameter]", "").Replace("[ScriptSize]", "");
-                            items += itemHTML;
-                        }
-                        string htmlbody = HostHTML;
-                        foreach (var item in fs)
-                        {
-                            string itemHTML = FileItemHTML.Replace("[ScriptName]", item.Name).Replace("[ScriptSize]", (double)item.Length/1024.0+"KB");
-                            items += itemHTML;
-                        }
-                        httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody.Replace("[ScriptList]", items));
+                        Console.WriteLine("View Script.");
+                        string file = url.Substring("/View-Script:".Length);
+                        var scriptHome = VariablesPool.config.Get("ScriptHome", "./PSScripts/");
+                        
+                        string code = File.ReadAllText(scriptHome + file).Replace(Environment.NewLine,"<br />");
+                        string htmlbody = ContentHostHTML;
+                        httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody.Replace("[ScriptList]", code));
+                    }else if (url.ToUpper().StartsWith("/View-Result:".ToUpper()))
+                    {
+                        Console.WriteLine("View Script.");
+                        string file = url.Substring("/View-Result:".Length);
+                        var scriptHome = VariablesPool.config.Get("ScriptHome", "./PSScripts/");
+                        
+                        string code = VariablesPool.PSInstances[int.Parse(file)].ResultContent.Replace(Environment.NewLine,"<br />");
+                        string htmlbody = ContentHostHTML;
+                        httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody.Replace("[ScriptList]", code));
                     }
                     b.Cancel = true;
                     httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
