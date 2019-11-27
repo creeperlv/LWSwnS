@@ -12,6 +12,5 @@ pipelines:
           - export PROJECT_NAME=LWSwNS
           - export TEST_NAME=LWSwNS
           - cd LWSwnS
-          - dotnet restore
           - dotnet build LWSwnS
           
