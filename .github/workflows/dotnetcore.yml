@@ -19,5 +19,5 @@ jobs:
         dotnet build --configuration Release
     - uses: actions/upload-artifact@v1
       with:
-        name: Uplod arfifact
+        name: LWSwnS-Package
         path: LWSwnS\LWSwnS\bin\Release\
