@@ -7,6 +7,20 @@ namespace LWSwnS.Api.Web
 {
     public class WebServer
     {
+        public static void AddPersistentIgnorePrefix(string s)
+        {
+
+            UniParamater uniParamater = new UniParamater();
+            uniParamater.Add(s);
+            ApiManager.Functions["AddPersistentIgnoreUrlPrefix"](uniParamater);
+        }
+        public static void AddPersistentIgnoreSuffix(string s)
+        {
+
+            UniParamater uniParamater = new UniParamater();
+            uniParamater.Add(s);
+            ApiManager.Functions["AddPersistentIgnoreUrlSuffix"](uniParamater);
+        }
         public static void AddIgnoreUrlPrefix(string s)
         {
             UniParamater uniParamater = new UniParamater();

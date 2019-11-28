@@ -12,6 +12,11 @@
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\LWSwnS\bin\Release\netcoreapp3.0\Modules\PowerShellModule</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.PowerShell.Commands.Diagnostics" Version="6.2.3" />
     <PackageReference Include="Microsoft.PowerShell.SDK" Version="6.2.3" />

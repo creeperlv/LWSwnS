@@ -9,6 +9,7 @@ namespace LWSwnS.Core.Data
 {
     public class HttpRequestData : CancelEventArgs
     {
+        public TcpClientProcessor Processor;
         public string requestUrl;
         public string UA;
         public HttpRequestType RequestType;
@@ -38,23 +39,23 @@ namespace LWSwnS.Core.Data
             writer.BaseStream.Flush();
             writer.Flush();
         }
-        public void SendFile(ref StreamWriter writer, ref StreamReader reader)
+        public void SendFile(ref StreamWriter writer, FileStream reader)
         {
             writer.WriteLine(StatusLine);
             writer.WriteLine(Date);
-            writer.WriteLine("Content-Length: " + reader.BaseStream.Length);
+            writer.WriteLine("Content-Length: " + reader.Length);
             writer.WriteLine(Additional);
             writer.WriteLine();
             writer.Flush();
             byte[] buffer = new byte[BufferSize];
-            while (
-            reader.BaseStream.Read(buffer, 0, buffer.Length) != 0
-            )
+            while (reader.Read(buffer, 0, buffer.Length) != 0)
             {
                 writer.BaseStream.Write(buffer, 0, buffer.Length);
-
+                writer.BaseStream.Flush();
+                writer.Flush();
             }
             writer.BaseStream.Flush();
+            writer.Flush();
         }
     }
     public enum HttpRequestType

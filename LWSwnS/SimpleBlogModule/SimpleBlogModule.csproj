@@ -8,6 +8,10 @@
     <OutputPath>..\LWSwnS\bin\Debug\netcoreapp3.0\Modules\</OutputPath>
     <Optimize>true</Optimize>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\LWSwnS\bin\Release\netcoreapp3.0\Modules\</OutputPath>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Markdig" Version="0.18.0" />

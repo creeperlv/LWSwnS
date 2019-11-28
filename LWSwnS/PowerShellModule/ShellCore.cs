@@ -25,7 +25,6 @@ namespace PowerShellModule
             catch (Exception)
             {
             }
-            Console.WriteLine(Assembly.GetAssembly(this.GetType()).Location);
             moduleDescription.Name = "PowerShellModule-Shell";
             moduleDescription.version = new Version(0, 0, 1, 0);
             CommandHandler.RegisterCommand("powershell-execute", (a, b, c) =>

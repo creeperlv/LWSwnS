@@ -22,6 +22,13 @@ namespace LWSwnS.Core
         {
             TCPListener = listener;
         }
+        public void Stop()
+        {
+            foreach (var item in shellClients)
+            {
+                item.StopImmediately();
+            }
+        }
         public void StartListen()
         {
             Commands.Add("Get-Shell-Server-Version", (string a, object b, StreamWriter sw) =>

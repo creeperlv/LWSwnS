@@ -1,12 +1,10 @@
 ﻿using LWSwnS.Api;
+using LWSwnS.Configuration;
 using LWSwnS.Core.Data;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
-using System.Net.Http;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace LWSwnS.Core
@@ -16,13 +14,39 @@ namespace LWSwnS.Core
         public List<string> URLPrefix = new List<string>();
         public List<string> ExemptedFileTypes = new List<string>();
         public List<TcpClientProcessor> tcpClients = new List<TcpClientProcessor>();
+        public static UniversalConfigurationMark2 urlRules = new UniversalConfigurationMark2();
         TcpListener TCPListener;
         public event EventHandler<HttpRequestData> OnRequest;
         public HttpServer(TcpListener listener)
         {
+            try
+            {
+                urlRules = UniversalConfigurationMark2.LoadFromFile("./URLRules.ini");
+            }
+            catch (Exception)
+            {
+            }
             ApiManager.AddFunction("IgnoreUrl", (UniParamater a) =>
             {
                 URLPrefix.Add(a[0] as String);
+                return new UniResult();
+            });
+            ApiManager.AddFunction("AddPersistentIgnoreUrlPrefix", (UniParamater a) =>
+            {
+                urlRules.AddItem("IgnorePrefix", a[0] as String);
+                urlRules.SaveToFile("./URLRules.ini");
+                return new UniResult();
+            });
+            ApiManager.AddFunction("AddPersistentRedirect", (UniParamater a) =>
+            {
+                urlRules.AddItem("Redirect." + a[0], a[1] as String);
+                urlRules.SaveToFile("./URLRules.ini");
+                return new UniResult();
+            });
+            ApiManager.AddFunction("AddPersistentIgnoreUrlSuffix", (UniParamater a) =>
+            {
+                urlRules.AddItem("IgnoreSuffix", a[0] as String);
+                urlRules.SaveToFile("./URLRules.ini");
                 return new UniResult();
             });
             ApiManager.AddFunction("ExemptFT", (UniParamater a) =>
@@ -45,7 +69,22 @@ namespace LWSwnS.Core
                     {
                         return;
                     }
-                }foreach (var item in ExemptedFileTypes)
+                }
+                foreach (var item in ExemptedFileTypes)
+                {
+                    if (b.requestUrl.ToUpper().EndsWith(item.ToUpper()))
+                    {
+                        return;
+                    }
+                }
+                foreach (var item in urlRules.GetValues("IgnorePrefix"))
+                {
+                    if (b.requestUrl.ToUpper().StartsWith(item.ToUpper()))
+                    {
+                        return;
+                    }
+                }
+                foreach (var item in urlRules.GetValues("IgnoreSuffix"))
                 {
                     if (b.requestUrl.ToUpper().EndsWith(item.ToUpper()))
                     {
@@ -56,7 +95,7 @@ namespace LWSwnS.Core
                 HttpResponseData httpResponseData = new HttpResponseData();
                 if (File.Exists(RealUrl))
                 {
-                    if (!RealUrl.EndsWith(".ico"))
+                    if (!RealUrl.ToUpper().EndsWith(".ico".ToUpper()))
                         httpResponseData.content = File.ReadAllBytes(RealUrl);
                 }
                 else if (File.Exists(Path.Combine(RealUrl, "index.htm")))
@@ -73,12 +112,24 @@ namespace LWSwnS.Core
                 }
 
                 httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
-                if (RealUrl.EndsWith(".ico"))
+                if (RealUrl.ToUpper().EndsWith(".ico".ToUpper()))
                 {
-                    httpResponseData.Additional = "Content-Type: image/x-icon";
-                    var fw = new StreamReader((new FileInfo(RealUrl)).Open(FileMode.Open));
-                    httpResponseData.SendFile(ref b.streamWriter,ref fw);
-                    fw.Close();
+                    try
+                    {
+
+                        httpResponseData.Additional = "Content-Type: application/icon";
+                        using (var fs = (new FileInfo(RealUrl)).Open(FileMode.Open))
+                        {
+                            httpResponseData.SendFile(ref b.streamWriter, fs);
+                        }
+                        b.Processor.StopImmediately();
+                        //It's a bit wired, without this, memory leak will occur.
+                        //Can someone help me?
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Error on sending ico: " + e.Message);
+                    }
                 }
                 else
                 {
@@ -89,7 +140,10 @@ namespace LWSwnS.Core
         }
         public void Stop()
         {
-
+            foreach (var item in tcpClients)
+            {
+                item.StopImmediately();
+            }
         }
         bool WebStop = false;
         public void StartListen()
@@ -230,6 +284,7 @@ namespace LWSwnS.Core
                 try
                 {
                     var rec = ReceiveMessage();
+                    rec.Processor = this;
                     FatherServer.HandleRequest(rec);
                     //httpResponseData = null;
                     GC.Collect();

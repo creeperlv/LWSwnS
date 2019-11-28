@@ -9,7 +9,6 @@ namespace LWSwnS.Core
     {
         TcpListener Web;
         TcpListener Shell;
-        bool WebStop = false;
         //Service
         public LWSwnSServerCore(string Address,int WebPort,int ShellPort)
         {
@@ -36,6 +35,23 @@ namespace LWSwnS.Core
         {
             httpServer = new HttpServer(Web);
             httpServer.StartListen();
+        }
+        public void Stop()
+        {
+            try
+            {
+                httpServer.Stop();
+            }
+            catch (Exception)
+            {
+            }
+            try
+            {
+                shellServer.Stop();
+            }
+            catch (Exception)
+            {
+            }
         }
         public void StartListenShell()
         {
