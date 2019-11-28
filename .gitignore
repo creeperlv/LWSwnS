@@ -15,3 +15,5 @@ LWSwnS/LWSwnS/bin/
 /LWSwnS/LWSwnS.ShellClient/obj
 /LWSwnS/PowerShellModule/bin/Debug/netcoreapp3.0
 /LWSwnS/PowerShellModule/obj
+/LWSwnS/MarkdownFileModule/obj
+/LWSwnS/MarkdownFileModule/bin/Debug/netstandard2.0

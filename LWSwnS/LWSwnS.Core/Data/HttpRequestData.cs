@@ -7,7 +7,7 @@ using System.Text;
 
 namespace LWSwnS.Core.Data
 {
-    public class HttpRequestData:CancelEventArgs
+    public class HttpRequestData : CancelEventArgs
     {
         public string requestUrl;
         public string UA;
@@ -18,6 +18,7 @@ namespace LWSwnS.Core.Data
     }
     public class HttpResponseData
     {
+        public static int BufferSize = 4096;
         public bool SkipWhole;
         public bool ContentOnly;
         public byte[] content;
@@ -33,21 +34,31 @@ namespace LWSwnS.Core.Data
             writer.WriteLine();
             writer.Flush();
 
-            writer.BaseStream.Write(content,0,content.Length);
+            writer.BaseStream.Write(content, 0, content.Length);
             writer.BaseStream.Flush();
-            //    for (int i = 0; i < content.Length; i+=4096)
-            //    {
-            //        byte[] a = new byte[4096];
-            //        content.CopyTo(a, i);
-            //        writer.Write(a);
-            //        writer.Flush();
-            //    }
-            //}
             writer.Flush();
+        }
+        public void SendFile(ref StreamWriter writer, ref StreamReader reader)
+        {
+            writer.WriteLine(StatusLine);
+            writer.WriteLine(Date);
+            writer.WriteLine("Content-Length: " + reader.BaseStream.Length);
+            writer.WriteLine(Additional);
+            writer.WriteLine();
+            writer.Flush();
+            byte[] buffer = new byte[BufferSize];
+            while (
+            reader.BaseStream.Read(buffer, 0, buffer.Length) != 0
+            )
+            {
+                writer.BaseStream.Write(buffer, 0, buffer.Length);
+
+            }
+            writer.BaseStream.Flush();
         }
     }
     public enum HttpRequestType
     {
-        GET,POST
+        GET, POST
     }
 }

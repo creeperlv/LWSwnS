@@ -56,7 +56,8 @@ namespace LWSwnS.Core
                 HttpResponseData httpResponseData = new HttpResponseData();
                 if (File.Exists(RealUrl))
                 {
-                    httpResponseData.content = File.ReadAllBytes(RealUrl);
+                    if (!RealUrl.EndsWith(".ico"))
+                        httpResponseData.content = File.ReadAllBytes(RealUrl);
                 }
                 else if (File.Exists(Path.Combine(RealUrl, "index.htm")))
                 {
@@ -70,8 +71,20 @@ namespace LWSwnS.Core
                 {
                     httpResponseData.content = File.ReadAllBytes("./404.html");
                 }
+
                 httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
-                httpResponseData.Send(ref b.streamWriter);
+                if (RealUrl.EndsWith(".ico"))
+                {
+                    httpResponseData.Additional = "Content-Type: image/x-icon";
+                    var fw = new StreamReader((new FileInfo(RealUrl)).Open(FileMode.Open));
+                    httpResponseData.SendFile(ref b.streamWriter,ref fw);
+                    fw.Close();
+                }
+                else
+                {
+
+                    httpResponseData.Send(ref b.streamWriter);
+                }
             };
         }
         public void Stop()
