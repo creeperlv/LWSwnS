@@ -40,6 +40,15 @@ namespace LWSwnS.Core
                 shellFeedbackData.SendBack();
                 return true;
             });
+            Commands.Add("Get-Web-Server-Version", (string a, object b, StreamWriter sw) =>
+            {
+                Console.WriteLine("Someone trying to get version.");
+                ShellFeedbackData shellFeedbackData = new ShellFeedbackData();
+                shellFeedbackData.StatusLine = HttpServer.WebServerVersion.ToString();
+                shellFeedbackData.writer = sw;
+                shellFeedbackData.SendBack();
+                return true;
+            });
             Commands.Add("Stop-Server", (string a, object b, StreamWriter sw) =>
             {
                 Environment.Exit(0);

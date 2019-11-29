@@ -156,10 +156,8 @@ namespace LWSwnS
             }
             InitApis();
             ShellDataExchange.AES_PW = ServerConfiguration.CurrentConfiguration.ShellPassword;
-            //ShellServer.ShellPassword = ServerConfiguration.CurrentConfiguration.ShellPassword;
             URLConventor.RootFolder = ServerConfiguration.CurrentConfiguration.WebContentRoot;
-            //LWSwnSServerCore a = new LWSwnSServerCore(ServerConfiguration.CurrentConfiguration.IP, ServerConfiguration.CurrentConfiguration.WebPort, ServerConfiguration.CurrentConfiguration.ShellPort);
-            LWSwnSServerCore a = new LWSwnSServerCore(ServerConfiguration.CurrentConfiguration.IP, ServerConfiguration.CurrentConfiguration.WebPort, ServerConfiguration.CurrentConfiguration.ShellPort);
+             LWSwnSServerCore a = new LWSwnSServerCore(ServerConfiguration.CurrentConfiguration.IP, ServerConfiguration.CurrentConfiguration.WebPort, ServerConfiguration.CurrentConfiguration.ShellPort);
             if (ServerConfiguration.CurrentConfiguration.isWebEnabled)
                 a.StartListenWeb();
             if (ServerConfiguration.CurrentConfiguration.isShellEnabled)
@@ -241,15 +239,16 @@ namespace LWSwnS
                                 FirstInit extModule = Activator.CreateInstance(t) as FirstInit;
                                 extModule.Init();
                                 Console.ForegroundColor = ConsoleColor.Green;
-                                Console.Write("Initialization Completed.");
+                                Console.WriteLine("\t\tInitialization Completed.");
                                 Console.ForegroundColor = ConsoleColor.White;
                             }
                         }
                         ServerConfiguration.CurrentConfiguration.AllowedModules.Add(item);
                         ConfigurationLoader.SaveToFile(ServerConfiguration.CurrentConfiguration, "./Server.ini");
                         Console.ForegroundColor = ConsoleColor.Green;
-                        Console.Write("Module is now allowed to be executed.");
+                        Console.WriteLine("Module is now allowed to be executed.");
                         Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine("Restart to take effect.");
                     }
                     catch (Exception)
                     {

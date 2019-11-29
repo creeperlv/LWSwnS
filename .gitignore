@@ -17,3 +17,4 @@ LWSwnS/LWSwnS/bin/
 /LWSwnS/PowerShellModule/obj
 /LWSwnS/MarkdownFileModule/obj
 /LWSwnS/MarkdownFileModule/bin/Debug/netstandard2.0
+/LWSwnS/BinaryFileTransmission/obj

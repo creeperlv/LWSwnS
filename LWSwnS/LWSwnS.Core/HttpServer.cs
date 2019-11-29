@@ -11,6 +11,7 @@ namespace LWSwnS.Core
 {
     public class HttpServer
     {
+        public static Version WebServerVersion = new Version(1, 0, 0, 0);
         public List<string> URLPrefix = new List<string>();
         public List<string> ExemptedFileTypes = new List<string>();
         public List<TcpClientProcessor> tcpClients = new List<TcpClientProcessor>();
@@ -122,7 +123,7 @@ namespace LWSwnS.Core
                         {
                             httpResponseData.SendFile(ref b.streamWriter, fs);
                         }
-                        b.Processor.StopImmediately();
+                        //b.Processor.StopImmediately();
                         //It's a bit wired, without this, memory leak will occur.
                         //Can someone help me?
                     }
@@ -243,10 +244,13 @@ namespace LWSwnS.Core
             HttpRequestData requestData = new HttpRequestData();
             List<String> LS = new List<string>();
             string s;
-            while ((s = streamReader.ReadLine()) != "")
+            s = streamReader.ReadLine();
+            while (s != ""&&s!=null)
             {
                 LS.Add(s);
+                s = streamReader.ReadLine();
             }
+            //Console.WriteLine("Readed:{0}.", LS.Count);
             for (int i = 0; i < LS.Count; i++)
             {
                 //Console.WriteLine(LS[i]);
