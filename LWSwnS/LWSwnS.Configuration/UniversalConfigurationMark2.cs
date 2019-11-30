@@ -34,6 +34,17 @@ namespace LWSwnS.Configuration
         }
         public List<string> GetValues(string key)
         {
+            foreach (var item in Keys)
+            {
+                if (item.ToUpper() == key.ToUpper())
+                {
+                    return this[item];
+                }
+            }
+            return new List<string>();
+        }
+        public List<string> GetValuesSensitive(string key)
+        {
             if (this.ContainsKey(key)) return this[key]; else return new List<string>();
         }
         public void AddItem(string key, string value)

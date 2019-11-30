@@ -18,3 +18,5 @@ LWSwnS/LWSwnS/bin/
 /LWSwnS/MarkdownFileModule/obj
 /LWSwnS/MarkdownFileModule/bin/Debug/netstandard2.0
 /LWSwnS/BinaryFileTransmission/obj
+/LWSwnS/SimpleGitViewer/bin/Debug/netstandard2.0
+/LWSwnS/SimpleGitViewer/obj
