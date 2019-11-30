@@ -5,7 +5,9 @@ using LWSwnS.Configuration;
 using LWSwnS.Core.Data;
 using Markdig;
 using System;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -15,6 +17,7 @@ namespace SimpleGitViewer
     {
         public readonly static System.Version ModuleVer = new System.Version(0, 0, 1, 0);
         public static UniversalConfigurationMark2 config = new UniversalConfigurationMark2();
+        public static UniversalConfiguration Theme= new UniversalConfiguration();
         public ModuleDescription InitModule()
         {
             ModuleDescription moduleDescription = new ModuleDescription();
@@ -23,6 +26,13 @@ namespace SimpleGitViewer
             try
             {
                 config = UniversalConfigurationMark2.LoadFromFile("./SimpleGit.ini");
+            }
+            catch (Exception)
+            {
+            }
+            try
+            {
+                Theme = UniversalConfigurationLoader.LoadFromFile("./SimpleGit.Theme.ini");
             }
             catch (Exception)
             {
@@ -40,6 +50,11 @@ namespace SimpleGitViewer
             }
             WebServer.AddIgnoreUrlPrefix("/Git");
             string HomePage = File.ReadAllText(Path.Combine(RootDir, "GitRepoHomePage.html"));
+            string CommitPage = File.ReadAllText(Path.Combine(RootDir, "CommitPage.html"));
+            string BrowserPage = File.ReadAllText(Path.Combine(RootDir, "BrowserPage.html"));
+            string CommitItem = File.ReadAllText(Path.Combine(RootDir, "CommitItem.html"));
+            string GitFileItem = File.ReadAllText(Path.Combine(RootDir, "GitFileItem.html"));
+            string GitFolderItem = File.ReadAllText(Path.Combine(RootDir, "GitFolderItem.html"));
             EventHandler<HttpRequestData> handler = (a, b) =>
             {
                 try
@@ -54,8 +69,9 @@ namespace SimpleGitViewer
                             repoAction = repo.Substring(repo.IndexOf("/") + 1);
                             repo = repo.Substring(0, repo.IndexOf("/"));
                         }
-                        Console.WriteLine(repo + ":" + repoAction);
-                        using (var r = new Repository(config.GetValues(repo)[0]))
+                        Console.WriteLine(repo + ":" + repoAction+" in "+ config.GetValues(repo)[0]);
+                        string repol = config.GetValues(repo)[0];
+                        using (var r = new Repository(repol))
                         {
                             string content = "";
                             if (repoAction == "")
@@ -71,15 +87,60 @@ namespace SimpleGitViewer
                                 content = content.Replace("[REPONAME]", repo);
                                 try
                                 {
-                                    content = content.Replace("[README.MD]", Markdown.ToHtml(File.ReadAllText(Path.Combine(config.GetValues(repo)[0], "Readme.md"))));
+                                    content = content.Replace("[README.MD]", Markdown.ToHtml(File.ReadAllText(Path.Combine(repol, "Readme.md"))));
                                 }
                                 catch (Exception)
                                 {
                                 }
                             }
-                            else if (repoAction.StartsWith("Commits"))
+                            else if (repoAction.ToUpper().StartsWith("Commits".ToUpper()))
                             {
+                                var RFC2822Format = "ddd dd MMM HH:mm:ss yyyy K";
+                                string commitList = "";
+                                foreach (Commit c in r.Commits.Take(15))
+                                {
+                                    commitList += CommitItem.Replace("[ID]",c.Id.Sha).Replace("[AUTHOR]",c.Author.Name+"("+c.Author.Email+")").Replace("[MESSAGE]",c.Message.Replace("\n","<br/>")).Replace("[DATE]", c.Author.When.ToString(RFC2822Format, CultureInfo.InvariantCulture));
 
+                                }
+                                content = CommitPage.Replace("[REPONAME]", repo).Replace("[Commits]", commitList);
+                            }
+                            else if (repoAction.ToUpper().StartsWith("_git".ToUpper()))
+                            {
+                                string location;
+                                if (repoAction.IndexOf('/') > 0)
+                                {
+                                    location = Path.Combine(repol, repoAction.Substring("_git/".Length).Replace('/', Path.DirectorySeparatorChar));
+                                }
+                                else location=Path.Combine(repol, repoAction.Substring("_git".Length).Replace('/',Path.DirectorySeparatorChar));
+                                string items = "";
+                                try
+                                {
+                                    DirectoryInfo directoryInfo = new DirectoryInfo(location);
+                                    //Directory.EnumerateFiles
+                                    foreach (var item in directoryInfo.GetDirectories())
+                                    {
+                                        
+                                        items += GitFolderItem.Replace("[ITEMNAME]", item.Name).Replace("[PATH]", item.Parent.FullName==new DirectoryInfo(repol).FullName? $"_git/{item.Name}" : $"{item.Parent.Name}/{item.Name}");
+                                    }
+                                    foreach (var item in directoryInfo.GetFiles())
+                                    {
+                                        string itemStr= GitFileItem.Replace("[ITEMNAME]", item.Name);
+                                        foreach (var file in Theme.Keys)
+                                        {
+                                            if (item.Name.ToUpper().EndsWith(file.ToUpper()))
+                                            {
+                                                itemStr = itemStr.Replace("[ICON]", Theme.Get(file));
+                                                break;
+                                            }
+                                        }
+                                        items += itemStr.Replace("[ICON]",Theme.Get("NormalFile"));
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine(e.Message);
+                                }
+                                content = BrowserPage.Replace("[REPONAME]", repo).Replace("[ITEMS]", items).Replace("[PATH]", repoAction.Substring("_git".Length));
                             }
                             HttpResponseData httpResponseData = new HttpResponseData();
                             httpResponseData.content = Encoding.UTF8.GetBytes(content);
