@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace SimpleBlogModule
 {
@@ -19,6 +20,7 @@ namespace SimpleBlogModule
         {
             ModuleDescription moduleDescription = new ModuleDescription();
             moduleDescription.Name = "SimpleBlog";
+            String RootDir = new FileInfo(Assembly.GetAssembly(this.GetType()).Location).Directory.FullName;
             moduleDescription.version = new Version(0, 0, 2, 0);
             UniversalConfiguration config = new UniversalConfiguration();
             try
@@ -45,7 +47,7 @@ namespace SimpleBlogModule
                     HttpResponseData httpResponseData = new HttpResponseData();
                     if (b.requestUrl.Trim().ToUpper().Equals("/POSTS") | b.requestUrl.Trim().ToUpper().Equals("/POSTS/"))
                     {
-                        var temp = File.ReadAllText("./Modules/netstandard2.0/PostItemTemplate.html");
+                        var temp = File.ReadAllText(Path.Combine(RootDir,"PostItemTemplate.html"));
                         DirectoryInfo directory = new DirectoryInfo("./Posts/");
                         var f = directory.GetFiles();
                         SortFileByTime(ref f);
@@ -84,14 +86,16 @@ namespace SimpleBlogModule
                         {
                             List = "<p style=\"32\">No Posts<p>";
                         }
-                        var content = File.ReadAllText("./Modules/netstandard2.0/PostList.html").Replace("[BLOGNAME]", BlogName).Replace("[POSTLIST]", List);
+                        var content = File.ReadAllText(Path.Combine(RootDir,"PostList.html")).Replace("[BLOGNAME]", BlogName).Replace("[POSTLIST]", List);
                         httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
+                        httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
+                        httpResponseData.Send(ref b.streamWriter);
                     }
-                    else if (b.requestUrl.ToUpper().EndsWith("PNG") | b.requestUrl.ToUpper().EndsWith("WEBP") | b.requestUrl.ToUpper().EndsWith("JPG") | b.requestUrl.ToUpper().EndsWith("MP4"))
-                    {
-                        var location = b.requestUrl.Substring("/POSTS/".Length);
-                        httpResponseData.content = File.ReadAllBytes(location);
-                    }
+                    //else if (b.requestUrl.ToUpper().EndsWith("PNG") | b.requestUrl.ToUpper().EndsWith("WEBP") | b.requestUrl.ToUpper().EndsWith("JPG") | b.requestUrl.ToUpper().EndsWith("MP4"))
+                    //{
+                    //    var location = b.requestUrl.Substring("/POSTS/".Length);
+                    //    httpResponseData.content = File.ReadAllBytes(location);
+                    //}
                     else if (b.requestUrl.ToUpper().StartsWith("/POSTS"))
                     {
                         try
@@ -114,18 +118,19 @@ namespace SimpleBlogModule
                                     MDContent += item;
                                 }
                             }
-                            var content = File.ReadAllText("./Modules/netstandard2.0/Template.html").Replace("[POSTNAME]", title).Replace("[BLOGNAME]", BlogName).Replace("[POSTCONTENT]", Markdig.Markdown.ToHtml(MDContent));
+                            var content = File.ReadAllText(Path.Combine(RootDir,"Template.html")).Replace("[POSTNAME]", title).Replace("[BLOGNAME]", BlogName).Replace("[POSTCONTENT]", Markdig.Markdown.ToHtml(MDContent));
                             httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
                         }
                         catch (Exception)
                         {
-                            var content = File.ReadAllText("./Modules/netstandard2.0/UnderCounstruction.html").Replace("[MODULE_NAME]", moduleDescription.Name).Replace("[MODULE_VERSION]", moduleDescription.version.ToString());
+                            var content = File.ReadAllText(Path.Combine(RootDir,"UnderCounstruction.html")).Replace("[MODULE_NAME]", moduleDescription.Name).Replace("[MODULE_VERSION]", moduleDescription.version.ToString());
                             httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
                         }
+                        httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
+                        httpResponseData.Send(ref b.streamWriter);
+                        b.Cancel = true;
                     }
-                    b.Cancel = true;
-                    httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
-                    httpResponseData.Send(ref b.streamWriter);
+                    //b.Cancel = true;
                 }
             };
             WebServer.AddHttpRequestHandler(a);

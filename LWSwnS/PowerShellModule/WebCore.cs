@@ -10,12 +10,12 @@ using System.Text;
 namespace PowerShellModule
 {
     public class WebCore : ExtModule
-    {
+    {public static Version WebVersion= new Version(0, 0, 1, 0);
         public ModuleDescription InitModule()
         {
             ModuleDescription module = new ModuleDescription();
             module.Name = "PowerShellModule-Web";
-            module.version = new Version(0, 0, 1, 0);
+            module.version = WebVersion;
             WebServer.AddIgnoreUrlPrefix(VariablesPool.config.Get("WebHost", "/PS"));
             string HostHTML = File.ReadAllText("./Modules/PowerShellModule/netcoreapp3.0/Template.html");
             string ContentHostHTML = File.ReadAllText("./Modules/PowerShellModule/netcoreapp3.0/ContentTemplate.html");
@@ -46,7 +46,7 @@ namespace PowerShellModule
                                 .Replace("[ScriptIndex]",VariablesPool.PSInstances.IndexOf(item)+"");
                             items += itemHTML;
                         }
-                        httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody.Replace("[ScriptList]", items));
+                        httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody.Replace("[ScriptList]", items).Replace("[WebVersion]", WebVersion.ToString()).Replace("[ShellVersion]",ShellCore.ShellVersion.ToString()));
                     }else if (url.ToUpper().StartsWith("/ScriptList".ToUpper()))
                     {
 
@@ -64,7 +64,7 @@ namespace PowerShellModule
                             string itemHTML = FileItemHTML.Replace("[ScriptName]", item.Name).Replace("[ScriptSize]", (double)item.Length/1024.0+"KB");
                             items += itemHTML;
                         }
-                        httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody.Replace("[ScriptList]", items));
+                        httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody.Replace("[ScriptList]", items).Replace("[WebVersion]", WebVersion.ToString()).Replace("[ShellVersion]", ShellCore.ShellVersion.ToString()));
                     }else if (url.ToUpper().StartsWith("/View-Script:".ToUpper()))
                     {
                         Console.WriteLine("View Script.");
@@ -73,7 +73,7 @@ namespace PowerShellModule
                         
                         string code = File.ReadAllText(scriptHome + file).Replace(Environment.NewLine,"<br />");
                         string htmlbody = ContentHostHTML;
-                        httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody.Replace("[ScriptList]", code));
+                        httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody.Replace("[ScriptList]", code).Replace("[WebVersion]", WebVersion.ToString()).Replace("[ShellVersion]", ShellCore.ShellVersion.ToString()));
                     }else if (url.ToUpper().StartsWith("/View-Result:".ToUpper()))
                     {
                         Console.WriteLine("View Script.");
@@ -82,7 +82,7 @@ namespace PowerShellModule
                         
                         string code = VariablesPool.PSInstances[int.Parse(file)].ResultContent.Replace(Environment.NewLine,"<br />");
                         string htmlbody = ContentHostHTML;
-                        httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody.Replace("[ScriptList]", code));
+                        httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody.Replace("[ScriptList]", code).Replace("[WebVersion]", WebVersion.ToString()).Replace("[ShellVersion]", ShellCore.ShellVersion.ToString()));
                     }
                     b.Cancel = true;
                     httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
