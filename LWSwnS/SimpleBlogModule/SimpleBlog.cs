@@ -38,16 +38,21 @@ namespace SimpleBlogModule
             catch (Exception)
             {
             }
+
+            string PostList = File.ReadAllText(Path.Combine(RootDir, "PostList.html"));
+            string Template = File.ReadAllText(Path.Combine(RootDir, "Template.html"));
+            string PostItemTemplate = File.ReadAllText(Path.Combine(RootDir, "PostItemTemplate.html"));
             WebServer.AddIgnoreUrlPrefix("/POSTS");
             EventHandler<HttpRequestData> a = (object sender, HttpRequestData b) =>
             {
+
                 if (b.requestUrl.ToUpper().StartsWith("/POSTS"))
                 {
 
                     HttpResponseData httpResponseData = new HttpResponseData();
                     if (b.requestUrl.Trim().ToUpper().Equals("/POSTS") | b.requestUrl.Trim().ToUpper().Equals("/POSTS/"))
                     {
-                        var temp = File.ReadAllText(Path.Combine(RootDir,"PostItemTemplate.html"));
+                        var temp = PostItemTemplate;
                         DirectoryInfo directory = new DirectoryInfo("./Posts/");
                         var f = directory.GetFiles();
                         SortFileByTime(ref f);
@@ -86,7 +91,7 @@ namespace SimpleBlogModule
                         {
                             List = "<p style=\"32\">No Posts<p>";
                         }
-                        var content = File.ReadAllText(Path.Combine(RootDir,"PostList.html")).Replace("[BLOGNAME]", BlogName).Replace("[POSTLIST]", List);
+                        var content = PostList.Replace("[BLOGNAME]", BlogName).Replace("[POSTLIST]", List);
                         httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
                         httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
                         httpResponseData.Send(ref b.streamWriter);
@@ -102,24 +107,33 @@ namespace SimpleBlogModule
                         {
 
                             var location = b.requestUrl.Substring("/POSTS/".Length);
-                            var lines = File.ReadAllLines("./Posts/" + location).ToList();
-                            var title = lines[0];
-                            lines.RemoveAt(0);
-                            var MDContent = "";
-                            foreach (var item in lines)
+                            if(File.Exists("./Posts/" + location))
                             {
-                                if (MDContent == "")
+
+                                var lines = File.ReadAllLines("./Posts/" + location).ToList();
+                                var title = lines[0];
+                                lines.RemoveAt(0);
+                                var MDContent = "";
+                                foreach (var item in lines)
                                 {
-                                    MDContent += item;
+                                    if (MDContent == "")
+                                    {
+                                        MDContent += item;
+                                    }
+                                    else
+                                    {
+                                        MDContent += Environment.NewLine;
+                                        MDContent += item;
+                                    }
                                 }
-                                else
-                                {
-                                    MDContent += Environment.NewLine;
-                                    MDContent += item;
-                                }
+                                var content = Template.Replace("[POSTNAME]", title).Replace("[BLOGNAME]", BlogName).Replace("[POSTCONTENT]", Markdig.Markdown.ToHtml(MDContent));
+                                httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
                             }
-                            var content = File.ReadAllText(Path.Combine(RootDir,"Template.html")).Replace("[POSTNAME]", title).Replace("[BLOGNAME]", BlogName).Replace("[POSTCONTENT]", Markdig.Markdown.ToHtml(MDContent));
-                            httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
+                            else
+                            {
+                                var content = Template.Replace("[POSTNAME]", "File Not Found!").Replace("[BLOGNAME]", BlogName).Replace("[POSTCONTENT]", Markdig.Markdown.ToHtml("# Unable to locate requesting file!"));
+                                httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
+                            }
                         }
                         catch (Exception)
                         {

@@ -8,6 +8,7 @@ namespace LWSwnS.Configuration
     {
         public static ServerConfiguration CurrentConfiguration=new ServerConfiguration();
         public string WebContentRoot = ".";
+        public string Page404 = "./404.html";
         public string IP = "0.0.0.0";
         public string ShellPassword = "";
         public int WebPort = 8080;
@@ -34,6 +35,11 @@ namespace LWSwnS.Configuration
                 if (item.StartsWith("IP="))
                 {
                     serverConfiguration.IP = item.Substring("IP=".Length);
+                }
+                else
+                if (item.StartsWith("Page404 ="))
+                {
+                    serverConfiguration.Page404 = item.Substring("Page404 =".Length);
                 }
                 else
                 if (item.StartsWith("ShellPassword="))

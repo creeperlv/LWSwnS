@@ -109,7 +109,7 @@ namespace LWSwnS.Core
                 }
                 else
                 {
-                    httpResponseData.content = File.ReadAllBytes("./404.html");
+                    httpResponseData.content = File.ReadAllBytes(ServerConfiguration.CurrentConfiguration.Page404);
                 }
 
                 httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
