@@ -135,7 +135,6 @@ namespace LWSwnS
                 {
                     ShellServer.Commands.Add(name, action);
                 }
-                Console.WriteLine("Added Command:"+name);
                 return new UniResult();
             });
         }

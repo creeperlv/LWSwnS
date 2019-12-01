@@ -57,7 +57,7 @@ namespace LWSwnS
         public Modules(string path)
         {
             root = path;
-            Console.WriteLine($"{System.Runtime.InteropServices.RuntimeInformation.OSDescription}");
+            //Console.WriteLine($"{System.Runtime.InteropServices.RuntimeInformation.OSDescription}");
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
             var f=directoryInfo.EnumerateFiles("*.deps.json");
             foreach (var item in f)
