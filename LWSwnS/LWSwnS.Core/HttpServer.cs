@@ -92,7 +92,7 @@ namespace LWSwnS.Core
                         return;
                     }
                 }
-                Console.WriteLine("Request:" + RealUrl);
+                LWSwnS.Diagnostic.Debugger.currentDebugger.Log("Request:" + RealUrl);
                 HttpResponseData httpResponseData = new HttpResponseData();
                 if (File.Exists(RealUrl))
                 {
@@ -129,7 +129,7 @@ namespace LWSwnS.Core
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine("Error on sending ico: " + e.Message);
+                        LWSwnS.Diagnostic.Debugger.currentDebugger.Log("Error on sending ico: " + e.Message, Diagnostic.MessageType.Error);
                     }
                 }
                 else

@@ -20,3 +20,5 @@ LWSwnS/LWSwnS/bin/
 /LWSwnS/BinaryFileTransmission/obj
 /LWSwnS/SimpleGitViewer/bin/Debug/netstandard2.0
 /LWSwnS/SimpleGitViewer/obj
+/LWSwnS/LWSwnS.Diagnostic/bin/Debug/netstandard2.0
+/LWSwnS/LWSwnS.Diagnostic/obj

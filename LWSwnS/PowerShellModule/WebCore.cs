@@ -70,7 +70,6 @@ namespace PowerShellModule
                     }
                     else if (url.ToUpper().StartsWith("/View-Script:".ToUpper()))
                     {
-                        Console.WriteLine("View Script.");
                         string file = url.Substring("/View-Script:".Length);
                         var scriptHome = VariablesPool.config.Get("ScriptHome", "./PSScripts/");
 
@@ -80,7 +79,6 @@ namespace PowerShellModule
                     }
                     else if (url.ToUpper().StartsWith("/View-Result:".ToUpper()))
                     {
-                        Console.WriteLine("View Script.");
                         string file = url.Substring("/View-Result:".Length);
                         var scriptHome = VariablesPool.config.Get("ScriptHome", "./PSScripts/");
 

@@ -2,6 +2,7 @@
 using LWSwnS.Api.Web;
 using LWSwnS.Configuration;
 using LWSwnS.Core.Data;
+using LWSwnS.Diagnostic;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -45,11 +46,11 @@ namespace SimpleBlogModule
             WebServer.AddIgnoreUrlPrefix("/POSTS");
             EventHandler<HttpRequestData> a = (object sender, HttpRequestData b) =>
             {
-
+                //Debugger.currentDebugger.Log("SimpleBlog Called");
                 if (b.requestUrl.ToUpper().StartsWith("/POSTS"))
                 {
-
                     HttpResponseData httpResponseData = new HttpResponseData();
+
                     if (b.requestUrl.Trim().ToUpper().Equals("/POSTS") | b.requestUrl.Trim().ToUpper().Equals("/POSTS/"))
                     {
                         var temp = PostItemTemplate;

@@ -3,6 +3,7 @@ using LWSwnS.Api.Modules;
 using LWSwnS.Api.Web;
 using LWSwnS.Configuration;
 using LWSwnS.Core.Data;
+using LWSwnS.Diagnostic;
 using Markdig;
 using System;
 using System.Globalization;
@@ -43,21 +44,14 @@ namespace SimpleGitViewer
             }
             catch (Exception e)
             {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Cannot load git lib, is LibGit2Sharp.dll exist?");
-                Console.ForegroundColor = ConsoleColor.White;
+                Debugger.currentDebugger.Log("Cannot load git lib, is LibGit2Sharp.dll exist?", MessageType.Warning);
             }
             WebServer.AddIgnoreUrlPrefix("/Git");
             Load();
             Task.Run(async () =>
             {
                 await Task.Delay(1000);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Write("SimpleGitViewer:");
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("Auto reload task initialized.");
-                Console.ForegroundColor = ConsoleColor.White;
-
+                Debugger.currentDebugger.Log("Auto reload task initialized.", MessageType.Normal);
                 while (true)
                 {
                     await Task.Delay(5000);
@@ -116,7 +110,6 @@ namespace SimpleGitViewer
                                 repoAction = repo.Substring(repo.IndexOf("/") + 1);
                                 repo = repo.Substring(0, repo.IndexOf("/"));
                             }
-                            Console.WriteLine(repo + ":" + repoAction + " in " + repos.GetValues(repo)[0]);
                             string repol = repos.GetValues(repo)[0];
                             using (var r = new Repository(repol))
                             {
@@ -184,7 +177,7 @@ namespace SimpleGitViewer
                                     }
                                     catch (Exception e)
                                     {
-                                        Console.WriteLine(e.Message);
+                                        Debugger.currentDebugger.Log(e.Message, MessageType.Warning);
                                     }
                                     content = BrowserPage.Replace("[REPONAME]", repo).Replace("[ITEMS]", items).Replace("[PATH]", repoAction.Substring("_git".Length));
                                 }
@@ -199,7 +192,7 @@ namespace SimpleGitViewer
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Git Error:" + e.Message);
+                    Debugger.currentDebugger.Log("Git Error:" + e.Message);
                 }
 
             };

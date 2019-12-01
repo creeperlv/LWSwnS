@@ -64,7 +64,7 @@ namespace PowerShellModule
         }
         bool PSE(string a, object b, StreamWriter c)
         {
-            Console.WriteLine("Execution Accepted");
+            LWSwnS.Diagnostic.Debugger.currentDebugger.Log("Execution Accepted");
             var script = a;
             var parameter = "";
             if (script.IndexOf(" ") > 0)
@@ -78,7 +78,7 @@ namespace PowerShellModule
             c.BaseStream.WriteTimeout = 30000;
             Task.Run(async () =>
             {
-                Console.WriteLine("Starting...");
+                LWSwnS.Diagnostic.Debugger.currentDebugger.Log("Starting...");
                 try
                 {
 
@@ -87,11 +87,9 @@ namespace PowerShellModule
                 }
                 catch (Exception e)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Error:" + e.Message);
-                    Console.ForegroundColor = ConsoleColor.White;
+                    LWSwnS.Diagnostic.Debugger.currentDebugger.Log(e.Message, LWSwnS.Diagnostic.MessageType.Error);
                 }
-                Console.WriteLine("Invoke completed");
+                LWSwnS.Diagnostic.Debugger.currentDebugger.Log("Invoke completed");
                 await Task.Delay(3000);
                 VariablesPool.PSInstances.Remove(pSInstance);
             }).Wait();
@@ -116,7 +114,7 @@ namespace PowerShellModule
         }
         public string Invoke(string script, string parameter)
         {
-            Console.WriteLine("Evaluating PSScript");
+            LWSwnS.Diagnostic.Debugger.currentDebugger.Log("Evaluating PSScript");
             string Result = "";
             try
             {
@@ -140,15 +138,13 @@ namespace PowerShellModule
                         }
                     }
                     ResultContent = Result;
-                    Console.WriteLine(Result);
+                    LWSwnS.Diagnostic.Debugger.currentDebugger.Log(Result);
                 }
                 ps.Dispose();
             }
             catch (Exception e)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Error:" + e.Message);
-                Console.ForegroundColor = ConsoleColor.White;
+                LWSwnS.Diagnostic.Debugger.currentDebugger.Log(e.Message, LWSwnS.Diagnostic.MessageType.Error);
             }
             return Result;
         }

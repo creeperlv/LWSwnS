@@ -33,7 +33,7 @@ namespace LWSwnS.Core
         {
             Commands.Add("Get-Shell-Server-Version", (string a, object b, StreamWriter sw) =>
             {
-                Console.WriteLine("Someone trying to get version.");
+                LWSwnS.Diagnostic.Debugger.currentDebugger.Log("Someone trying to get version.");
                 ShellFeedbackData shellFeedbackData = new ShellFeedbackData();
                 shellFeedbackData.StatusLine = ShellServerVersion.ToString();
                 shellFeedbackData.writer = sw;
@@ -42,7 +42,7 @@ namespace LWSwnS.Core
             });
             Commands.Add("Get-Web-Server-Version", (string a, object b, StreamWriter sw) =>
             {
-                Console.WriteLine("Someone trying to get version.");
+                LWSwnS.Diagnostic.Debugger.currentDebugger.Log("Someone trying to get version.");
                 ShellFeedbackData shellFeedbackData = new ShellFeedbackData();
                 shellFeedbackData.StatusLine = HttpServer.WebServerVersion.ToString();
                 shellFeedbackData.writer = sw;
@@ -163,14 +163,14 @@ namespace LWSwnS.Core
                         BinaryFormatter binary = new BinaryFormatter();
                         obj = binary.Deserialize(memoryStream);
                     }
-                    Console.WriteLine("Receive Command:"+name+".");
+                    LWSwnS.Diagnostic.Debugger.currentDebugger.Log("Receive Command:"+name+".");
                     bool isReacted = false;
                     bool isShellResponsed = false;
                     foreach (var item in ShellServer.Commands)
                     {
                         if (item.Key == name)
                         {
-                            Console.WriteLine("Run command:"+name);
+                            LWSwnS.Diagnostic.Debugger.currentDebugger.Log("Run command:"+name);
                             try
                             {
                                 bool isResponsed = item.Value(parameter, obj, streamWriter);
@@ -200,9 +200,7 @@ namespace LWSwnS.Core
                 }
                 catch (Exception e)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Error in shell server:" + e.Message);
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Diagnostic.Debugger.currentDebugger.Log(e.Message, Diagnostic.MessageType.Error);
                     StopImmediately();
                 }
                 //if ()
