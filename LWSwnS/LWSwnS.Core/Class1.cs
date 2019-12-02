@@ -30,13 +30,13 @@ namespace LWSwnS.Core
         }
         HttpServer httpServer;
         ShellServer shellServer;
-        //This Method will not stop current thread.
         //This will start a new thread.
         public void StartListenWeb()
         {
             httpServer = new HttpServer(Web);
             httpServer.StartListen();
         }
+        //This Method will not stop current thread.
         public void Stop()
         {
             try

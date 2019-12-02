@@ -6,7 +6,7 @@ namespace LWSwnS.Configuration
 {
     public class ServerConfiguration
     {
-        public static ServerConfiguration CurrentConfiguration=new ServerConfiguration();
+        public static ServerConfiguration CurrentConfiguration = new ServerConfiguration();
         public string WebContentRoot = ".";
         public string Page404 = "./404.html";
         public string IP = "0.0.0.0";
@@ -17,6 +17,10 @@ namespace LWSwnS.Configuration
         public bool UseHttps = false;
         public string HttpsCert = "";
         public bool isShellEnabled = true;
+        public bool isLogEnabled = true;
+        public int LogLevel = 0;//0 - Normal, 1 - Warning, 2 - Error
+        public int SeparateSize = 512;//KB
+
         public List<string> AllowedModules = new List<string>();
     }
     public class ConfigurationLoader
@@ -74,10 +78,10 @@ namespace LWSwnS.Configuration
             }
             return serverConfiguration;
         }
-        public static void SaveToFile(ServerConfiguration serverConfiguration,string path)
+        public static void SaveToFile(ServerConfiguration serverConfiguration, string path)
         {
-            string content="[Auto-Generated LWSwnS Configuration]";
-            content += "\r\nIP="+serverConfiguration.IP;
+            string content = "[Auto-Generated LWSwnS Configuration]";
+            content += "\r\nIP=" + serverConfiguration.IP;
             content += "\r\nWebPort=" + serverConfiguration.WebPort;
             content += "\r\nShellPort=" + serverConfiguration.ShellPort;
             content += "\r\nisWebEnabled=" + serverConfiguration.isWebEnabled;
@@ -86,9 +90,9 @@ namespace LWSwnS.Configuration
             content += "\r\nShellPassword=" + serverConfiguration.ShellPassword;
             foreach (var item in serverConfiguration.AllowedModules)
             {
-                content += "\r\nAllowedModule="+item;
+                content += "\r\nAllowedModule=" + item;
             }
-            File.WriteAllText(path,content);
+            File.WriteAllText(path, content);
         }
     }
 }

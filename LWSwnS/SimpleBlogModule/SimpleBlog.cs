@@ -49,6 +49,7 @@ namespace SimpleBlogModule
             Task.Run(async () =>
             {
                 LoadList();
+                await Task.Delay(500);
                 Debugger.currentDebugger.Log("List auto-rebuild task initialized.");
                 while (true)
                 {
