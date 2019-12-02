@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace SimpleBlogModule
 {
@@ -17,9 +18,9 @@ namespace SimpleBlogModule
         {
             Array.Sort(FList, delegate (FileInfo x, FileInfo y) { return y.CreationTime.CompareTo(x.CreationTime); });
         }
+        Dictionary<string, FileInfo> posts = new Dictionary<string, FileInfo>();
         public ModuleDescription InitModule()
         {
-            Dictionary<string, string> post = new Dictionary<string, string>();
             ModuleDescription moduleDescription = new ModuleDescription();
             moduleDescription.Name = "SimpleBlog";
             String RootDir = new FileInfo(Assembly.GetAssembly(this.GetType()).Location).Directory.FullName;
@@ -45,6 +46,16 @@ namespace SimpleBlogModule
             string Template = File.ReadAllText(Path.Combine(RootDir, "Template.html"));
             string PostItemTemplate = File.ReadAllText(Path.Combine(RootDir, "PostItemTemplate.html"));
             WebServer.AddIgnoreUrlPrefix("/POSTS");
+            Task.Run(async () =>
+            {
+                LoadList();
+                Debugger.currentDebugger.Log("List auto-rebuild task initialized.");
+                while (true)
+                {
+                    await Task.Delay(5000);
+                    LoadList();
+                }
+            });
             EventHandler<HttpRequestData> a = (object sender, HttpRequestData b) =>
             {
                 //Debugger.currentDebugger.Log("SimpleBlog Called");
@@ -55,41 +66,20 @@ namespace SimpleBlogModule
                     if (b.requestUrl.Trim().ToUpper().Equals("/POSTS") | b.requestUrl.Trim().ToUpper().Equals("/POSTS/"))
                     {
                         var temp = PostItemTemplate;
-                        DirectoryInfo directory = new DirectoryInfo("./Posts/");
-                        var f = directory.GetFiles();
-                        SortFileByTime(ref f);
                         List<string> PostItems = new List<string>();
-                        foreach (var item in f)
+                        foreach (var item in posts)
                         {
-                            try
-                            {
-                                var sr = item.OpenRead();
-                                var SR = new StreamReader(sr);
-                                var Title = SR.ReadLine();
-                                try
-                                {
-                                    SR.Close();
-                                    SR.Dispose();
-                                    sr.Close();
-                                    sr.Dispose();
-                                }
-                                catch (Exception)
-                                {
-                                }
-                                var link = "/posts/" + item.Name;
-                                PostItems.Add(temp.Replace("[POSTLINK]", link).Replace("[POSTTITLE]", Title)
-                                    .Replace("[POSTDATE]", item.CreationTime.ToString()).Replace("[FILESIZE]", ((double)item.Length) / 1024.0 + " KB"));
-                            }
-                            catch (Exception)
-                            {
-                            }
+
+                            var link = "/posts/" + item.Value.Name;
+                            PostItems.Add(temp.Replace("[POSTLINK]", link).Replace("[POSTTITLE]", item.Key)
+                                .Replace("[POSTDATE]", item.Value.CreationTime.ToString()).Replace("[FILESIZE]", ((double)item.Value.Length) / 1024.0 + " KB"));
                         }
                         var List = "";
                         foreach (var item in PostItems)
                         {
                             List += item;
                         }
-                        if (f.Length == 0)
+                        if (posts.Count == 0)
                         {
                             List = "<p style=\"32\">No Posts<p>";
                         }
@@ -105,6 +95,7 @@ namespace SimpleBlogModule
                             var location = b.requestUrl.Substring("/POSTS/".Length);
                             if (location.StartsWith("Search"))
                             {
+                                var List = "";
                                 if (location.ToUpper().IndexOf("?".ToUpper()) > 0)
                                 {
                                     location = location.Substring("Search?".Length);
@@ -112,9 +103,36 @@ namespace SimpleBlogModule
                                     string kw = "";
                                     foreach (var item in query)
                                     {
-                                        if (item.ToUpper().StartsWith("Keyword=".ToUpper())) { }
+                                        if (item.ToUpper().StartsWith("Keyword=".ToUpper()))
+                                        {
+                                            kw = item.Substring("Keyword=".Length);
+                                        }
+                                    }
+                                    var temp = PostItemTemplate;
+                                    List<string> PostItems = new List<string>();
+                                    foreach (var item in posts)
+                                    {
+                                        if (item.Key.ToUpper().IndexOf(kw.ToUpper()) > -1)
+                                        {
+                                            var link = "/posts/" + item.Value.Name;
+                                            PostItems.Add(temp.Replace("[POSTLINK]", link).Replace("[POSTTITLE]", item.Key)
+                                                .Replace("[POSTDATE]", item.Value.CreationTime.ToString()).Replace("[FILESIZE]", ((double)item.Value.Length) / 1024.0 + " KB"));
+                                        }
+                                    }
+                                    foreach (var item in PostItems)
+                                    {
+                                        List += item;
+                                    }
+                                    if (posts.Count == 0)
+                                    {
+                                        List = "<p style=\"32\">No Posts<p>";
                                     }
                                 }
+                                var content = PostList.Replace("[BLOGNAME]", BlogName).Replace("[POSTLIST]", List);
+                                httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
+                                httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
+                                httpResponseData.Send(ref b.streamWriter);
+                                return;
                             }
                             else
                             {
@@ -162,6 +180,27 @@ namespace SimpleBlogModule
             };
             WebServer.AddHttpRequestHandler(a);
             return moduleDescription;
+        }
+        void LoadList()
+        {
+            posts.Clear();
+            DirectoryInfo directory = new DirectoryInfo("./Posts/");
+            var f = directory.GetFiles();
+            SortFileByTime(ref f);
+            foreach (var item in f)
+            {
+                try
+                {
+                    var sr = item.OpenRead();
+                    var SR = new StreamReader(sr);
+                    var Title = SR.ReadLine();
+                    posts.Add(Title, item);
+
+                }
+                catch (Exception)
+                {
+                }
+            }
         }
     }
 }
