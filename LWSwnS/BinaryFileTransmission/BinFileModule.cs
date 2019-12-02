@@ -16,6 +16,22 @@ namespace BinaryFileTransmission
             UniversalConfigurationMark2 fileType = new UniversalConfigurationMark2();
             fileType.AddItem("Binary", "exe");
             fileType.AddItem("Binary", "mp4");
+            fileType.AddItem("Binary", "7z");
+            fileType.AddItem("Binary", "zip");
+            fileType.AddItem("Binary", "mp3");
+            fileType.AddItem("Binary", "wav");
+            fileType.AddItem("Binary", "rar");
+            fileType.AddItem("Binary", "out");
+            fileType.AddItem("Binary", "dll");
+            fileType.AddItem("Binary", "png");
+            fileType.AddItem("Binary", "bmp");
+            fileType.AddItem("Binary", "dmg");
+            fileType.AddItem("Binary", "jpg");
+            fileType.AddItem("Binary", "png");
+            fileType.AddItem("Binary", "com");
+            fileType.AddItem("Binary", "lib");
+            fileType.AddItem("Binary", "so");
+            fileType.AddItem("Binary", "nuget");
             fileType.SaveToFile("./BinFileTransModule.ini");
         }
     }

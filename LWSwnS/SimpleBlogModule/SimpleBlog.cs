@@ -19,6 +19,7 @@ namespace SimpleBlogModule
         }
         public ModuleDescription InitModule()
         {
+            Dictionary<string, string> post = new Dictionary<string, string>();
             ModuleDescription moduleDescription = new ModuleDescription();
             moduleDescription.Name = "SimpleBlog";
             String RootDir = new FileInfo(Assembly.GetAssembly(this.GetType()).Location).Directory.FullName;
@@ -97,48 +98,59 @@ namespace SimpleBlogModule
                         httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
                         httpResponseData.Send(ref b.streamWriter);
                     }
-                    //else if (b.requestUrl.ToUpper().EndsWith("PNG") | b.requestUrl.ToUpper().EndsWith("WEBP") | b.requestUrl.ToUpper().EndsWith("JPG") | b.requestUrl.ToUpper().EndsWith("MP4"))
-                    //{
-                    //    var location = b.requestUrl.Substring("/POSTS/".Length);
-                    //    httpResponseData.content = File.ReadAllBytes(location);
-                    //}
                     else if (b.requestUrl.ToUpper().StartsWith("/POSTS"))
                     {
                         try
                         {
-
                             var location = b.requestUrl.Substring("/POSTS/".Length);
-                            if(File.Exists("./Posts/" + location))
+                            if (location.StartsWith("Search"))
                             {
-
-                                var lines = File.ReadAllLines("./Posts/" + location).ToList();
-                                var title = lines[0];
-                                lines.RemoveAt(0);
-                                var MDContent = "";
-                                foreach (var item in lines)
+                                if (location.ToUpper().IndexOf("?".ToUpper()) > 0)
                                 {
-                                    if (MDContent == "")
+                                    location = location.Substring("Search?".Length);
+                                    var query = location.Split('&');
+                                    string kw = "";
+                                    foreach (var item in query)
                                     {
-                                        MDContent += item;
-                                    }
-                                    else
-                                    {
-                                        MDContent += Environment.NewLine;
-                                        MDContent += item;
+                                        if (item.ToUpper().StartsWith("Keyword=".ToUpper())) { }
                                     }
                                 }
-                                var content = Template.Replace("[POSTNAME]", title).Replace("[BLOGNAME]", BlogName).Replace("[POSTCONTENT]", Markdig.Markdown.ToHtml(MDContent));
-                                httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
                             }
                             else
                             {
-                                var content = Template.Replace("[POSTNAME]", "File Not Found!").Replace("[BLOGNAME]", BlogName).Replace("[POSTCONTENT]", Markdig.Markdown.ToHtml("# Unable to locate requesting file!"));
-                                httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
+
+                                if (File.Exists("./Posts/" + location))
+                                {
+
+                                    var lines = File.ReadAllLines("./Posts/" + location).ToList();
+                                    var title = lines[0];
+                                    lines.RemoveAt(0);
+                                    var MDContent = "";
+                                    foreach (var item in lines)
+                                    {
+                                        if (MDContent == "")
+                                        {
+                                            MDContent += item;
+                                        }
+                                        else
+                                        {
+                                            MDContent += Environment.NewLine;
+                                            MDContent += item;
+                                        }
+                                    }
+                                    var content = Template.Replace("[POSTNAME]", title).Replace("[BLOGNAME]", BlogName).Replace("[POSTCONTENT]", Markdig.Markdown.ToHtml(MDContent));
+                                    httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
+                                }
+                                else
+                                {
+                                    var content = Template.Replace("[POSTNAME]", "File Not Found!").Replace("[BLOGNAME]", BlogName).Replace("[POSTCONTENT]", Markdig.Markdown.ToHtml("# Unable to locate requesting file!"));
+                                    httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
+                                }
                             }
                         }
                         catch (Exception)
                         {
-                            var content = File.ReadAllText(Path.Combine(RootDir,"UnderCounstruction.html")).Replace("[MODULE_NAME]", moduleDescription.Name).Replace("[MODULE_VERSION]", moduleDescription.version.ToString());
+                            var content = File.ReadAllText(Path.Combine(RootDir, "UnderCounstruction.html")).Replace("[MODULE_NAME]", moduleDescription.Name).Replace("[MODULE_VERSION]", moduleDescription.version.ToString());
                             httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
                         }
                         httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
