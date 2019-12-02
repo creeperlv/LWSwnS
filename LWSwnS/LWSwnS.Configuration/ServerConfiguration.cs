@@ -19,7 +19,7 @@ namespace LWSwnS.Configuration
         public bool isShellEnabled = true;
         public bool isLogEnabled = true;
         public int LogLevel = 0;//0 - Normal, 1 - Warning, 2 - Error
-        public int SeparateSize = 512;//KB
+        public int LogSeparateSize = 512;//KB
 
         public List<string> AllowedModules = new List<string>();
     }
@@ -56,6 +56,16 @@ namespace LWSwnS.Configuration
                     serverConfiguration.WebPort = int.Parse(item.Substring("WebPort=".Length));
                 }
                 else
+                if (item.StartsWith("LogLevel="))
+                {
+                    serverConfiguration.LogLevel = int.Parse(item.Substring("LogLevel=".Length));
+                }
+                else
+                if (item.StartsWith("LogSeparateSize="))
+                {
+                    serverConfiguration.LogSeparateSize = int.Parse(item.Substring("LogSeparateSize=".Length));
+                }
+                else
                 if (item.StartsWith("ShellPort="))
                 {
                     serverConfiguration.ShellPort = int.Parse(item.Substring("ShellPort=".Length));
@@ -64,6 +74,11 @@ namespace LWSwnS.Configuration
                 if (item.StartsWith("isWebEnabled="))
                 {
                     serverConfiguration.isWebEnabled = bool.Parse(item.Substring("isWebEnabled=".Length));
+                }
+                else
+                if (item.StartsWith("isLogEnabled="))
+                {
+                    serverConfiguration.isLogEnabled = bool.Parse(item.Substring("isLogEnabled=".Length));
                 }
                 else
                 if (item.StartsWith("isShellEnabled="))
@@ -88,6 +103,9 @@ namespace LWSwnS.Configuration
             content += "\r\nisShellEnabled=" + serverConfiguration.isShellEnabled;
             content += "\r\nWebRoot=" + serverConfiguration.WebContentRoot;
             content += "\r\nShellPassword=" + serverConfiguration.ShellPassword;
+            content += "\r\nisLogEnabled=" + serverConfiguration.isLogEnabled;
+            content += "\r\nLogLevel=" + serverConfiguration.LogLevel;
+            content += "\r\nLogSeparateSize=" + serverConfiguration.LogSeparateSize;
             foreach (var item in serverConfiguration.AllowedModules)
             {
                 content += "\r\nAllowedModule=" + item;

@@ -4,6 +4,7 @@ using LWSwnS.Api.Modules;
 using LWSwnS.Configuration;
 using LWSwnS.Core;
 using LWSwnS.Core.Data;
+using LWSwnS.Diagnostic;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -152,6 +153,10 @@ namespace LWSwnS
             }
             catch (Exception)
             {
+            }
+            if (ServerConfiguration.CurrentConfiguration.isLogEnabled == true)
+            {
+                 Debugger.currentDebugger= new Debugger();
             }
             InitApis();
             ShellDataExchange.AES_PW = ServerConfiguration.CurrentConfiguration.ShellPassword;
