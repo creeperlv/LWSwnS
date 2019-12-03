@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace PowerShellModule
@@ -18,10 +19,11 @@ namespace PowerShellModule
             module.Name = "PowerShellModule-Web";
             module.version = WebVersion;
             WebServer.AddIgnoreUrlPrefix(VariablesPool.config.Get("WebHost", "/PS"));
-            string HostHTML = File.ReadAllText("./Modules/PowerShellModule/netcoreapp3.0/Template.html");
-            string ContentHostHTML = File.ReadAllText("./Modules/PowerShellModule/netcoreapp3.0/ContentTemplate.html");
-            string ItemHTML = File.ReadAllText("./Modules/PowerShellModule/netcoreapp3.0/ScriptItem.html");
-            string FileItemHTML = File.ReadAllText("./Modules/PowerShellModule/netcoreapp3.0/ScriptFileItem.html");
+            String RootDir = new FileInfo(Assembly.GetAssembly(this.GetType()).Location).Directory.FullName;
+            string HostHTML = File.ReadAllText(Path.Combine(RootDir,"Template.html"));
+            string ContentHostHTML = File.ReadAllText(Path.Combine(RootDir,"ContentTemplate.html"));
+            string ItemHTML = File.ReadAllText(Path.Combine(RootDir,"ScriptItem.html"));
+            string FileItemHTML = File.ReadAllText(Path.Combine(RootDir,"ScriptFileItem.html"));
             EventHandler<HttpRequestData> a = (object sender, HttpRequestData b) =>
             {
                 if (b.requestUrl.Trim().ToUpper().StartsWith(VariablesPool.config.Get("WebHost", "/PS")))
