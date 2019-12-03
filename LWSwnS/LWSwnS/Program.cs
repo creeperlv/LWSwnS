@@ -156,7 +156,11 @@ namespace LWSwnS
             }
             if (ServerConfiguration.CurrentConfiguration.isLogEnabled == true)
             {
-                 Debugger.currentDebugger= new Debugger();
+                Debugger.currentDebugger = new Debugger(ServerConfiguration.CurrentConfiguration.LogLevel, ServerConfiguration.CurrentConfiguration.LogSeparateSize);
+            }
+            else
+            {
+                Debugger.currentDebugger = new EmptyDebugger();
             }
             InitApis();
             ShellDataExchange.AES_PW = ServerConfiguration.CurrentConfiguration.ShellPassword;

@@ -13,6 +13,58 @@ namespace LWSwnS.Diagnostic
         void Log(string msg);
         void Log(string msg, MessageType msgType);
     }
+    public class EmptyDebugger : IDebugger
+    {
+        public void Log(string msg)
+        {
+            System.Diagnostics.StackTrace stack = new System.Diagnostics.StackTrace(true);
+            var f = stack.GetFrame(1);
+            Console.Write("[");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write((new FileInfo(Assembly.GetAssembly(f.GetMethod().DeclaringType).Location)).Name);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("][");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("NORAML ");
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("]");
+            Console.WriteLine(msg);
+        }
+
+        public void Log(string msg, MessageType msgType)
+        {
+            System.Diagnostics.StackTrace stack = new System.Diagnostics.StackTrace(true);
+            var f = stack.GetFrame(1);
+            string CombinedMsg = $"[{(new FileInfo(Assembly.GetAssembly(f.GetMethod().DeclaringType).Location)).Name}]";
+            Console.Write("[");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write((new FileInfo(Assembly.GetAssembly(f.GetMethod().DeclaringType).Location)).Name);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("][");
+            switch (msgType)
+            {
+                case MessageType.Normal:
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write("NORAML ");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+                case MessageType.Warning:
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write("WARNING");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+                case MessageType.Error:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("ERROR  ");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    break;
+                default:
+                    break;
+            }
+            Console.Write("]");
+            Console.WriteLine(msg);
+        }
+    }
     public class Debugger:IDebugger
     {
         public static IDebugger currentDebugger;
