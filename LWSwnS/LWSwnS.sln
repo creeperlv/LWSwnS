@@ -39,7 +39,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BinaryFileTransmission", "B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimpleGitViewer", "SimpleGitViewer\SimpleGitViewer.csproj", "{266B5417-9CB4-42A7-98B7-24B2A93CAD30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LWSwnS.Diagnostic", "LWSwnS.Diagnostic\LWSwnS.Diagnostic.csproj", "{77E1283C-58F6-47FC-84D4-7C4D02C0243C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LWSwnS.Diagnostic", "LWSwnS.Diagnostic\LWSwnS.Diagnostic.csproj", "{77E1283C-58F6-47FC-84D4-7C4D02C0243C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileReceiever", "FileReceiever\FileReceiever.csproj", "{9B3D9860-FF97-42C6-8675-573CF04F813A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,6 +93,10 @@ Global
 		{77E1283C-58F6-47FC-84D4-7C4D02C0243C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77E1283C-58F6-47FC-84D4-7C4D02C0243C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77E1283C-58F6-47FC-84D4-7C4D02C0243C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B3D9860-FF97-42C6-8675-573CF04F813A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B3D9860-FF97-42C6-8675-573CF04F813A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B3D9860-FF97-42C6-8675-573CF04F813A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B3D9860-FF97-42C6-8675-573CF04F813A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,6 +108,7 @@ Global
 		{359A169D-C894-4670-A3E1-D46C08DD4A72} = {270630FB-A7E2-455E-952B-38DCEA02AB14}
 		{F0F0D3A3-4555-4859-996C-8592831C4440} = {270630FB-A7E2-455E-952B-38DCEA02AB14}
 		{266B5417-9CB4-42A7-98B7-24B2A93CAD30} = {270630FB-A7E2-455E-952B-38DCEA02AB14}
+		{9B3D9860-FF97-42C6-8675-573CF04F813A} = {270630FB-A7E2-455E-952B-38DCEA02AB14}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C8C4AB2E-6906-4A7D-AF56-C45397F946CC}
