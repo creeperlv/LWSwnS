@@ -165,7 +165,6 @@ namespace LWSwnS.ShellClient
                                     Console.WriteLine("Received Object:\r\n" + Feedback.DataBody.ToString());
                                     File.Create($"./ReceiveDatas/{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}-{DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}.object").Close();
                                     File.WriteAllBytes($"./ReceiveDatas/{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}-{DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}.object", Obj2Byte(Feedback.DataBody));
-
                                 }
                             }
                             else
@@ -176,12 +175,13 @@ namespace LWSwnS.ShellClient
                             using (var f = (new FileInfo(Path)).OpenRead())
                             {
                                 byte[] buffer = new byte[4096];
-                                while ((f.Read(buffer, 0, 4096)) != 0)
+                                int l;
+                                while ((l=f.Read(buffer, 0, 4096)) != 0)
                                 {
-                                    stream.WriteAndFlush(buffer, 0, 4096);
+                                    stream.WriteAndFlush(buffer, 0, l);
                                 }
                             }
-                            
+                            stream.WriteEnd();
                             stream.Dispose();
                         }
                         else

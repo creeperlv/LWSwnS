@@ -62,7 +62,7 @@ namespace LWSwnS.Api.Data.Streams
                     d = 0;
                 }
             }
-            return p;
+            return p/2;
         }
         public override int ReadByte()
         {
@@ -99,9 +99,9 @@ namespace LWSwnS.Api.Data.Streams
         }
         public override void Write(byte[] buffer, int offset, int count)
         {
-            byte[] buf = new byte[buffer.Length / 2];
+            byte[] buf = new byte[buffer.Length * 2];
             int d = 0;
-            for (int i = 0; i < buffer.Length; i++)
+            for (int i = 0; i <count; i++)
             {
                 d = buffer[i] + Shift;
                 buf[i * 2] = d > 255 ? (byte)255 : (byte)d;

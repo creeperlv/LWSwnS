@@ -37,16 +37,18 @@ namespace FileReceiever
                 if (info.StartsWith("Shift:"))
                 {
                     int shift = int.Parse(info.Substring("Shift:".Length));
+                    Debugger.currentDebugger.Log("Try to receieve as:"+shift);
                     ShiftedStream stream = new ShiftedStream(c.BaseStream, shift);
                     FileInfo fi = new FileInfo(name);
                     var sw = (fi.OpenWrite());
                     if (!fi.Directory.Exists) fi.Directory.Create();
+                        byte[] buffer = new byte[int.Parse(config.Get("BufferSize", "4096"))];
                     while (stream.isEnd==false)
                     {
-                        byte[] buffer = new byte[int.Parse(config.Get("BufferSize", "4096"))];
-                        stream.Read(buffer, 0, buffer.Length);
-                        sw.Write(buffer, 0, buffer.Length);
+                        int length=stream.Read(buffer, 0, buffer.Length);
+                        sw.Write(buffer, 0, length);
                     }
+                    sw.Close();
                 }
                 else
                 {
