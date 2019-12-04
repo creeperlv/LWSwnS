@@ -1,4 +1,5 @@
 ﻿using LWSwnS.Api.Data;
+using LWSwnS.Api.Data.Streams;
 using LWSwnS.Configuration;
 using System;
 using System.IO;
@@ -152,11 +153,12 @@ namespace LWSwnS.ShellClient
                             if (line.IndexOf(' ') > 0) PARA = line.Substring(line.IndexOf(' ') + 1);
                             var Path = Console.ReadLine();
                             Random random = new Random();
-                            int shift= random.Next(0, 255);
-                            var data = "Shift:"+shift;
+                            int shift = random.Next(1, 255);
+                            var data = "Shift:" + shift;
+                            var os = tcpClient.GetStream();
                             if (ReceiveResult == true)
                             {
-                                var Feedback = ShellDataExchange.SendCommandAndWaitForResult(CMDN, PARA, data, new StreamWriter(tcpClient.GetStream()), new StreamReader(tcpClient.GetStream()));
+                                var Feedback = ShellDataExchange.SendCommandAndWaitForResult(CMDN, PARA, data, new StreamWriter(tcpClient.GetStream()), new StreamReader(os));
                                 Console.WriteLine(Feedback.StatusLine);
                                 if (Feedback.DataBody != null)
                                 {
@@ -168,8 +170,19 @@ namespace LWSwnS.ShellClient
                             }
                             else
                             {
-                                ShellDataExchange.SendCommand(CMDN, PARA, data, new StreamWriter(tcpClient.GetStream()));
+                                ShellDataExchange.SendCommand(CMDN, PARA, data, new StreamWriter(os));
                             }
+                            ShiftedStream stream = new ShiftedStream(os, shift);
+                            using (var f = (new FileInfo(Path)).OpenRead())
+                            {
+                                byte[] buffer = new byte[4096];
+                                while ((f.Read(buffer, 0, 4096)) != 0)
+                                {
+                                    stream.WriteAndFlush(buffer, 0, 4096);
+                                }
+                            }
+                            
+                            stream.Dispose();
                         }
                         else
                         {

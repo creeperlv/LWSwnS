@@ -5,6 +5,9 @@ using System.Text;
 
 namespace LWSwnS.Api.Data.Streams
 {
+    /// <summary>
+    /// This stream transforms the origin stream. This will shifts all bytes with a given distance 'Shift'.
+    /// </summary>
     public class ShiftedStream : Stream
     {
         public override bool CanRead => OriginalStream.CanRead;
@@ -23,7 +26,7 @@ namespace LWSwnS.Api.Data.Streams
         public ShiftedStream(Stream OriginalStream,int shift)
         {
             this.Shift = shift;
-            if (shift < 0 || shift > 256)
+            if (shift <= 0 || shift > 256)
             {
                 throw new Exception("Shift value is beyond boundary!");
             }
@@ -34,7 +37,10 @@ namespace LWSwnS.Api.Data.Streams
         {
             OriginalStream.Flush();
         }
-
+        public void WriteEnd()
+        {
+            this.OriginalStream.WriteByte(0);
+        }
         public override int Read(byte[] buffer, int offset, int count)
         {
             byte[] buf = new byte[buffer.Length * 2];
@@ -43,6 +49,10 @@ namespace LWSwnS.Api.Data.Streams
             for (int i = 0; i < buf.Length; i++)
             {
                 d += buf[i];
+                if (i%2==0&&buf[i] == 0)
+                {
+                    isEnd = true;
+                }
                 if (i % 2 ==1)
                 {
                     d -= Shift;
@@ -73,6 +83,7 @@ namespace LWSwnS.Api.Data.Streams
             WriteByte(d > 255 ? (byte)255 : (byte)d);
             WriteByte(d > 255 ? (byte)(d - 255) : (byte)0);
         }
+        public bool isEnd = false;
         public override void Write(byte[] buffer, int offset, int count)
         {
             byte[] buf = new byte[buffer.Length / 2];
