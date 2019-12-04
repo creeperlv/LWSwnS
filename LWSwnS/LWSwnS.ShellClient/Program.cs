@@ -143,6 +143,34 @@ namespace LWSwnS.ShellClient
                                 ShellDataExchange.SendCommand(CMDN, PARA, data, new StreamWriter(tcpClient.GetStream()));
                             }
                         }
+                        else if (cmd.StartsWith("*"))
+                        {
+                            var line = cmd.Substring(1);
+                            var CMDN = line;
+                            if (line.IndexOf(' ') > 0) CMDN = line.Substring(0, line.IndexOf(' '));
+                            var PARA = "NULL";
+                            if (line.IndexOf(' ') > 0) PARA = line.Substring(line.IndexOf(' ') + 1);
+                            var Path = Console.ReadLine();
+                            Random random = new Random();
+                            int shift= random.Next(0, 255);
+                            var data = "Shift:"+shift;
+                            if (ReceiveResult == true)
+                            {
+                                var Feedback = ShellDataExchange.SendCommandAndWaitForResult(CMDN, PARA, data, new StreamWriter(tcpClient.GetStream()), new StreamReader(tcpClient.GetStream()));
+                                Console.WriteLine(Feedback.StatusLine);
+                                if (Feedback.DataBody != null)
+                                {
+                                    Console.WriteLine("Received Object:\r\n" + Feedback.DataBody.ToString());
+                                    File.Create($"./ReceiveDatas/{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}-{DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}.object").Close();
+                                    File.WriteAllBytes($"./ReceiveDatas/{DateTime.Now.Year}-{DateTime.Now.Month}-{DateTime.Now.Day}-{DateTime.Now.Hour}-{DateTime.Now.Minute}-{DateTime.Now.Second}.object", Obj2Byte(Feedback.DataBody));
+
+                                }
+                            }
+                            else
+                            {
+                                ShellDataExchange.SendCommand(CMDN, PARA, data, new StreamWriter(tcpClient.GetStream()));
+                            }
+                        }
                         else
                         {
                             var CMDN = cmd;

@@ -1,4 +1,7 @@
-﻿using LWSwnS.Api.Modules;
+﻿using LWSwnS.Api.Data;
+using LWSwnS.Api.Data.Streams;
+using LWSwnS.Api.Modules;
+using LWSwnS.Api.Shell;
 using System;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -14,11 +17,32 @@ namespace FileReceiever
             ModuleDescription moduleDescription = new ModuleDescription();
             moduleDescription.Name = "FileReceieverModule";
             moduleDescription.version = ModuleVersion;
-            Task.Run(MainListener);
+            CommandHandler.RegisterCommand("push-file", (a, b, c) => {
+                string name = a;
+                string info = b as string;
+                if (info.StartsWith("Shift:"))
+                {
+                    int shift = int.Parse(info.Substring("Shift:".Length));
+                    ShiftedStream stream = new ShiftedStream(c.BaseStream, shift);
+
+                }
+                else
+                {
+                    ShellFeedbackData shellFeedbackData = new ShellFeedbackData();
+                    shellFeedbackData.StatusLine = "Wrong Message Body!";
+                    shellFeedbackData.writer = c;
+                    shellFeedbackData.SendBack();
+                }
+                {
+
+                    ShellFeedbackData shellFeedbackData = new ShellFeedbackData();
+                    shellFeedbackData.StatusLine = "OK";
+                    shellFeedbackData.writer = c;
+                    shellFeedbackData.SendBack();
+
+                }
+                return true; });
             return moduleDescription;
-        }
-        public void MainListener()
-        {
         }
     }
 }
