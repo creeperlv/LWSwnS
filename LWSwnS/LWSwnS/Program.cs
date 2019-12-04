@@ -282,6 +282,7 @@ namespace LWSwnS
                     {
                         DirectoryInfo directoryInfo = new DirectoryInfo(".");
                         var configs = directoryInfo.EnumerateFiles("*.ini");
+                        if (!Directory.Exists("./Configs/")) Directory.CreateDirectory("./Configs/");
                         foreach (var item in configs)
                         {
                             if (item.Name != "Server.ini")
