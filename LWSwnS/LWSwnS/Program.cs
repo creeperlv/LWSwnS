@@ -52,7 +52,7 @@ namespace LWSwnS
             {
 
             }
-            ServerConfiguration.CurrentConfiguration= new ServerConfiguration();
+            ServerConfiguration.CurrentConfiguration = new ServerConfiguration();
             ServerConfiguration.CurrentConfiguration.IP = ip;
             ServerConfiguration.CurrentConfiguration.WebPort = WebP;
             ServerConfiguration.CurrentConfiguration.ShellPort = ShellPort;
@@ -111,7 +111,7 @@ namespace LWSwnS
                 Console.ForegroundColor = ConsoleColor.White;
             }
             {
-                
+
                 Console.Write("Press ");
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.Write(" ENTER ");
@@ -125,9 +125,10 @@ namespace LWSwnS
         static void InitApis()
         {
 
-            ApiManager.AddFunction("REGCMD", (UniParamater p) => {
+            ApiManager.AddFunction("REGCMD", (UniParamater p) =>
+            {
                 var name = p[0] as string;
-                var action = p[1] as Func<string, object, StreamWriter,bool>;
+                var action = p[1] as Func<string, object, StreamWriter, bool>;
                 if (ShellServer.Commands.ContainsKey(name))
                 {
                     ShellServer.Commands[name] = action;
@@ -149,7 +150,7 @@ namespace LWSwnS
             }
             try
             {
-                ServerConfiguration.CurrentConfiguration= ConfigurationLoader.LoadFromFile("./Server.ini");
+                ServerConfiguration.CurrentConfiguration = ConfigurationLoader.LoadFromFile("./Server.ini");
             }
             catch (Exception)
             {
@@ -165,7 +166,7 @@ namespace LWSwnS
             InitApis();
             ShellDataExchange.AES_PW = ServerConfiguration.CurrentConfiguration.ShellPassword;
             URLConventor.RootFolder = ServerConfiguration.CurrentConfiguration.WebContentRoot;
-             LWSwnSServerCore a = new LWSwnSServerCore(ServerConfiguration.CurrentConfiguration.IP, ServerConfiguration.CurrentConfiguration.WebPort, ServerConfiguration.CurrentConfiguration.ShellPort);
+            LWSwnSServerCore a = new LWSwnSServerCore(ServerConfiguration.CurrentConfiguration.IP, ServerConfiguration.CurrentConfiguration.WebPort, ServerConfiguration.CurrentConfiguration.ShellPort);
             if (ServerConfiguration.CurrentConfiguration.isWebEnabled)
                 a.StartListenWeb();
             if (ServerConfiguration.CurrentConfiguration.isShellEnabled)
@@ -212,7 +213,7 @@ namespace LWSwnS
                 catch (Exception e)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Failed on loading:" + item+"\r\n"+e.Message);
+                    Console.WriteLine("Failed on loading:" + item + "\r\n" + e.Message);
                     Console.ForegroundColor = ConsoleColor.White;
                 }
                 //ModuleManager.ExtModules.Add()
@@ -268,7 +269,26 @@ namespace LWSwnS
                 else if (cmd.Equals("Reconfig"))
                 {
                     FirstInitialize();
-
+                }
+                else if (cmd.StartsWith("Disable-Module "))
+                {
+                    var item = cmd.Substring("Disable-Module ".Length);
+                    ServerConfiguration.CurrentConfiguration.AllowedModules.Remove(item);
+                    ConfigurationLoader.SaveToFile(ServerConfiguration.CurrentConfiguration, "./Server.ini");
+                }
+                else if (cmd.Equals("Move-All-Configs"))
+                {
+                    Debugger.currentDebugger.Log("Finding ini files...");
+                    {
+                        DirectoryInfo directoryInfo = new DirectoryInfo(".");
+                        var configs = directoryInfo.EnumerateFiles("*.ini");
+                        foreach (var item in configs)
+                        {
+                            if (item.Name != "Server.ini")
+                                item.MoveTo("./Configs/" + item.Name);
+                        }
+                    }
+                    Debugger.currentDebugger.Log("OK. Some modules may need restart to take effect.");
                 }
             }
         }

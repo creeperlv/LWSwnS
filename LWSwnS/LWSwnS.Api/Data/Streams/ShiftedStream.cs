@@ -20,9 +20,7 @@ namespace LWSwnS.Api.Data.Streams
 
         public override long Position { get => OriginalStream.Position; set => OriginalStream.Position = value; }
 
-        bool end = false;
-
-        public bool isEnd { get => end; }
+        public bool isEnd { get; private set; } = false;
 
         public Stream OriginalStream;
         public int Shift;
@@ -55,7 +53,7 @@ namespace LWSwnS.Api.Data.Streams
                 d += buf[i];
                 if (i % 2 == 0 && buf[i] == 0)
                 {
-                    end = true;
+                    isEnd = true;
                 }
                 if (i % 2 == 1)
                 {
@@ -72,7 +70,7 @@ namespace LWSwnS.Api.Data.Streams
             d += OriginalStream.ReadByte();
             if (d == 0)
             {
-                end = true;
+                isEnd = true;
                 return 0;
             }
             d += OriginalStream.ReadByte();

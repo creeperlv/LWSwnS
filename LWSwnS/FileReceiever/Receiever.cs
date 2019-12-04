@@ -44,7 +44,7 @@ namespace FileReceiever
                     while (stream.isEnd==false)
                     {
                         byte[] buffer = new byte[int.Parse(config.Get("BufferSize", "4096"))];
-                        stream.Read(buffer, 0, 4096);
+                        stream.Read(buffer, 0, buffer.Length);
                         sw.Write(buffer, 0, buffer.Length);
                     }
                 }
