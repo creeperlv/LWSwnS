@@ -290,6 +290,46 @@ namespace LWSwnS
                         }
                     }
                     Debugger.currentDebugger.Log("OK. Some modules may need restart to take effect.");
+                }else if (cmd.ToUpper().Equals("Help".ToUpper())||cmd.Equals("?"))
+                {
+                    Console.WriteLine("");
+                    Console.WriteLine("Help of LWSwnS server console");
+                    {
+                        Console.Write("Init-Module ");
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("<Path-To-Module-Dll-File>");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine("\tInits the specified module and add it to allow list.");
+                        Console.WriteLine("");
+                    }
+                    {
+                        Console.Write("Disable-Module ");
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("<Path-To-Module-Dll-File>");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine("\tRemove the given module from the allow list.");
+                        Console.WriteLine("");
+                    }
+                    {
+                        Console.WriteLine("Reconfig");
+                        Console.Write("\tReconfigurate the server.");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(" All allowed modules will be removed in the same time.");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine("");
+                    }
+                    {
+                        Console.WriteLine("Move-All-Configs");
+                        Console.Write("\tDue to the previous changes in modules to prevent the home directory from being too messy. All configuration files are moved to ");
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write(" ./Configs/ ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.Write("except"); Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write(" Server.ini");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine(".");
+                        Console.WriteLine("");
+                    }
                 }
             }
         }
