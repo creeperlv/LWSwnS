@@ -62,7 +62,17 @@ namespace LWSwnS.Api.Data.Streams
         {
             OriginalStream.SetLength(value*2);
         }
-
+        public void WriteAndFlush(byte [] buffer,int offset,int count)
+        {
+            Write(buffer, offset, count);
+            Flush();
+        }
+        public override void WriteByte(byte value)
+        {
+            int d = value+Shift;
+            WriteByte(d > 255 ? (byte)255 : (byte)d);
+            WriteByte(d > 255 ? (byte)(d - 255) : (byte)0);
+        }
         public override void Write(byte[] buffer, int offset, int count)
         {
             byte[] buf = new byte[buffer.Length / 2];
