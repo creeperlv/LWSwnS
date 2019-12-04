@@ -203,21 +203,21 @@ namespace SimpleGitViewer
         {
             try
             {
-                repos = UniversalConfigurationMark2.LoadFromFile("./SimpleGit.ini");
+                repos = UniversalConfigurationMark2.LoadFromFile("./Configs/SimpleGit.ini");
             }
             catch (Exception)
             {
             }
             try
             {
-                Theme = UniversalConfigurationLoader.LoadFromFile("./SimpleGit.Theme.ini");
+                Theme = UniversalConfigurationLoader.LoadFromFile("./Configs/SimpleGit.Theme.ini");
             }
             catch (Exception)
             {
             }
             try
             {
-                Viewer = UniversalConfigurationLoader.LoadFromFile("./SimpleGit.Viewer.ini");
+                Viewer = UniversalConfigurationLoader.LoadFromFile("./Configs/SimpleGit.Viewer.ini");
             }
             catch (Exception)
             {

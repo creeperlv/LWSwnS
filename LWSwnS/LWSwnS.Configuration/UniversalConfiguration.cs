@@ -25,6 +25,7 @@ namespace LWSwnS.Configuration
             {
                 content += Environment.NewLine + item.Key + "=" + item.Value;
             }
+            if (!(new FileInfo(Path)).Directory.Exists) (new FileInfo(Path)).Directory.Create();
             File.WriteAllText(Path, content);
         }
     }

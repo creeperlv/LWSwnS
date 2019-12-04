@@ -32,7 +32,7 @@ namespace BinaryFileTransmission
             fileType.AddItem("Binary", "lib");
             fileType.AddItem("Binary", "so");
             fileType.AddItem("Binary", "nuget");
-            fileType.SaveToFile("./BinFileTransModule.ini");
+            fileType.SaveToFile("./Configs/BinFileTransModule.ini");
         }
     }
     public class BinFileModule : ExtModule
@@ -52,7 +52,7 @@ namespace BinaryFileTransmission
             description.Name = "Binary-File-Transmission-Module";
             description.version = new Version(0, 0, 1, 0);
             UniversalConfigurationMark2 fileType = new UniversalConfigurationMark2();
-            fileType = UniversalConfigurationMark2.LoadFromFile("./BinFileTransModule.ini");
+            fileType = UniversalConfigurationMark2.LoadFromFile("./Configs/BinFileTransModule.ini");
             var list = fileType.GetValues("Binary");
             foreach (var item in list)
             {

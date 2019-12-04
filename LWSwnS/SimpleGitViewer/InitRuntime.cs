@@ -19,7 +19,7 @@ namespace SimpleGitViewer
             conf.Add("jpg", "https://img.icons8.com/cute-clipart/64/000000/image-file.png");
             conf.Add("bmp", "https://img.icons8.com/cute-clipart/64/000000/image-file.png");
             conf.Add("prefab", "https://img.icons8.com/office/16/000000/sugar-cube.png");
-            conf.SaveToFile("./SimpleGit.Theme.ini");
+            conf.SaveToFile("./Configs/SimpleGit.Theme.ini");
             Console.WriteLine("Copying runtime...");
             string RootDir = new FileInfo(Assembly.GetAssembly(this.GetType()).Location).Directory.FullName;
             CopyDirectory(Path.Combine(RootDir, "runtimes"), "./runtimes");

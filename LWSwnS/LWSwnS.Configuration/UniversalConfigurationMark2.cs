@@ -18,6 +18,7 @@ namespace LWSwnS.Configuration
                     Content.Add(item.Key + "=" + value);
                 }
             }
+            if (!(new FileInfo(path)).Directory.Exists) (new FileInfo(path)).Directory.Create();
             File.WriteAllLines(path, Content);
         }
         public List<string> GetKeysStartedWith(string prefix)

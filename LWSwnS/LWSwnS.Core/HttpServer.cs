@@ -22,7 +22,7 @@ namespace LWSwnS.Core
         {
             try
             {
-                urlRules = UniversalConfigurationMark2.LoadFromFile("./URLRules.ini");
+                urlRules = UniversalConfigurationMark2.LoadFromFile("./Configs/URLRules.ini");
             }
             catch (Exception)
             {
@@ -35,19 +35,19 @@ namespace LWSwnS.Core
             ApiManager.AddFunction("AddPersistentIgnoreUrlPrefix", (UniParamater a) =>
             {
                 urlRules.AddItem("IgnorePrefix", a[0] as String);
-                urlRules.SaveToFile("./URLRules.ini");
+                urlRules.SaveToFile("./Configs/URLRules.ini");
                 return new UniResult();
             });
             ApiManager.AddFunction("AddPersistentRedirect", (UniParamater a) =>
             {
                 urlRules.AddItem("Redirect." + a[0], a[1] as String);
-                urlRules.SaveToFile("./URLRules.ini");
+                urlRules.SaveToFile("./Configs/URLRules.ini");
                 return new UniResult();
             });
             ApiManager.AddFunction("AddPersistentIgnoreUrlSuffix", (UniParamater a) =>
             {
                 urlRules.AddItem("IgnoreSuffix", a[0] as String);
-                urlRules.SaveToFile("./URLRules.ini");
+                urlRules.SaveToFile("./Configs/URLRules.ini");
                 return new UniResult();
             });
             ApiManager.AddFunction("ExemptFT", (UniParamater a) =>

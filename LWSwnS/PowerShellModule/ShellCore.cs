@@ -16,12 +16,12 @@ namespace PowerShellModule
     public class ShellCore : ExtModule
     {
         public static Version ShellVersion=new Version(0, 0, 2, 0);
-        ModuleDescription ExtModule.InitModule()
+        public ModuleDescription InitModule()
         {
             ModuleDescription moduleDescription = new ModuleDescription();
             try
             {
-                VariablesPool.config = UniversalConfigurationLoader.LoadFromFile("./psmodule.ini");
+                VariablesPool.config = UniversalConfigurationLoader.LoadFromFile("./Configs/psmodule.ini");
             }
             catch (Exception)
             {

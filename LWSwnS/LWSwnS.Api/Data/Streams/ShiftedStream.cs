@@ -18,12 +18,16 @@ namespace LWSwnS.Api.Data.Streams
 
         public override long Length => OriginalStream.Length;
 
-        public override long Position { get => OriginalStream.Position; set => OriginalStream.Position=value; }
+        public override long Position { get => OriginalStream.Position; set => OriginalStream.Position = value; }
+
+        bool end = false;
+
+        public bool isEnd { get => end; }
 
         public Stream OriginalStream;
         public int Shift;
 
-        public ShiftedStream(Stream OriginalStream,int shift)
+        public ShiftedStream(Stream OriginalStream, int shift)
         {
             this.Shift = shift;
             if (shift <= 0 || shift > 256)
@@ -44,16 +48,16 @@ namespace LWSwnS.Api.Data.Streams
         public override int Read(byte[] buffer, int offset, int count)
         {
             byte[] buf = new byte[buffer.Length * 2];
-            int p=OriginalStream.Read(buf, offset, buf.Length);
+            int p = OriginalStream.Read(buf, offset, buf.Length);
             int d = 0;
             for (int i = 0; i < buf.Length; i++)
             {
                 d += buf[i];
-                if (i%2==0&&buf[i] == 0)
+                if (i % 2 == 0 && buf[i] == 0)
                 {
-                    isEnd = true;
+                    end = true;
                 }
-                if (i % 2 ==1)
+                if (i % 2 == 1)
                 {
                     d -= Shift;
                     buffer[i / 2] = (byte)d;
@@ -61,6 +65,18 @@ namespace LWSwnS.Api.Data.Streams
                 }
             }
             return p;
+        }
+        public override int ReadByte()
+        {
+            int d = 0;
+            d += OriginalStream.ReadByte();
+            if (d == 0)
+            {
+                end = true;
+                return 0;
+            }
+            d += OriginalStream.ReadByte();
+            return d-Shift;
         }
 
         public override long Seek(long offset, SeekOrigin origin)
@@ -70,20 +86,19 @@ namespace LWSwnS.Api.Data.Streams
 
         public override void SetLength(long value)
         {
-            OriginalStream.SetLength(value*2);
+            OriginalStream.SetLength(value * 2);
         }
-        public void WriteAndFlush(byte [] buffer,int offset,int count)
+        public void WriteAndFlush(byte[] buffer, int offset, int count)
         {
             Write(buffer, offset, count);
             Flush();
         }
         public override void WriteByte(byte value)
         {
-            int d = value+Shift;
+            int d = value + Shift;
             WriteByte(d > 255 ? (byte)255 : (byte)d);
             WriteByte(d > 255 ? (byte)(d - 255) : (byte)0);
         }
-        public bool isEnd = false;
         public override void Write(byte[] buffer, int offset, int count)
         {
             byte[] buf = new byte[buffer.Length / 2];
@@ -91,7 +106,7 @@ namespace LWSwnS.Api.Data.Streams
             for (int i = 0; i < buffer.Length; i++)
             {
                 d = buffer[i] + Shift;
-                buf[i * 2] = d>255? (byte)255:(byte)d;
+                buf[i * 2] = d > 255 ? (byte)255 : (byte)d;
                 buf[i * 2 + 1] = d > 255 ? (byte)(d - 255) : (byte)0;
             }
             OriginalStream.Write(buf, offset, count * 2);

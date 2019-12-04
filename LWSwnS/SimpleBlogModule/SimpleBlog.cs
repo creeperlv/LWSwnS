@@ -28,7 +28,7 @@ namespace SimpleBlogModule
             UniversalConfiguration config = new UniversalConfiguration();
             try
             {
-                config = UniversalConfigurationLoader.LoadFromFile("./SimpleBlog.ini");
+                config = UniversalConfigurationLoader.LoadFromFile("./Configs/SimpleBlog.ini");
             }
             catch (Exception)
             {
