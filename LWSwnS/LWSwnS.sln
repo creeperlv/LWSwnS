@@ -44,6 +44,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LWSwnS.Diagnostic", "LWSwnS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileReceiever", "FileReceiever\FileReceiever.csproj", "{9B3D9860-FF97-42C6-8675-573CF04F813A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LWSwnS.WebPage", "LWSwnS.WebPage\LWSwnS.WebPage.csproj", "{7C69E62A-2D06-413E-8C51-D4044BA638B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -98,6 +100,10 @@ Global
 		{9B3D9860-FF97-42C6-8675-573CF04F813A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9B3D9860-FF97-42C6-8675-573CF04F813A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B3D9860-FF97-42C6-8675-573CF04F813A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C69E62A-2D06-413E-8C51-D4044BA638B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C69E62A-2D06-413E-8C51-D4044BA638B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C69E62A-2D06-413E-8C51-D4044BA638B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C69E62A-2D06-413E-8C51-D4044BA638B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
