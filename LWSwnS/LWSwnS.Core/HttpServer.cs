@@ -311,7 +311,6 @@ namespace LWSwnS.Core
                         }
                         else
                         {
-
                             if (File.Exists(rec.requestUrl.Split('?')[0]))
                             {
                                 var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath((new FileInfo(path)).FullName);
