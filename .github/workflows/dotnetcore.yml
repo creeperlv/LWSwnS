@@ -1,6 +1,6 @@
 name: .NET Core in Ubuntu
-on: 
-# on: [push]
+
+on: [push]
 
 jobs:
   build:
