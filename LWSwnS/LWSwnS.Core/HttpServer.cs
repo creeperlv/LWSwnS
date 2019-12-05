@@ -1,10 +1,13 @@
 ﻿using LWSwnS.Api;
 using LWSwnS.Configuration;
 using LWSwnS.Core.Data;
+using LWSwnS.Core.Extenstion;
+using LWSwnS.Diagnostic;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
+using System.Runtime.Loader;
 using System.Threading.Tasks;
 
 namespace LWSwnS.Core
@@ -14,6 +17,7 @@ namespace LWSwnS.Core
         public static Version WebServerVersion = new Version(1, 0, 0, 0);
         public List<string> URLPrefix = new List<string>();
         public List<string> ExemptedFileTypes = new List<string>();
+        public static Dictionary<string, IWebPage> WebPages = new Dictionary<string, IWebPage>();
         public List<TcpClientProcessor> tcpClients = new List<TcpClientProcessor>();
         public static UniversalConfigurationMark2 urlRules = new UniversalConfigurationMark2();
         TcpListener TCPListener;
@@ -245,7 +249,7 @@ namespace LWSwnS.Core
             List<String> LS = new List<string>();
             string s;
             s = streamReader.ReadLine();
-            while (s != ""&&s!=null)
+            while (s != "" && s != null)
             {
                 LS.Add(s);
                 s = streamReader.ReadLine();
@@ -289,6 +293,45 @@ namespace LWSwnS.Core
                 {
                     var rec = ReceiveMessage();
                     rec.Processor = this;
+                    if (rec.requestUrl.Split('?')[0].ToUpper().EndsWith("dll".ToUpper()))
+                    {
+                        string path = rec.requestUrl.Split('?')[0];
+                        path = URLConventor.Convert(path); string p = "";
+                        try
+                        {
+
+                            p = rec.requestUrl.Substring(rec.requestUrl.IndexOf("?") + 1);
+
+                        }
+                        catch (Exception)
+                        {
+                        }
+                        if (HttpServer.WebPages.ContainsKey(path))
+                        {
+                        }
+                        else
+                        {
+
+                            if (File.Exists(rec.requestUrl.Split('?')[0]))
+                            {
+                                var asm = AssemblyLoadContext.Default.LoadFromAssemblyPath((new FileInfo(path)).FullName);
+                                var types = asm.GetTypes();
+                                foreach (var t in types)
+                                {
+                                    //t.
+                                    if (typeof(IWebPage).IsAssignableFrom(t))
+                                    {
+                                        IWebPage wp = Activator.CreateInstance(t) as IWebPage;
+                                        HttpServer.WebPages.Add(path, wp);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        string res=HttpServer.WebPages[path].Access(p, rec);
+                        Debugger.currentDebugger.Log("Executed:"+ (new FileInfo(path)).Name+": "+res);
+                        continue;
+                    }
                     FatherServer.HandleRequest(rec);
                     //httpResponseData = null;
                     GC.Collect();
