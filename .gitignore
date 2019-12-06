@@ -24,3 +24,7 @@ LWSwnS/LWSwnS/bin/
 /LWSwnS/LWSwnS.Diagnostic/obj
 /LWSwnS/FileReceiever/obj
 /LWSwnS/LWSwnS.WebPage/obj
+/LWSwnS/LWSwnS.WebPage/bin/Debug/netcoreapp3.1
+/LWSwnS/Tests.CEPTest/obj/Debug/netcoreapp3.1
+/LWSwnS/Tests.CEPTest/bin/Debug/netcoreapp3.1
+/LWSwnS/Tests.CEPTest/obj
