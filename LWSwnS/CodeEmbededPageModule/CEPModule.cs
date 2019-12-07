@@ -76,6 +76,7 @@ namespace CodeEmbededPageModule
                 var url = b.requestUrl.Split('?');
                 if (url[0].ToUpper().EndsWith(".CEHTML") || url[0].ToUpper().EndsWith(".CEP"))
                 {
+                    Debugger.currentDebugger.Log("Running on CEP");
                     var p = URLConventor.Convert(url[0]);
                     CodeEmbededPage codeEmbededPage = new CodeEmbededPage(p);
                     var e = codeEmbededPage.ExecuteAndRetire();

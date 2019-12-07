@@ -330,7 +330,7 @@ namespace LWSwnS.Core
                         string res=HttpServer.WebPages[path].Access(p, rec);
                         Debugger.currentDebugger.Log("Executed:"+ (new FileInfo(path)).Name+": "+res);
                         continue;
-                    }
+                    }else
                     FatherServer.HandleRequest(rec);
                     //httpResponseData = null;
                     GC.Collect();
