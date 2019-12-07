@@ -18,6 +18,8 @@ namespace LWSwnS.Configuration
         public string HttpsCert = "";
         public bool isShellEnabled = true;
         public bool isLogEnabled = true;
+        public bool SplitModile = false;
+        public string MobileWebContentRoot = "./Mobile";
         public int LogLevel = 0;//0 - Normal, 1 - Warning, 2 - Error
         public int LogSeparateSize = 512;//KB
 
@@ -34,6 +36,11 @@ namespace LWSwnS.Configuration
                 if (item.StartsWith("WebRoot="))
                 {
                     serverConfiguration.WebContentRoot = item.Substring("WebRoot=".Length);
+                }
+                else
+                if (item.StartsWith("MobileWebRoot="))
+                {
+                    serverConfiguration.MobileWebContentRoot = item.Substring("MobileWebRoot=".Length);
                 }
                 else
                 if (item.StartsWith("IP="))
@@ -76,6 +83,11 @@ namespace LWSwnS.Configuration
                     serverConfiguration.isWebEnabled = bool.Parse(item.Substring("isWebEnabled=".Length));
                 }
                 else
+                if (item.StartsWith("SplitModile="))
+                {
+                    serverConfiguration.SplitModile = bool.Parse(item.Substring("SplitModile=".Length));
+                }
+                else
                 if (item.StartsWith("isLogEnabled="))
                 {
                     serverConfiguration.isLogEnabled = bool.Parse(item.Substring("isLogEnabled=".Length));
@@ -102,6 +114,8 @@ namespace LWSwnS.Configuration
             content += "\r\nisWebEnabled=" + serverConfiguration.isWebEnabled;
             content += "\r\nisShellEnabled=" + serverConfiguration.isShellEnabled;
             content += "\r\nWebRoot=" + serverConfiguration.WebContentRoot;
+            content += "\r\nMobileWebRoot=" + serverConfiguration.MobileWebContentRoot;
+            content += "\r\nSplitModile=" + serverConfiguration.SplitModile;
             content += "\r\nShellPassword=" + serverConfiguration.ShellPassword;
             content += "\r\nisLogEnabled=" + serverConfiguration.isLogEnabled;
             content += "\r\nLogLevel=" + serverConfiguration.LogLevel;

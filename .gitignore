@@ -28,3 +28,6 @@ LWSwnS/LWSwnS/bin/
 /LWSwnS/Tests.CEPTest/obj/Debug/netcoreapp3.1
 /LWSwnS/Tests.CEPTest/bin/Debug/netcoreapp3.1
 /LWSwnS/Tests.CEPTest/obj
+/LWSwnS/CodeEmbededPageModule/obj
+/LWSwnS/Tests.CEPTest/bin/Release/netcoreapp3.0
+/LWSwnS/LWSwnS.WebPage/bin/Release/netcoreapp3.0

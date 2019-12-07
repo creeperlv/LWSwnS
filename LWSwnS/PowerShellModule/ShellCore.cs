@@ -118,7 +118,8 @@ namespace PowerShellModule
             string Result = "";
             try
             {
-                PowerShell ps = PowerShell.Create();
+                
+                PowerShell ps = PowerShell.Create( RunspaceMode.NewRunspace);
                 {
                     var scriptHome = VariablesPool.config.Get("ScriptHome", "./PSScripts/");
                     ps = ps.AddScript(File.ReadAllText(scriptHome + script));

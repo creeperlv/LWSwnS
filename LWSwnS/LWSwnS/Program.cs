@@ -83,6 +83,36 @@ namespace LWSwnS
                         }
                         ServerConfiguration.CurrentConfiguration.WebContentRoot = root;
                     }
+                    {
+                        Console.Write("Do you want to");
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.Write(" split ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine("contents for mobile?(Y for yes.)");
+
+                        if (Console.ReadLine().ToUpper().Equals("Y"))
+                        {
+                            ServerConfiguration.CurrentConfiguration.SplitModile = true;
+                            {
+                                Console.Write("Please specify will the ");
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.Write(" root of web contents for mobile ");
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.WriteLine("should be?(Leave space for \"./MobileWebContents\".)");
+                                var root = Console.ReadLine();
+                                if (root == "") root = "./MobileWebContents";
+                                if (root.EndsWith('/') | root.EndsWith('\\'))
+                                {
+                                    root.Remove(root.Length - 1);
+                                }
+                                if (!Directory.Exists(root))
+                                {
+                                    Directory.CreateDirectory(root);
+                                }
+                                ServerConfiguration.CurrentConfiguration.WebContentRoot = root;
+                            }
+                        }
+                    }
                 }
                 else ServerConfiguration.CurrentConfiguration.isWebEnabled = false;
             }

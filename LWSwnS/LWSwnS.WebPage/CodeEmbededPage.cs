@@ -19,6 +19,7 @@ namespace LWSwnS.WebPage
             //CSharpScript.
             var c = Resolve();
             string content = "";
+            string[] imports = { "System" , "System.IO" , "LWSwnS.API" , "System.Collections.Generic" , "System.Text" , "LWSwnS.Diagnostic"};
             ScriptState state = null;
             foreach (var item in c)
             {
@@ -29,7 +30,7 @@ namespace LWSwnS.WebPage
                 else if (item.type == 1)
                 {
                     if (state == null)
-                        state = await CSharpScript.RunAsync(item.content);
+                        state = await CSharpScript.RunAsync(item.content,ScriptOptions.Default.WithImports(imports));
                     else await state.ContinueWithAsync(item.content);
                     
                     content += state.ReturnValue;

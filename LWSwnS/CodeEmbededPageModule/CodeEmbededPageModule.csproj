@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\LWSwnS\bin\Debug\netcoreapp3.0\Modules\CEP</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\LWSwnS\bin\Release\netcoreapp3.0\Modules\CEP</OutputPath>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\LWSwnS.Api\LWSwnS.Api.csproj" />
+    <ProjectReference Include="..\LWSwnS.Core\LWSwnS.Core.csproj" />
+    <ProjectReference Include="..\LWSwnS.WebPage\LWSwnS.WebPage.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.5.0-beta1-final" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.5.0-beta1-final" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Microsoft.CodeAnalysis.CSharp.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Microsoft.CodeAnalysis.CSharp.Scripting.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Microsoft.CodeAnalysis.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Microsoft.CodeAnalysis.Scripting.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  
+</Project>
