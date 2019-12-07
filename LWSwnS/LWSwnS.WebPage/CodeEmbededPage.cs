@@ -1,8 +1,11 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
+﻿using LWSwnS.Api;
+using LWSwnS.Diagnostic;
+using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace LWSwnS.WebPage
@@ -19,7 +22,8 @@ namespace LWSwnS.WebPage
             //CSharpScript.
             var c = Resolve();
             string content = "";
-            string[] imports = { "System" , "System.IO" , "LWSwnS.API" , "System.Collections.Generic" , "System.Text" , "LWSwnS.Diagnostic"};
+            string[] imports = { "System" , "System.IO"  , "System.Collections.Generic" , "System.Text" };
+            Assembly[] assemblies = { Assembly.GetAssembly(typeof(ApiManager)) , Assembly.GetAssembly(typeof(IDebugger)) };
             ScriptState state = null;
             foreach (var item in c)
             {
@@ -30,7 +34,7 @@ namespace LWSwnS.WebPage
                 else if (item.type == 1)
                 {
                     if (state == null)
-                        state = await CSharpScript.RunAsync(item.content,ScriptOptions.Default.WithImports(imports));
+                        state = await CSharpScript.RunAsync(item.content,ScriptOptions.Default.WithImports(imports).AddReferences(assemblies));
                     else await state.ContinueWithAsync(item.content);
                     
                     content += state.ReturnValue;
