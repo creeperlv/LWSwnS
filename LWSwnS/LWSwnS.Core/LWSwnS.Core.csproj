@@ -8,6 +8,7 @@
     <ProjectReference Include="..\LWSwnS.Api\LWSwnS.Api.csproj" />
     <ProjectReference Include="..\LWSwnS.Configuration\LWSwnS.Configuration.csproj" />
     <ProjectReference Include="..\LWSwnS.Diagnostic\LWSwnS.Diagnostic.csproj" />
+    <ProjectReference Include="..\LWSwnS.WebPage\LWSwnS.WebPage.csproj" />
   </ItemGroup>
 
   <ItemGroup>
