@@ -17,13 +17,13 @@ namespace LWSwnS.WebPage
         {
             PageFile = pathToFile;
         }
-        public async Task<string> ExecuteAndRetire()
+        public async Task<string> ExecuteAndRetire(Assembly[] References)
         {
             //CSharpScript.
             var c = Resolve();
             string content = "";
             string[] imports = { "System" , "System.IO"  , "System.Collections.Generic" , "System.Text" };
-            Assembly[] assemblies = { Assembly.GetAssembly(typeof(ApiManager)) , Assembly.GetAssembly(typeof(IDebugger)) };
+            Assembly[] assemblies = {  Assembly.GetAssembly(typeof(ApiManager)) , Assembly.GetAssembly(typeof(IDebugger)) };
             ScriptState state = null;
             foreach (var item in c)
             {
@@ -34,7 +34,7 @@ namespace LWSwnS.WebPage
                 else if (item.type == 1)
                 {
                     if (state == null)
-                        state = await CSharpScript.RunAsync(item.content,ScriptOptions.Default.WithImports(imports).AddReferences(assemblies));
+                        state = await CSharpScript.RunAsync(item.content,ScriptOptions.Default.WithImports(imports).AddReferences(assemblies).AddReferences(References));
                     else await state.ContinueWithAsync(item.content);
                     
                     content += state.ReturnValue;

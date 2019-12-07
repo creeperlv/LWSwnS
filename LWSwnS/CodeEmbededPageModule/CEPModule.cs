@@ -71,6 +71,7 @@ namespace CodeEmbededPageModule
                     Debugger.currentDebugger.Log("Unable to init roslyn runtime." + e.Message, MessageType.Error);
                 }
             }
+            Assembly[] References = { Assembly.GetAssembly(typeof(LWSwnS.Core.HttpServer))};
             EventHandler<HttpRequestData> eventHandler = (a, b) =>
             {
                 var url = b.requestUrl.Split('?');
@@ -82,7 +83,7 @@ namespace CodeEmbededPageModule
                         Debugger.currentDebugger.Log("Running on CEP");
                         var p = URLConventor.Convert(url[0]);
                         CodeEmbededPage codeEmbededPage = new CodeEmbededPage(p);
-                        var e = codeEmbededPage.ExecuteAndRetire();
+                        var e = codeEmbededPage.ExecuteAndRetire(References);
                         e.Wait();
                         HttpResponseData httpResponseData = new HttpResponseData();
                         httpResponseData.content = Encoding.UTF8.GetBytes(e.Result);
