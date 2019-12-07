@@ -17,7 +17,7 @@ namespace Tests.CEPTest
             {
                 Console.WriteLine((item.type==0?"[HTML]":"[C#]")+item.content);
             }
-            var a=codeEmbededPage.ExecuteAndRetire();
+            var a=codeEmbededPage.ExecuteAndRetire(new System.Reflection.Assembly[0]);
             a.Wait();
             Console.WriteLine(a.Result);
         }
