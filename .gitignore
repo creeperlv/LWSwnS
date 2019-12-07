@@ -31,3 +31,7 @@ LWSwnS/LWSwnS/bin/
 /LWSwnS/CodeEmbededPageModule/obj
 /LWSwnS/Tests.CEPTest/bin/Release/netcoreapp3.0
 /LWSwnS/LWSwnS.WebPage/bin/Release/netcoreapp3.0
+/LWSwnS/LWSwnS.Api/bin/Release/netstandard2.0
+/LWSwnS/LWSwnS.Configuration/bin/Release/netstandard2.0
+/LWSwnS/LWSwnS.Diagnostic/bin/Release/netstandard2.0
+/LWSwnS/LWSwnS.WebPage/bin/Debug/netcoreapp3.0

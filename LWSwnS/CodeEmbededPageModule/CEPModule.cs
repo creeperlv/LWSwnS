@@ -4,6 +4,7 @@ using LWSwnS.Core.Data;
 using LWSwnS.Diagnostic;
 using LWSwnS.WebPage;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
+using Microsoft.CodeAnalysis.Scripting;
 using System;
 using System.IO;
 using System.Reflection;
@@ -27,12 +28,7 @@ namespace CodeEmbededPageModule
                 Debugger.currentDebugger.Log("Initing Roslyn runtime...");
                 try
                 {
-
                     Assembly.LoadFrom(Path.Combine(RootDir, "Microsoft.CodeAnalysis.CSharp.dll"));
-                    Assembly.LoadFrom(Path.Combine(RootDir, "Microsoft.CodeAnalysis.CSharp.Scripting.dll"));
-                    Assembly.LoadFrom(Path.Combine(RootDir, "Microsoft.CodeAnalysis.dll"));
-                    Assembly.LoadFrom(Path.Combine(RootDir, "Microsoft.CodeAnalysis.Scripting.dll"));
-
                 }
                 catch (Exception)
                 {
@@ -40,22 +36,49 @@ namespace CodeEmbededPageModule
                 }
                 try
                 {
-                    CSharpScript.EvaluateAsync("Console.WriteLine(\"Init completed.\");").Wait();
+                    Assembly.LoadFrom(Path.Combine(RootDir, "Microsoft.CodeAnalysis.CSharp.Scripting.dll"));
+                }
+                catch (Exception)
+                {
+                    Debugger.currentDebugger.Log("Unable to init roslyn runtime. Is all DLL files exist?", MessageType.Error);
+                }
+                try
+                {
+
+                    Assembly.LoadFrom(Path.Combine(RootDir, "Microsoft.CodeAnalysis.dll"));
+                }
+                catch (Exception)
+                {
+                    Debugger.currentDebugger.Log("Unable to init roslyn runtime. Is all DLL files exist?", MessageType.Error);
+                }
+                try
+                {
+                    
+                    Assembly.LoadFrom(Path.Combine(RootDir, "Microsoft.CodeAnalysis.Scripting.dll"));
+                }
+                catch (Exception)
+                {
+                    Debugger.currentDebugger.Log("Unable to init roslyn runtime. Is all DLL files exist?", MessageType.Error);
+                }
+                try
+                {
+                    CSharpScript.EvaluateAsync("LWSwnS.Diagnostic.Debugger.currentDebugger.Log(\"Init completed.\");",
+                    ScriptOptions.Default.AddReferences(Assembly.GetAssembly(typeof(Debugger)))).Wait();
 
                 }
                 catch (Exception e)
                 {
-                    Debugger.currentDebugger.Log("Unable to init roslyn runtime."+e.Message, MessageType.Error);
+                    Debugger.currentDebugger.Log("Unable to init roslyn runtime." + e.Message, MessageType.Error);
                 }
             }
             EventHandler<HttpRequestData> eventHandler = (a, b) =>
             {
                 var url = b.requestUrl.Split('?');
-                if (url[0].ToUpper().EndsWith(".CEHTML")|| url[0].ToUpper().EndsWith(".CEP"))
+                if (url[0].ToUpper().EndsWith(".CEHTML") || url[0].ToUpper().EndsWith(".CEP"))
                 {
-                    var p=URLConventor.Convert(url[0]);
+                    var p = URLConventor.Convert(url[0]);
                     CodeEmbededPage codeEmbededPage = new CodeEmbededPage(p);
-                    var e=codeEmbededPage.ExecuteAndRetire();
+                    var e = codeEmbededPage.ExecuteAndRetire();
                     e.Wait();
                     HttpResponseData httpResponseData = new HttpResponseData();
                     httpResponseData.content = Encoding.UTF8.GetBytes(e.Result);
