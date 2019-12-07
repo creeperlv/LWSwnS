@@ -109,7 +109,7 @@ namespace LWSwnS
                                 {
                                     Directory.CreateDirectory(root);
                                 }
-                                ServerConfiguration.CurrentConfiguration.WebContentRoot = root;
+                                ServerConfiguration.CurrentConfiguration.MobileWebContentRoot = root;
                             }
                         }
                     }
