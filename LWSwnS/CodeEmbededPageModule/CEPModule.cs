@@ -76,15 +76,28 @@ namespace CodeEmbededPageModule
                 var url = b.requestUrl.Split('?');
                 if (url[0].ToUpper().EndsWith(".CEHTML") || url[0].ToUpper().EndsWith(".CEP"))
                 {
-                    Debugger.currentDebugger.Log("Running on CEP");
-                    var p = URLConventor.Convert(url[0]);
-                    CodeEmbededPage codeEmbededPage = new CodeEmbededPage(p);
-                    var e = codeEmbededPage.ExecuteAndRetire();
-                    e.Wait();
-                    HttpResponseData httpResponseData = new HttpResponseData();
-                    httpResponseData.content = Encoding.UTF8.GetBytes(e.Result);
-                    httpResponseData.Send(ref b.streamWriter);
-                    b.Cancel = true;
+                    try
+                    {
+
+                        Debugger.currentDebugger.Log("Running on CEP");
+                        var p = URLConventor.Convert(url[0]);
+                        CodeEmbededPage codeEmbededPage = new CodeEmbededPage(p);
+                        var e = codeEmbededPage.ExecuteAndRetire();
+                        e.Wait();
+                        HttpResponseData httpResponseData = new HttpResponseData();
+                        httpResponseData.content = Encoding.UTF8.GetBytes(e.Result);
+                        httpResponseData.Send(ref b.streamWriter);
+                        b.Cancel = true;
+                    }
+                    catch (Exception e)
+                    {
+                        Debugger.currentDebugger.Log("Error on CEP:"+e.Message, MessageType.Error);
+                        var p = URLConventor.Convert(url[0]);
+                        HttpResponseData httpResponseData = new HttpResponseData();
+                        httpResponseData.content = Encoding.UTF8.GetBytes(e.Message);
+                        httpResponseData.Send(ref b.streamWriter);
+                        b.Cancel = true;
+                    }
                 }
             };
             WebServer.AddHttpRequestHandler(eventHandler);
