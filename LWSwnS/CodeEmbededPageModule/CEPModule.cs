@@ -1,11 +1,13 @@
 ﻿using LWSwnS.Api.Modules;
 using LWSwnS.Api.Web;
+using LWSwnS.Configuration;
 using LWSwnS.Core.Data;
 using LWSwnS.Diagnostic;
 using LWSwnS.WebPage;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -16,12 +18,27 @@ namespace CodeEmbededPageModule
     {
         string RootDir;
         public static Version ModuleVersion = new Version(0, 0, 1, 0);
+        List<Assembly> refs = new List<Assembly>();
         public ModuleDescription InitModule()
         {
             ModuleDescription moduleDescription = new ModuleDescription();
             RootDir = new FileInfo(Assembly.GetAssembly(this.GetType()).Location).Directory.FullName;
             moduleDescription.Name = "CEPModule";
             moduleDescription.version = ModuleVersion;
+            {
+                UniversalConfigurationMark2 config = new UniversalConfigurationMark2();
+                try
+                {
+                    config = UniversalConfigurationMark2.LoadFromFile("./Configs/CEP.References.ini");
+                }
+                catch (Exception)
+                {
+                }
+                foreach (var item in config.GetValues("References"))
+                {
+                    refs.Add(Assembly.LoadFrom((new FileInfo(item)).FullName));
+                }
+            }
             WebServer.AddExemptFileType("cehtml");
             WebServer.AddExemptFileType("cep");
             {
@@ -71,7 +88,7 @@ namespace CodeEmbededPageModule
                     Debugger.currentDebugger.Log("Unable to init roslyn runtime." + e.Message, MessageType.Error);
                 }
             }
-            Assembly[] References = { Assembly.GetAssembly(typeof(LWSwnS.Core.HttpServer))};
+            refs.Add(Assembly.GetAssembly(typeof(LWSwnS.Core.HttpServer)));
             EventHandler<HttpRequestData> eventHandler = (a, b) =>
             {
                 var url = b.requestUrl.Split('?');
@@ -83,7 +100,7 @@ namespace CodeEmbededPageModule
                         Debugger.currentDebugger.Log("Running on CEP");
                         var p = URLConventor.Convert(url[0]);
                         CodeEmbededPage codeEmbededPage = new CodeEmbededPage(p);
-                        var e = codeEmbededPage.ExecuteAndRetire(References);
+                        var e = codeEmbededPage.ExecuteAndRetire(refs.ToArray());
                         e.Wait();
                         HttpResponseData httpResponseData = new HttpResponseData();
                         httpResponseData.content = Encoding.UTF8.GetBytes(e.Result);
