@@ -56,18 +56,23 @@ namespace PowerShellModule
 
                         string items = "";
                         DirectoryInfo pss = new DirectoryInfo("./PSScripts/");
+                        if (!pss.Exists) pss.Create();
                         var fs = pss.EnumerateFiles("*.ps1").ToList();
                         if (fs.Count == 0)
                         {
-                            string itemHTML = FileItemHTML.Replace("[ScriptName]", "No Scripts").Replace("[ScriptParameter]", "").Replace("[ScriptSize]", "");
-                            items += itemHTML;
+                            //string itemHTML = FileItemHTML.Replace("[ScriptName]", "No Scripts").Replace("[ScriptParameter]", "").Replace("[ScriptSize]", "");
+                            items += "<p>No Scripts</p>";
+                        }
+                        else
+                        {
+
+                            foreach (var item in fs)
+                            {
+                                string itemHTML = FileItemHTML.Replace("[ScriptName]", item.Name).Replace("[ScriptSize]", (double)item.Length / 1024.0 + "KB");
+                                items += itemHTML;
+                            }
                         }
                         string htmlbody = ContentHostHTML;
-                        foreach (var item in fs)
-                        {
-                            string itemHTML = FileItemHTML.Replace("[ScriptName]", item.Name).Replace("[ScriptSize]", (double)item.Length / 1024.0 + "KB");
-                            items += itemHTML;
-                        }
                         httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody.Replace("[ScriptList]", items).Replace("[WebVersion]", WebVersion.ToString()).Replace("[ShellVersion]", ShellCore.ShellVersion.ToString()));
                     }
                     else if (url.ToUpper().StartsWith("/View-Script:".ToUpper()))
