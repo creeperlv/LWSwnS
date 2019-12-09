@@ -98,8 +98,8 @@ namespace CodeEmbededPageModule
                     try
                     {
 
-                        Debugger.currentDebugger.Log("Running on CEP");
                         var p = URLConventor.Convert(url[0]);
+                        Debugger.currentDebugger.Log("Running on CEP:"+p+"("+ url[0]+")");
                         CodeEmbededPage codeEmbededPage = new CodeEmbededPage(p);
                         var e = codeEmbededPage.ExecuteAndRetire(refs.ToArray());
                         e.Wait();

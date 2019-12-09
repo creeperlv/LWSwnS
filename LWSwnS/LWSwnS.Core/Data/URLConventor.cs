@@ -25,7 +25,7 @@ namespace LWSwnS.Core.Data
                     return Path.Combine(item.Value, Str.Substring(item.Key.Length));
                 }
             }
-            return (isMobile==false?RootFolder:MobileRootFolder + Str);
+            return ((isMobile==false?RootFolder:MobileRootFolder) + Str);
         }
     }
 }
