@@ -151,28 +151,73 @@ namespace SimpleGitViewer
                                         location = Path.Combine(repol, repoAction.Substring("_git/".Length).Replace('/', Path.DirectorySeparatorChar));
                                     }
                                     else location = Path.Combine(repol, repoAction.Substring("_git".Length).Replace('/', Path.DirectorySeparatorChar));
+                                    location = location.Replace("%20", " ").Replace("%2B", "+");
                                     string items = "";
                                     try
                                     {
-                                        DirectoryInfo directoryInfo = new DirectoryInfo(location);
-                                        //Directory.EnumerateFiles
-                                        foreach (var item in directoryInfo.GetDirectories())
+                                        if (Directory.Exists(location))
                                         {
 
-                                            items += GitFolderItem.Replace("[ITEMNAME]", item.Name).Replace("[PATH]", item.Parent.FullName == new DirectoryInfo(repol).FullName ? $"{item.Name}" : $"{item.Parent.Name}/{item.Name}");
-                                        }
-                                        foreach (var item in directoryInfo.GetFiles())
-                                        {
-                                            string itemStr = GitFileItem.Replace("[ITEMNAME]", item.Name);
-                                            foreach (var file in Theme.Keys)
+                                            DirectoryInfo directoryInfo = new DirectoryInfo(location);
+                                            //Directory.EnumerateFiles
+                                            foreach (var item in directoryInfo.GetDirectories())
                                             {
-                                                if (item.Name.ToUpper().EndsWith(file.ToUpper()))
+
+                                                items += GitFolderItem.Replace("[ITEMNAME]", item.Name).Replace("[PATH]", item.Parent.FullName == new DirectoryInfo(repol).FullName ? $"{item.Name}" : $"{item.Parent.Name}/{item.Name}");
+                                            }
+                                            foreach (var item in directoryInfo.GetFiles())
+                                            {
+                                                string itemStr = GitFileItem.Replace("[ITEMNAME]", item.Name);
+                                                foreach (var file in Theme.Keys)
                                                 {
-                                                    itemStr = itemStr.Replace("[ICON]", Theme.Get(file));
-                                                    break;
+                                                    if (item.Name.ToUpper().EndsWith(file.ToUpper()))
+                                                    {
+                                                        itemStr = itemStr.Replace("[ICON]", Theme.Get(file));
+                                                        break;
+                                                    }
+                                                }
+                                                items += itemStr.Replace("[ICON]", Theme.Get("NormalFile")).Replace("[PATH]", item.Directory.FullName == new DirectoryInfo(repol).FullName ? $"{item.Name}" : $"{item.Directory.Name}/{item.Name}");
+                                            }
+                                        }
+                                        else if(File.Exists(location))
+                                        {
+                                            FileInfo fileInfo = new FileInfo(location);
+                                            if (fileInfo.Length / 1024 < 5 * 1024)
+                                            {
+                                                try
+                                                {
+                                                    if (fileInfo.Name.ToUpper().EndsWith(".PNG"))
+                                                    {
+                                                        items = $"<img width='100%' height='auto' src=\"data:image/png;base64,{Convert.ToBase64String(File.ReadAllBytes(fileInfo.FullName))}\" />";
+                                                    }
+                                                    else
+                                                    if (fileInfo.Name.ToUpper().EndsWith(".JPG"))
+                                                    {
+                                                        items = $"<img width='100%' height='auto' src=\"data:image/jpg;base64,{Convert.ToBase64String(File.ReadAllBytes(fileInfo.FullName))}\" />";
+                                                    }
+                                                    else
+                                                        try
+                                                        {
+                                                            items = "<p>" + File.ReadAllText(fileInfo.FullName).Replace("\n", "<br/>").Replace(" ", "&nbsp;") + "</p>";
+                                                        }
+                                                        catch (Exception)
+                                                        {
+                                                        }
+
+                                                }
+                                                catch (Exception e)
+                                                {
+                                                    Debugger.currentDebugger.Log("Error on viewing:"+location+", "+e.Message, MessageType.Error);
                                                 }
                                             }
-                                            items += itemStr.Replace("[ICON]", Theme.Get("NormalFile"));
+                                            else
+                                            {
+                                                items = "<p>The target file it too large to view.</p>";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            items = "<p>404 NOT Found</p>";
                                         }
                                     }
                                     catch (Exception e)
@@ -184,10 +229,17 @@ namespace SimpleGitViewer
                             }
 
                         }
-                        HttpResponseData httpResponseData = new HttpResponseData();
-                        httpResponseData.content = Encoding.UTF8.GetBytes(content);
-                        httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
-                        httpResponseData.Send(ref b.streamWriter);
+                        try
+                        {
+
+                            HttpResponseData httpResponseData = new HttpResponseData();
+                            httpResponseData.content = Encoding.UTF8.GetBytes(content);
+                            httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
+                            httpResponseData.Send(ref b.streamWriter);
+                        }
+                        catch (Exception e)
+                        {
+                        }
                     }
                 }
                 catch (Exception e)
