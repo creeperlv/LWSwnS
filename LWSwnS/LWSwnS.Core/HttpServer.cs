@@ -67,7 +67,12 @@ namespace LWSwnS.Core
             TCPListener = listener;
             OnRequest += (a, b) =>
             {
-                var RealUrl = URLConventor.Convert(b.requestUrl.Trim());
+                bool isMobile = false;
+                if(b.UA.IndexOf("Android") > 0 || b.UA.IndexOf("iPhone") > 0|| b.UA.IndexOf("Windows Phone") > 0|| b.UA.IndexOf("Lumia") > 0)
+                {
+                    isMobile = true;
+                }
+                var RealUrl = URLConventor.Convert(b.requestUrl.Trim(),isMobile);
                 foreach (var item in URLPrefix)
                 {
                     if (b.requestUrl.ToUpper().StartsWith(item.ToUpper()))

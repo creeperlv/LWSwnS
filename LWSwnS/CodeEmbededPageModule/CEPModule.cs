@@ -24,6 +24,7 @@ namespace CodeEmbededPageModule
             ModuleDescription moduleDescription = new ModuleDescription();
             RootDir = new FileInfo(Assembly.GetAssembly(this.GetType()).Location).Directory.FullName;
             moduleDescription.Name = "CEPModule";
+            
             moduleDescription.version = ModuleVersion;
             {
                 UniversalConfigurationMark2 config = new UniversalConfigurationMark2();
