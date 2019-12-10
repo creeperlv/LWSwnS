@@ -5,11 +5,16 @@ using Microsoft.CodeAnalysis.Scripting;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
 namespace LWSwnS.WebPage
 {
+    public class Parameter {
+        public Dictionary<string, string> Parameters = new Dictionary<string, string>();
+    }
+
     public class CodeEmbededPage
     {
         string PageFile;
@@ -17,14 +22,38 @@ namespace LWSwnS.WebPage
         {
             PageFile = pathToFile;
         }
-        public async Task<string> ExecuteAndRetire(Assembly[] References)
+        public async Task<string> ExecuteAndRetire(Assembly[] References,Parameter parameter=null)
         {
             //CSharpScript.
             var c = Resolve();
             string content = "";
-            string[] imports = { "System" , "System.IO"  , "System.Collections.Generic" , "System.Text" };
+            string[] imports = { "System" , "System.IO"  , "System.Collections.Generic" , "System.Linq", "System.Text" };
             Assembly[] assemblies = {  Assembly.GetAssembly(typeof(ApiManager)) , Assembly.GetAssembly(typeof(IDebugger)) };
+            if (parameter == null) parameter = new Parameter();
             ScriptState state = null;
+            //try
+            //{
+
+            //    state =
+            //        await CSharpScript.RunAsync(""
+            //        , options: ScriptOptions.Default.WithImports(imports).AddReferences(assemblies).AddReferences(References));
+            //}
+            //catch (Exception)
+            //{
+            //}
+            //if(false)
+            //try
+            //{
+
+            //    state =
+            //        await CSharpScript.RunAsync("foreach(var item in Parameters){Console.WriteLine(item.Key+\":\"+item.Value);}"
+            //        , options: ScriptOptions.Default.WithImports(imports).AddReferences(assemblies).AddReferences(References),
+            //        globals: parameter);
+            //}
+            //catch (Exception e)
+            //{
+            //    Console.WriteLine(e.Message);
+            //}
             foreach (var item in c)
             {
                 if (item.type == 0)
@@ -33,9 +62,10 @@ namespace LWSwnS.WebPage
                 }
                 else if (item.type == 1)
                 {
-                    if (state == null)
-                        state = await CSharpScript.RunAsync(item.content,ScriptOptions.Default.WithImports(imports).AddReferences(assemblies).AddReferences(References));
-                    else await state.ContinueWithAsync(item.content);
+                    if (state == null) 
+                    state = await CSharpScript.RunAsync(item.content, ScriptOptions.Default.WithImports(imports).AddReferences(assemblies).AddReferences(References));
+                    else
+                        await state.ContinueWithAsync(item.content);
                     
                     content += state.ReturnValue;
                 }
