@@ -18,7 +18,7 @@ namespace SimpleBlogModule
             moduleDescription.version = new Version(0, 0, 2, 0);
             CommandHandler.RegisterCommand("SimpleBlog:Add-Post", (string fileName, object content, StreamWriter writer) =>
             {
-                string FilePath = Path.Combine(new DirectoryInfo("./Padth").FullName, fileName);
+                string FilePath = Path.Combine(new DirectoryInfo("./Posts").FullName, fileName);
                 if (!File.Exists(FilePath)) {
                     File.Create(FilePath).Close();
                 }
@@ -30,7 +30,7 @@ namespace SimpleBlogModule
             });
             CommandHandler.RegisterCommand("SimpleBlog:Del-Post", (string fileName, object content, StreamWriter writer) =>
             {
-                string FilePath = Path.Combine(new DirectoryInfo("./Padth").FullName, fileName);
+                string FilePath = Path.Combine(new DirectoryInfo("./Posts").FullName, fileName);
                 if (File.Exists(FilePath)) {
                     File.Delete(FilePath);
                 }
@@ -42,7 +42,7 @@ namespace SimpleBlogModule
             });
             CommandHandler.RegisterCommand("SimpleBlog:Get-Post", (string fileName, object content, StreamWriter writer) =>
             {
-                string FilePath = Path.Combine(new DirectoryInfo("./Padth").FullName, fileName);
+                string FilePath = Path.Combine(new DirectoryInfo("./Posts").FullName, fileName);
                 
 
                 ShellFeedbackData shellFeedbackData = new ShellFeedbackData();
