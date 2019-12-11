@@ -36,3 +36,4 @@ LWSwnS/LWSwnS/bin/
 /LWSwnS/LWSwnS.Diagnostic/bin/Release/netstandard2.0
 /LWSwnS/LWSwnS.WebPage/bin/Debug/netcoreapp3.0
 /LWSwnS/Tests.CEPTest/bin/Debug/netcoreapp3.0
+/LWSwnS/ModuleManger/obj

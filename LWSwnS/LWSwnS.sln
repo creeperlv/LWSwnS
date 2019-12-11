@@ -49,7 +49,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LWSwnS.WebPage", "LWSwnS.We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.CEPTest", "Tests.CEPTest\Tests.CEPTest.csproj", "{DEB2F1A7-F4FD-47FB-9206-C32A127B213C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeEmbededPageModule", "CodeEmbededPageModule\CodeEmbededPageModule.csproj", "{9036C826-C30D-43E3-9834-80CD160895FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeEmbededPageModule", "CodeEmbededPageModule\CodeEmbededPageModule.csproj", "{9036C826-C30D-43E3-9834-80CD160895FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuleManger", "ModuleManger\ModuleManger.csproj", "{9A11E655-1885-4D77-802F-25A9A718421B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,6 +119,10 @@ Global
 		{9036C826-C30D-43E3-9834-80CD160895FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9036C826-C30D-43E3-9834-80CD160895FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9036C826-C30D-43E3-9834-80CD160895FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A11E655-1885-4D77-802F-25A9A718421B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A11E655-1885-4D77-802F-25A9A718421B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A11E655-1885-4D77-802F-25A9A718421B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A11E655-1885-4D77-802F-25A9A718421B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -131,6 +137,7 @@ Global
 		{9B3D9860-FF97-42C6-8675-573CF04F813A} = {270630FB-A7E2-455E-952B-38DCEA02AB14}
 		{DEB2F1A7-F4FD-47FB-9206-C32A127B213C} = {B6D233A1-4D01-4FDB-9418-568291D262A7}
 		{9036C826-C30D-43E3-9834-80CD160895FE} = {270630FB-A7E2-455E-952B-38DCEA02AB14}
+		{9A11E655-1885-4D77-802F-25A9A718421B} = {270630FB-A7E2-455E-952B-38DCEA02AB14}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C8C4AB2E-6906-4A7D-AF56-C45397F946CC}

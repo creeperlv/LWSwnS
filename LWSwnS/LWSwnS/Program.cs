@@ -6,6 +6,7 @@ using LWSwnS.Core;
 using LWSwnS.Core.Data;
 using LWSwnS.Diagnostic;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
@@ -169,6 +170,62 @@ namespace LWSwnS
                 }
                 return new UniResult();
             });
+            ApiManager.AddFunction("MODULE_INIT", (UniParamater p) =>
+            {
+                Modules modules = new Modules((new FileInfo("./Modules/" + p[0])).DirectoryName);
+                var asm = modules.LoadFromAssemblyPath((new FileInfo("./Modules/" + p[0])).FullName);
+                var types = asm.GetTypes();
+                Console.Write("\tLoad: ");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine(new FileInfo("./Modules/" + p[0]).Name);
+                Console.ForegroundColor = ConsoleColor.White;
+                foreach (var t in types)
+                {
+                    //t.
+                    if (typeof(FirstInit).IsAssignableFrom(t))
+                    {
+                        FirstInit extModule = Activator.CreateInstance(t) as FirstInit;
+                        extModule.Init();
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("\t\tInitialization Completed.");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                }
+                ServerConfiguration.CurrentConfiguration.AllowedModules.Add(p[0] as string);
+                ConfigurationLoader.SaveToFile(ServerConfiguration.CurrentConfiguration, "./Server.ini");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Module is now allowed to be executed.");
+                Console.ForegroundColor = ConsoleColor.White;
+                return new UniResult();
+            });
+            ApiManager.AddFunction("MODULE_LOAD", (UniParamater p) =>
+            {
+                List<ModuleDescription> result = new List<ModuleDescription>();
+                Modules modules = new Modules((new FileInfo("./Modules/" + p[0])).DirectoryName);
+                var asm = modules.LoadFromAssemblyPath((new FileInfo("./Modules/" + p[0])).FullName);
+                var types = asm.GetTypes();
+                Console.Write("\tLoad: ");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine(new FileInfo("./Modules/" + p[0]).Name);
+                Console.ForegroundColor = ConsoleColor.White;
+                foreach (var t in types)
+                {
+                    //t.
+                    if (typeof(ExtModule).IsAssignableFrom(t))
+                    {
+                        ExtModule extModule = Activator.CreateInstance(t) as ExtModule;
+                        var ModDesc = extModule.InitModule();
+                        ModDesc.targetAssembly = asm;
+                        result.Add(ModDesc);
+                    }
+                }
+                ServerConfiguration.CurrentConfiguration.AllowedModules.Add(p[0] as string);
+                ConfigurationLoader.SaveToFile(ServerConfiguration.CurrentConfiguration, "./Server.ini");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("Module is now allowed to be executed.");
+                Console.ForegroundColor = ConsoleColor.White;
+                return new UniResult() { Data= result };
+            });
         }
         static void Main(string[] args)
         {
@@ -262,32 +319,32 @@ namespace LWSwnS
                     var item = cmd.Substring("Init-Module ".Length);
                     try
                     {
-
-                        Modules modules = new Modules((new FileInfo("./Modules/" + item)).DirectoryName);
-                        var asm = modules.LoadFromAssemblyPath((new FileInfo("./Modules/" + item)).FullName);
-                        var types = asm.GetTypes();
-                        Console.Write("\tLoad: ");
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine(new FileInfo("./Modules/" + item).Name);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        foreach (var t in types)
+                        ModuleManager.InitModule(item);
+                        foreach (var desc in ModuleManager.LoadModule(item))
                         {
-                            //t.
-                            if (typeof(FirstInit).IsAssignableFrom(t))
-                            {
-                                FirstInit extModule = Activator.CreateInstance(t) as FirstInit;
-                                extModule.Init();
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.WriteLine("\t\tInitialization Completed.");
-                                Console.ForegroundColor = ConsoleColor.White;
-                            }
+                            ModuleManager.ExtModules.Add(desc);
                         }
-                        ServerConfiguration.CurrentConfiguration.AllowedModules.Add(item);
-                        ConfigurationLoader.SaveToFile(ServerConfiguration.CurrentConfiguration, "./Server.ini");
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Module is now allowed to be executed.");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine("Restart to take effect.");
+                        //Console.WriteLine("Loading");
+                        //foreach (var t in types)
+                        //{
+                        //    //t.
+                        //    if (typeof(ExtModule).IsAssignableFrom(t))
+                        //    {
+                        //        ExtModule extModule = Activator.CreateInstance(t) as ExtModule;
+                        //        var ModDesc = extModule.InitModule();
+                        //        ModDesc.targetAssembly = asm;
+                        //        ModuleManager.ExtModules.Add(ModDesc);
+
+                        //        Console.Write("\t\tExtModule Description: ");
+                        //        Console.ForegroundColor = ConsoleColor.Green;
+                        //        Console.Write(ModDesc.Name);
+                        //        Console.ForegroundColor = ConsoleColor.White;
+                        //        Console.Write("/");
+                        //        Console.ForegroundColor = ConsoleColor.Green;
+                        //        Console.WriteLine(ModDesc.version.ToString());
+                        //        Console.ForegroundColor = ConsoleColor.White;
+                        //    }
+                        //}
                     }
                     catch (Exception)
                     {
