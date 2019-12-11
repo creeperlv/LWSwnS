@@ -64,7 +64,6 @@ namespace PowerShellModule
         }
         bool PSE(string a, object b, StreamWriter c)
         {
-            LWSwnS.Diagnostic.Debugger.currentDebugger.Log("Execution Accepted");
             var script = a;
             var parameter = "";
             if (script.IndexOf(" ") > 0)
@@ -78,7 +77,7 @@ namespace PowerShellModule
             c.BaseStream.WriteTimeout = 30000;
             Task.Run(async () =>
             {
-                LWSwnS.Diagnostic.Debugger.currentDebugger.Log("Starting...");
+                LWSwnS.Diagnostic.Debugger.currentDebugger.Log("Starting Script:"+a);
                 try
                 {
 

@@ -96,7 +96,7 @@ namespace LWSwnS.Core
                 }
                 foreach (var item in urlRules.GetValues("IgnoreSuffix"))
                 {
-                    if (b.requestUrl.ToUpper().EndsWith(item.ToUpper()))
+                    if (b.requestUrl.Split('?')[0].ToUpper().EndsWith(item.ToUpper()))
                     {
                         return;
                     }

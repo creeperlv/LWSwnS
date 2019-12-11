@@ -99,9 +99,15 @@ namespace CodeEmbededPageModule
                     {
 
                         var p = URLConventor.Convert(url[0]);
+                        var originP=url[1].Split('&');
+                        Parameter parameter = new Parameter();
+                        foreach (var item in originP)
+                        {
+                            parameter.Parameters.Add(item.Substring(0,item.IndexOf('=')), item.Substring(item.IndexOf('=') + 1));
+                        }
                         Debugger.currentDebugger.Log("Running on CEP:"+p+"("+ url[0]+")");
                         CodeEmbededPage codeEmbededPage = new CodeEmbededPage(p);
-                        var e = codeEmbededPage.ExecuteAndRetire(refs.ToArray());
+                        var e = codeEmbededPage.ExecuteAndRetire(refs.ToArray(),parameter);
                         e.Wait();
                         HttpResponseData httpResponseData = new HttpResponseData();
                         httpResponseData.content = Encoding.UTF8.GetBytes(e.Result);

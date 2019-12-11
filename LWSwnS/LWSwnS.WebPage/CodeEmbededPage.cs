@@ -31,16 +31,19 @@ namespace LWSwnS.WebPage
             Assembly[] assemblies = {  Assembly.GetAssembly(typeof(ApiManager)) , Assembly.GetAssembly(typeof(IDebugger)) };
             if (parameter == null) parameter = new Parameter();
             ScriptState state = null;
-            //try
-            //{
-
-            //    state =
-            //        await CSharpScript.RunAsync(""
-            //        , options: ScriptOptions.Default.WithImports(imports).AddReferences(assemblies).AddReferences(References));
-            //}
-            //catch (Exception)
-            //{
-            //}
+            string para = "";
+            try
+            {
+                para = "Dictionary<string,string> Parameter =new Dictionary<string,string>();";
+                
+                foreach (var item in parameter.Parameters)
+                {
+                    para += $"Parameter.Add(\"{item.Key}\",\"{item.Value}\");";
+                }
+            }
+            catch (Exception)
+            {
+            }
             //if(false)
             //try
             //{
@@ -62,23 +65,31 @@ namespace LWSwnS.WebPage
                 }
                 else if (item.type == 1)
                 {
-                    if (state == null) 
-                    state = await CSharpScript.RunAsync(item.content, ScriptOptions.Default.WithImports(imports).AddReferences(assemblies).AddReferences(References));
+                    if (state == null)
+                        state = await CSharpScript.RunAsync(para+item.content, ScriptOptions.Default.WithImports(imports).AddReferences(assemblies).AddReferences(References));
                     else
                         await state.ContinueWithAsync(item.content);
                     
-                    content += state.ReturnValue;
+                    //content += state.ReturnValue;
                 }
                 else if (item.type == 2)
                 {
-                    foreach (var varible in state.Variables)
+                    //Console.WriteLine("Matching: " + item.content+" in "+state.Variables.Length+" Variable(s).");
+                    try
                     {
-                        if (varible.Name == item.content)
+                        foreach (var varible in state.Variables)
                         {
-                            content += varible.Value;
-                            break;
+                            //Console.WriteLine("Compare: " + varible.Name);
+                            if (varible.Name == item.content)
+                            {
+                                content += varible.Value;
+                                break;
+                            }
                         }
+
                     }
+                    catch (Exception)
+                    {}
                 }
             }
             return content;
