@@ -18,7 +18,7 @@ namespace LWSwnS.Api.Modules
         {
             UniParamater uniParamater = new UniParamater();
             uniParamater.Add(location);
-            return ApiManager.Functions["MODULE_INIT"](uniParamater).Data as List<ModuleDescription>;
+            return ApiManager.Functions["MODULE_LOAD"](uniParamater).Data as List<ModuleDescription>;
         }
     }
 }

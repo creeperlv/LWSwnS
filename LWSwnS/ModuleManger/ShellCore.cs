@@ -14,6 +14,7 @@ namespace ModuleManger
             description.Name = "ModuleManager";
             description.version = ModuleVersion;
             LWSwnS.Api.Shell.CommandHandler.RegisterCommand("ModuleManager:Init-Module", InitModule);
+            LWSwnS.Api.Shell.CommandHandler.RegisterCommand("ModuleManager:Load-Module", LoadModule);
             return description;
         }
         bool InitModule(string a, object b, StreamWriter c)
