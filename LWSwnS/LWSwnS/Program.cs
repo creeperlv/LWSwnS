@@ -227,6 +227,37 @@ namespace LWSwnS
                 return new UniResult() { Data= result };
             });
         }
+        static void InitModuleFromList(string lst)
+        {
+            if (File.Exists(lst))
+            {
+                var list = File.ReadAllLines(lst);
+                foreach (var item in list)
+                {
+                    if (File.Exists(item))
+                    {
+                        try
+                        {
+                            ModuleManager.InitModule(item);
+                            foreach (var desc in ModuleManager.LoadModule(item))
+                            {
+                                ModuleManager.ExtModules.Add(desc);
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Failed on loading:" + item);
+                            Console.ForegroundColor = ConsoleColor.White;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Debugger.currentDebugger.Log("List file not found.", MessageType.Warning);
+            }
+        }
         static void Main(string[] args)
         {
             Console.ForegroundColor = ConsoleColor.White;
@@ -324,27 +355,6 @@ namespace LWSwnS
                         {
                             ModuleManager.ExtModules.Add(desc);
                         }
-                        //Console.WriteLine("Loading");
-                        //foreach (var t in types)
-                        //{
-                        //    //t.
-                        //    if (typeof(ExtModule).IsAssignableFrom(t))
-                        //    {
-                        //        ExtModule extModule = Activator.CreateInstance(t) as ExtModule;
-                        //        var ModDesc = extModule.InitModule();
-                        //        ModDesc.targetAssembly = asm;
-                        //        ModuleManager.ExtModules.Add(ModDesc);
-
-                        //        Console.Write("\t\tExtModule Description: ");
-                        //        Console.ForegroundColor = ConsoleColor.Green;
-                        //        Console.Write(ModDesc.Name);
-                        //        Console.ForegroundColor = ConsoleColor.White;
-                        //        Console.Write("/");
-                        //        Console.ForegroundColor = ConsoleColor.Green;
-                        //        Console.WriteLine(ModDesc.version.ToString());
-                        //        Console.ForegroundColor = ConsoleColor.White;
-                        //    }
-                        //}
                     }
                     catch (Exception)
                     {
@@ -362,6 +372,16 @@ namespace LWSwnS
                     var item = cmd.Substring("Disable-Module ".Length);
                     ServerConfiguration.CurrentConfiguration.AllowedModules.Remove(item);
                     ConfigurationLoader.SaveToFile(ServerConfiguration.CurrentConfiguration, "./Server.ini");
+                }
+                else if (cmd.StartsWith("Init-Module-From-List "))
+                {
+                    var file = cmd.Substring("Init-Module-From-List ".Length);
+                    InitModuleFromList(file);
+                }
+                else if (cmd.StartsWith("initmods "))
+                {
+                    var file = cmd.Substring("initmods ".Length);
+                    InitModuleFromList(file);
                 }
                 else if (cmd.Equals("Move-All-Configs"))
                 {
