@@ -9,11 +9,12 @@ GUI-Definition:
 Environment:
 	-SystemArch:x64
 	-Memory:4096
-	-SystemVersion: 6400
+	-SystemVersion:6.1.6400
 	-SoftwareRecommand:WindowsTerminal
 Dependencies:
-	-dotnetcore:3.x.x
-	-git:all
+	dotnetcore:3.x.x
+	git:all
+	PowerShell:6.0.0+
 pwsh:
 	git clone https://github.com/creeperlv/LWSwnS.git
 	cd LWSwnS
@@ -25,4 +26,3 @@ BinarySettings:
 	-Security:NormalUser
 Set-Main-Executable:
 	-Source:LWSwnS.exe
-	-DisplayName:Start LWSwnS Server
