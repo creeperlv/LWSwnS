@@ -1,0 +1,7 @@
+FriendlyName=LWSwnS
+PackageID=56EBBBB1-60B4-42EF-A7FE-A0EDB1BE637F
+Publisher=Creeper Lv
+PackageVersion=1.0.1.0,Preview
+LicenseURL=https://raw.githubusercontent.com/creeperlv/LWSwnS/master/LICENSE
+PackageHomeURL=https://github.com/creeperlv/LWSwnS/
+InstallationScript=https://raw.githubusercontent.com/creeperlv/LWSwnS/master/LWSwnS/InstallScript.{Platform}.uapscript

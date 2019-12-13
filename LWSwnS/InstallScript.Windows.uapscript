@@ -1,0 +1,28 @@
+ScriptType:Install
+GUI-Mode:Optional
+#GUI-Mode:
+#		Force-On
+#		Force-Off
+#		Optional (Default)
+GUI-Definition:
+	-Source:Default
+Environment:
+	-SystemArch:x64
+	-Memory:4096
+	-SystemVersion: 6400
+	-SoftwareRecommand:WindowsTerminal
+Dependencies:
+	-dotnetcore:3.x.x
+	-git:all
+pwsh:
+	git clone https://github.com/creeperlv/LWSwnS.git
+	cd LWSwnS
+	dotnet build
+Copy-Folder:
+	-Source:/LWSwnS/LWSwnS/LWSwnS/bin/netcoreapp3.0/
+	-Target:/TargetBinaries
+BinarySettings:
+	-Security:NormalUser
+Set-Main-Executable:
+	-Source:LWSwnS.exe
+	-DisplayName:Start LWSwnS Server

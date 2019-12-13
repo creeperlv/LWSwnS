@@ -34,6 +34,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkdownFileModule", "Markd
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E6C5802A-AD10-43BE-A676-476B479B28FA}"
 	ProjectSection(SolutionItems) = preProject
+		InstallScript.Windows.uapscript = InstallScript.Windows.uapscript
+		LWSwnS.uapmanifest = LWSwnS.uapmanifest
 		..\Readme.md = ..\Readme.md
 	EndProjectSection
 EndProject
@@ -51,7 +53,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.CEPTest", "Tests.CEPT
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeEmbededPageModule", "CodeEmbededPageModule\CodeEmbededPageModule.csproj", "{9036C826-C30D-43E3-9834-80CD160895FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModuleManger", "ModuleManger\ModuleManger.csproj", "{9A11E655-1885-4D77-802F-25A9A718421B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModuleManger", "ModuleManger\ModuleManger.csproj", "{9A11E655-1885-4D77-802F-25A9A718421B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
