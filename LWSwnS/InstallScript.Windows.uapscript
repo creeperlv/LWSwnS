@@ -12,9 +12,9 @@ Environment:
 	-SystemVersion:6.1.6400
 	-SoftwareRecommand:WindowsTerminal
 Dependencies:
-	dotnetcore:3.x.x
+	dotnetcore:3.0.0
 	git:all
-	PowerShell:6.0.0+
+	PowerShell:6.0.0
 pwsh:
 	git clone https://github.com/creeperlv/LWSwnS.git
 	cd LWSwnS
