@@ -72,7 +72,7 @@ namespace WikiModule
                                 binResponse.SendFile(ref b.streamWriter, fs);
                             }
                         }
-                        else if (Directory.Exists("." + urlgrp[0]))
+                        else if (DirectoryExist(urlgrp[0].Substring(1)))
                         {
                             httpResponseData.StatusLine = "HTTP/1.1 307";
                             response = PageTemplate.Replace("[Content]", "Redirect...");
@@ -86,7 +86,7 @@ namespace WikiModule
                                 redirectUrl += "/";
                             }
                             httpResponseData.Additional = $"Location: {redirectUrl}Index.md";
-                            file = new FileInfo($"./{urlgrp[0].Replace("/wiki", "/Wiki")}/index.md");
+                            file = new FileInfo($"./{urlgrp[0].Replace("/wiki", "/Wiki")}/Index.md");
                             var content = File.ReadAllLines(file.FullName).ToList();
                             var realContent = "";
                             var title = "" + content[0];
@@ -173,6 +173,66 @@ namespace WikiModule
                 return description;
             }
         }
+        bool DirectoryExist(string location)
+        {
+            var paths = location.Split('/');
+            DirectoryInfo directoryInfo = new DirectoryInfo("./");
+            for (int i = 0; i < paths.Length; i++)
+            {
+                if (i != paths.Length - 1)
+                {
+                    bool find = false;
+                    foreach (var item in directoryInfo.GetDirectories())
+                    {
+                        if (item.Name.ToUpper() == paths[i].ToUpper())
+                        {
+                            find = true;
+                            directoryInfo = item;
+                            break;
+                        }
+                    }
+                    if(find==false)return false;
+                }
+                else
+                {
+                    foreach (var item in directoryInfo.GetDirectories())
+                    {
+                        if (item.Name.ToUpper() == paths[i].ToUpper())
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
+        DirectoryInfo GetFolderFromURL(string location)
+        {
+            var paths = location.Split('/');
+            DirectoryInfo directoryInfo = new DirectoryInfo("./");
+            for (int i = 0; i < paths.Length; i++)
+            {
+                if (i != paths.Length - 1)
+                {
+                    foreach (var item in directoryInfo.GetDirectories())
+                    {
+                        if (item.Name.ToUpper() == paths[i].ToUpper())
+                        {
+                            directoryInfo = item;
+                            break;
+                        }
+                    }
+                    
+                }
+                else
+                {
+                    foreach (var item in directoryInfo.GetDirectories())
+                    {
+                        if (item.Name.ToUpper() == paths[i].ToUpper())
+                            return item;
+                    }
+                }
+            }
+            throw new Exception("404,File not found!");
+        }
         FileInfo GetFileFromURL(string location)
         {
             var paths = location.Split('/');
@@ -194,7 +254,8 @@ namespace WikiModule
                 {
                     foreach (var item in directoryInfo.GetFiles())
                     {
-                        if (item.Name.ToUpper() == paths[i].ToUpper()) return item;
+                        if (item.Name.ToUpper() == paths[i].ToUpper()) 
+                            return item;
                     }
                 }
             }
