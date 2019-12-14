@@ -169,7 +169,7 @@ namespace LWSwnS.Diagnostic
                     Console.ForegroundColor = ConsoleColor.White;
                     break;
                 case MessageType.Warning:
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.Write("WARNING");
                     CombinedMsg += "[WARNING]";
                     if (LogLevel == 2) willLog = false;

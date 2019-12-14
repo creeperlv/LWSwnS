@@ -278,7 +278,7 @@ namespace WikiModule
             }
             catch (Exception e)
             {
-                Debugger.currentDebugger.Log("Fail on load configuration.", MessageType.Warning);
+                Debugger.currentDebugger.Log("Fail on load configuration."+e.Message, MessageType.Warning);
             }
             PageTemplate = File.ReadAllText(Path.Combine(rootDir, "WikiPage.html"));
             PageListItemTemplate = File.ReadAllText(Path.Combine(rootDir, "PageListItemTemplate.html"));
