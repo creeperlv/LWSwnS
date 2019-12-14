@@ -1,4 +1,5 @@
 ﻿using LWSwnS.Api;
+using LWSwnS.Api.Data;
 using LWSwnS.Configuration;
 using LWSwnS.Core.Data;
 using LWSwnS.Core.Extenstion;
@@ -68,6 +69,7 @@ namespace LWSwnS.Core
             OnRequest += (a, b) =>
             {
                 bool isMobile = false;
+                if(ServerConfiguration.CurrentConfiguration.SplitModile==true)
                 if(b.UA.IndexOf("Android") > 0 || b.UA.IndexOf("iPhone") > 0|| b.UA.IndexOf("Windows Phone") > 0|| b.UA.IndexOf("Lumia") > 0)
                 {
                     isMobile = true;
@@ -101,26 +103,48 @@ namespace LWSwnS.Core
                         return;
                     }
                 }
-                LWSwnS.Diagnostic.Debugger.currentDebugger.Log("Request:" + RealUrl);
+                Debugger.currentDebugger.Log("Request:" + RealUrl);
                 HttpResponseData httpResponseData = new HttpResponseData();
-                if (File.Exists(RealUrl))
+                try
                 {
-                    if (!RealUrl.ToUpper().EndsWith(".ico".ToUpper()))
-                        httpResponseData.content = File.ReadAllBytes(RealUrl);
-                }
-                else if (File.Exists(Path.Combine(RealUrl, "index.htm")))
-                {
-                    httpResponseData.content = File.ReadAllBytes(Path.Combine(RealUrl, "index.htm"));
-                }
-                else if (File.Exists(Path.Combine(RealUrl, "index.html")))
-                {
-                    httpResponseData.content = File.ReadAllBytes(Path.Combine(RealUrl, "index.html"));
-                }
-                else
-                {
-                    httpResponseData.content = File.ReadAllBytes(ServerConfiguration.CurrentConfiguration.Page404);
-                }
+                    if (FileUtilities.GetFileFromURL(RealUrl, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder) != null)
+                    {
+                        if (!RealUrl.ToUpper().EndsWith(".ico".ToUpper()))
+                            httpResponseData.content = File.ReadAllBytes(FileUtilities.GetFileFromURL(RealUrl, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder).FullName);
+                    }
+                    else if (FileUtilities.DirectoryExist(RealUrl, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder))
+                    {
+                        if (File.Exists(Path.Combine(RealUrl, "index.htm")))
+                        {
+                            string location = Path.Combine(RealUrl, "index.htm");
+                            httpResponseData.content = File.ReadAllBytes(FileUtilities.GetFileFromURL(location, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder).FullName);
+                        }
+                        else if (File.Exists(Path.Combine(RealUrl, "index.html")))
+                        {
+                            //httpResponseData.content = File.ReadAllBytes(Path.Combine(RealUrl, "index.html"));
 
+                            string location = Path.Combine(RealUrl, "index.html");
+                            httpResponseData.content = File.ReadAllBytes(FileUtilities.GetFileFromURL(location, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder).FullName);
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+
+                            httpResponseData.content = File.ReadAllBytes(ServerConfiguration.CurrentConfiguration.Page404);
+                        }
+                        catch (Exception)
+                        {
+                        }
+                    }
+
+
+                }
+                catch (Exception e)
+                {
+                    Debugger.currentDebugger.Log(e.Message, MessageType.Error);
+                }
                 httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
                 if (RealUrl.ToUpper().EndsWith(".ico".ToUpper()))
                 {
@@ -128,7 +152,7 @@ namespace LWSwnS.Core
                     {
 
                         httpResponseData.Additional = "Content-Type: application/icon";
-                        using (var fs = (new FileInfo(RealUrl)).Open(FileMode.Open))
+                        using (var fs = (FileUtilities.GetFileFromURL(RealUrl, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder)).Open(FileMode.Open))
                         {
                             httpResponseData.SendFile(ref b.streamWriter, fs);
                         }
@@ -138,7 +162,7 @@ namespace LWSwnS.Core
                     }
                     catch (Exception e)
                     {
-                        LWSwnS.Diagnostic.Debugger.currentDebugger.Log("Error on sending ico: " + e.Message, Diagnostic.MessageType.Error);
+                        Debugger.currentDebugger.Log("Error on sending ico: " + e.Message, Diagnostic.MessageType.Error);
                     }
                 }
                 else

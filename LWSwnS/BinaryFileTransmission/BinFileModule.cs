@@ -1,4 +1,5 @@
-﻿using LWSwnS.Api.Modules;
+﻿using LWSwnS.Api.Data;
+using LWSwnS.Api.Modules;
 using LWSwnS.Api.Web;
 using LWSwnS.Configuration;
 using LWSwnS.Core.Data;
@@ -61,11 +62,17 @@ namespace BinaryFileTransmission
             EventHandler<HttpRequestData> e= (a,b) => {
                 if (EndsWith(b.requestUrl.ToUpper(),list))
                 {
-                    
+
+                    bool isMobile = false;
+                    if (ServerConfiguration.CurrentConfiguration.SplitModile == true)
+                        if (b.UA.IndexOf("Android") > 0 || b.UA.IndexOf("iPhone") > 0 || b.UA.IndexOf("Windows Phone") > 0 || b.UA.IndexOf("Lumia") > 0)
+                        {
+                            isMobile = true;
+                        }
                     HttpResponseData httpResponseData = new HttpResponseData();
                     httpResponseData.Additional = "Application/Binary";
-                    var RealUrl = URLConventor.Convert(b.requestUrl.Trim());
-                    var fi = new FileInfo(RealUrl);
+                    var RealUrl = URLConventor.Convert(b.requestUrl.Trim(),isMobile);
+                    var fi = FileUtilities.GetFileFromURL(RealUrl, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder);
                     using(var fs = fi.OpenRead())
                     {
                         httpResponseData.SendFile(ref b.streamWriter, fs);

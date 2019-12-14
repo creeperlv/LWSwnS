@@ -80,12 +80,13 @@ namespace WikiModule
                             if (redirectUrl.EndsWith("/"))
                             {
 
+                                httpResponseData.Additional = $"Location: /{redirectUrl}Index.md";
                             }
                             else
                             {
                                 redirectUrl += "/";
+                                httpResponseData.Additional = $"Location: {redirectUrl}Index.md";
                             }
-                            httpResponseData.Additional = $"Location: {redirectUrl}Index.md";
                             file = GetFileFromURL($"./{urlgrp[0]}/Index.md");
                             var content = File.ReadAllLines(file.FullName).ToList();
                             var realContent = "";
