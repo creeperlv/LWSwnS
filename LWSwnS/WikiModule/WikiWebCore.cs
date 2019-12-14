@@ -186,6 +186,10 @@ namespace WikiModule
                         {
                             find = true;
                             directoryInfo = item;
+                            if (paths[i + 1] == "")
+                            {
+                                return true;
+                            }
                             break;
                         }
                     }
