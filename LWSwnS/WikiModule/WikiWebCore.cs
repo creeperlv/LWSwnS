@@ -86,7 +86,7 @@ namespace WikiModule
                                 redirectUrl += "/";
                             }
                             httpResponseData.Additional = $"Location: {redirectUrl}Index.md";
-                            file = new FileInfo($"./{urlgrp[0]}/Index.md");
+                            file = GetFileFromURL($"./{urlgrp[0]}/Index.md");
                             var content = File.ReadAllLines(file.FullName).ToList();
                             var realContent = "";
                             var title = "" + content[0];
@@ -281,6 +281,11 @@ namespace WikiModule
     {
         public void Init()
         {
+            {
+                UniversalConfigurationMark2 config = new UniversalConfigurationMark2();
+                config.AddItem("Title", "Default Wiki");
+                config.SaveToFile("./Configs/WikiModule.ini");
+            }
             try
             {
 
@@ -309,7 +314,9 @@ File format:
 >===
 >
 >[Content]
-[Title] is very
+[Title] is very important, it effects the title of each page.
+## Modiy Title.
+You can modify the title of wiki in `./Configs/WikiModule.ini`
 ";
                 File.WriteAllText("./Wiki/Index.md", content);
             }
