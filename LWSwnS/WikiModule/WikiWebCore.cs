@@ -147,9 +147,7 @@ namespace WikiModule
 
                         Debugger.currentDebugger.Log(e.Message, MessageType.Error);
                     }
-                    Console.WriteLine("" + response);
                     response = response.Replace("[PAGETITLE]", finalTitle).Replace("[LINKS]", ListContent);
-                    Console.WriteLine("" + response);
                     //response = "FUCK!";
                     httpResponseData.content = Encoding.UTF8.GetBytes(response);
                     httpResponseData.Send(ref b.streamWriter);
@@ -195,6 +193,10 @@ namespace WikiModule
                 }
                 else
                 {
+                    if (paths[i] == "")
+                    {
+                        return true;
+                    }
                     foreach (var item in directoryInfo.GetDirectories())
                     {
                         if (item.Name.ToUpper() == paths[i].ToUpper())
