@@ -138,7 +138,7 @@ namespace WikiModule
                             foreach (var item in listFiles)
                             {
 
-                                ListContent += PageListItemTemplate.Replace("[URL]", "/" + item.Name).Replace("[NAME]", File.ReadLines(item.FullName).First());
+                                ListContent += PageListItemTemplate.Replace("[URL]",  item.Name).Replace("[NAME]", File.ReadLines(item.FullName).First());
                             }
                         }
                     }
@@ -146,7 +146,6 @@ namespace WikiModule
                     {
 
                         Debugger.currentDebugger.Log(e.Message, MessageType.Error);
-                        response = PageTemplate.Replace("[Content]", e.Message);
                     }
                     Console.WriteLine("" + response);
                     response = response.Replace("[PAGETITLE]", finalTitle).Replace("[LINKS]", ListContent);
