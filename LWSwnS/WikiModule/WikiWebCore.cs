@@ -32,19 +32,19 @@ namespace WikiModule
                 if (b.requestUrl.ToUpper().StartsWith("/WIKI"))
                 {
                     b.Cancel = true;
-                    Debugger.currentDebugger.Log("Requested wiki:"+b.requestUrl);
+                    Debugger.currentDebugger.Log("Requested wiki:" + b.requestUrl);
                     HttpResponseData httpResponseData = new HttpResponseData();
                     var urlgrp = b.requestUrl.Split('?');
                     //if(urlgrp[0].ToUpper().to)
                     string response = "";
                     string finalTitle = "";
-                    FileInfo file=null;
+                    FileInfo file = null;
                     try
                     {
                         Console.WriteLine("" + PageTemplate);
                         if (urlgrp[0].ToUpper().EndsWith("MD"))
                         {
-                            Debugger.currentDebugger.Log("Requested wiki:" + b.requestUrl+" is a file.");
+                            Debugger.currentDebugger.Log("Requested wiki:" + b.requestUrl + " is a file.");
                             //PAGETITLE
                             file = new FileInfo("." + urlgrp[0]);
                             var content = File.ReadAllLines(file.FullName).ToList();
@@ -140,7 +140,7 @@ namespace WikiModule
                     }
                     Console.WriteLine("" + response);
                     response = response.Replace("[PAGETITLE]", finalTitle).Replace("[LINKS]", ListContent);
-                    Console.WriteLine(""+response);
+                    Console.WriteLine("" + response);
                     //response = "FUCK!";
                     httpResponseData.content = Encoding.UTF8.GetBytes(response);
                     httpResponseData.Send(ref b.streamWriter);
@@ -182,7 +182,41 @@ namespace WikiModule
     {
         public void Init()
         {
+            try
+            {
 
+                Directory.CreateDirectory("./Wiki");
+                
+            }
+            catch (Exception)
+            {
+            }
+            try
+            {
+                File.Create("./Wiki/index.md").Close();
+            }
+            catch (Exception)
+            {
+            }
+            try
+            {
+                string content = @"Home Page
+===
+# Welcome to new Wiki site!
+All wiki files are in './Wiki/'.
+File format:
+> [Title]
+>
+>===
+>
+>[Content]
+[Title] is very
+";
+                File.WriteAllText("./Wiki/Index.md",content);
+            }
+            catch (Exception)
+            {
+            }
         }
     }
 }
