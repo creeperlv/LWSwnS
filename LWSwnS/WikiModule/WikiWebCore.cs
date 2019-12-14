@@ -48,14 +48,14 @@ namespace WikiModule
                             file = GetFileFromURL(urlgrp[0].Substring(1));
                             var content = File.ReadAllLines(file.FullName).ToList();
                             var realContent = "";
-                            var title = "";
+                            var title = "" + content[0];
                             finalTitle = title;
                             foreach (var item in content)
                             {
                                 if (realContent == "")
                                 {
                                     realContent = item;
-                                }
+                                }else
                                 realContent += Environment.NewLine + item;
                             }
 
@@ -97,7 +97,7 @@ namespace WikiModule
                                 if (realContent == "")
                                 {
                                     realContent = item;
-                                }
+                                }else
                                 realContent += Environment.NewLine + item;
                             }
                             response = PageTemplate.Replace("[Content]", Markdown.ToHtml(realContent));
