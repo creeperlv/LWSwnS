@@ -284,6 +284,7 @@ namespace LWSwnS
             InitApis();
             ShellDataExchange.AES_PW = ServerConfiguration.CurrentConfiguration.ShellPassword;
             URLConventor.RootFolder = ServerConfiguration.CurrentConfiguration.WebContentRoot;
+            URLConventor.MobileRootFolder = ServerConfiguration.CurrentConfiguration.MobileWebContentRoot;
             LWSwnSServerCore a = new LWSwnSServerCore(ServerConfiguration.CurrentConfiguration.IP, ServerConfiguration.CurrentConfiguration.WebPort, ServerConfiguration.CurrentConfiguration.ShellPort);
             if (ServerConfiguration.CurrentConfiguration.isWebEnabled)
                 a.StartListenWeb();
