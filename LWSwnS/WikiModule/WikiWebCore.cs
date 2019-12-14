@@ -48,9 +48,8 @@ namespace WikiModule
                             file = GetFileFromURL(urlgrp[0].Substring(1));
                             var content = File.ReadAllLines(file.FullName).ToList();
                             var realContent = "";
-                            var title = "" + content[0];
+                            var title = "";
                             finalTitle = title;
-                            //content.RemoveAt(0);
                             foreach (var item in content)
                             {
                                 if (realContent == "")
