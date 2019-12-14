@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono" rel="stylesheet">
+    <link href="https://creeperlv.github.io/Styles/cldesignv2/cldesignv2.css" rel="stylesheet" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>[PAGETITLE]</title>
+    <script>
+        function ToggleMenu() {
+            var ifm = document.getElementById("menu");
+            if (ifm.style.visibility == 'collapse') {
+                ifm.style.visibility = 'visible';
+            } else {
+                ifm.style.visibility = 'collapse';
+            }
+        }</script>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        a {
+            width: 100%;
+        }
+
+        .menudiv:hover {
+            box-shadow: #111 0px 15px 20px 5px;
+        }
+
+        @media (max-width: 700px) {
+            .MainContent {
+                transition-duration: 0.4s;
+                /* position: absolute; */
+                border: none;
+                margin: 0px 10px;
+                padding: 0;
+                z-index: -1;
+                /* left: 1px;
+                right: 1px; */
+                width: 100%;
+            }
+
+            .menudiv {
+                transition-duration: 0.4s;
+                position: absolute;
+                top: 150px;
+                bottom: 10px;
+                width: 100%;
+                background: #333;
+                border-radius: 5px;
+                padding: 5px;
+                box-shadow: #111 0px 10px 15px 1px;
+            }
+        }
+
+        @media (min-width: 701px) {
+            .MainContent {
+                transition-duration: 0.4s;
+                margin-left: 17%;
+                padding: 1px 16px;
+                border: none;
+                width: 78%;
+            }
+
+            .menudiv {
+                transition-duration: 0.4s;
+                position: absolute;
+                top: 120px;
+                left: 1%;
+                bottom: 20px;
+                width: 15%;
+                background: #333;
+                border-radius: 5px;
+                padding: 5px;
+                box-shadow: #111 0px 10px 15px 1px;
+            }
+
+                .menudiv:hover {
+                    top: 115px;
+                    bottom: 25px;
+                }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="titleDiv" style="display:flex">
+        <p class="pageTitle" style="word-wrap: break-word">[PAGETITLE]</p>
+    </div>
+    <div style="margin-top:110px;" id="MainBody">
+        <div class="ShowOnMobile" style="width:100%">
+            <center>
+                <button class="cldButton" onclick="ToggleMenu()" style="width:90%">Menu</button>
+            </center>
+        </div>
+        <div class="menudiv HideOnMobile" id="menu" style="overflow: auto;">
+            <ul style="margin: 0px;padding:0px;">
+               [LINKS]
+            </ul>
+        </div>
+        <div name="MainContent" id="MainFrame" onload="changeFrameHeight()" class="MainContent" height="100%"
+                scrolling="auto">
+            [Content]
+        </div>
+    </div>
+    <script type="text/javascript" language="javascript">
+        function changeFrameHeight() {
+            var ifm = document.getElementById("MainFrame");
+            ifm.height = document.documentElement.clientHeight - 150;
+        }
+        window.onresize = function () { changeFrameHeight(); }
+    </script>
+</body>
+
+</html>

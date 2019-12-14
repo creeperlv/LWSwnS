@@ -3,7 +3,13 @@ using LWSwnS.Api.Web;
 using LWSwnS.Configuration;
 using LWSwnS.Core.Data;
 using LWSwnS.Diagnostic;
+using Markdig;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace WikiModule
@@ -11,11 +17,139 @@ namespace WikiModule
     public class WikiWebCore : ExtModule
     {
         string PageTemplate = "";
-        UniversalConfiguration config = new UniversalConfiguration();
-        static Version ModuleVersion = new Version(0,0,1,0);
+        string PageListItemTemplate = "";
+        string MobilePageTemplate = "";
+        string rootDir;
+        UniversalConfigurationMark2 config = new UniversalConfigurationMark2();
+        static Version ModuleVersion = new Version(0, 0, 1, 0);
         public ModuleDescription InitModule()
         {
-            Task.Run(async () => {
+            rootDir = new FileInfo(Assembly.GetAssembly(this.GetType()).Location).Directory.FullName;
+
+            WebServer.AddIgnoreUrlPrefix("/WIKI");
+            EventHandler<HttpRequestData> eventHandler = (a, b) =>
+            {
+                if (b.requestUrl.ToUpper().StartsWith("/WIKI"))
+                {
+                    b.Cancel = true;
+                    Debugger.currentDebugger.Log("Requested wiki:"+b.requestUrl);
+                    HttpResponseData httpResponseData = new HttpResponseData();
+                    var urlgrp = b.requestUrl.Split('?');
+                    //if(urlgrp[0].ToUpper().to)
+                    string response = "";
+                    string finalTitle = "";
+                    FileInfo file=null;
+                    try
+                    {
+                        Console.WriteLine("" + PageTemplate);
+                        if (urlgrp[0].ToUpper().EndsWith("MD"))
+                        {
+                            Debugger.currentDebugger.Log("Requested wiki:" + b.requestUrl+" is a file.");
+                            //PAGETITLE
+                            file = new FileInfo("." + urlgrp[0]);
+                            var content = File.ReadAllLines(file.FullName).ToList();
+                            var realContent = "";
+                            var title = "" + content[0];
+                            finalTitle = title;
+                            //content.RemoveAt(0);
+                            foreach (var item in content)
+                            {
+                                if (realContent == "")
+                                {
+                                    realContent = item;
+                                }
+                                realContent += Environment.NewLine + item;
+                            }
+                            response = PageTemplate.Replace("[Content]", Markdown.ToHtml(realContent));
+                        }
+                        else if (Directory.Exists("." + urlgrp[0]))
+                        {
+                            httpResponseData.StatusLine = "HTTP/1.1 307";
+                            response = PageTemplate.Replace("[Content]", "Redirect...");
+                            string redirectUrl = urlgrp[0].Substring(1);
+                            if (redirectUrl.EndsWith("/"))
+                            {
+
+                            }
+                            else
+                            {
+                                redirectUrl += "/";
+                            }
+                            httpResponseData.Additional = $"Location: {redirectUrl}index.md";
+                            file = new FileInfo($"./{urlgrp[0]}/index.md");
+                            var content = File.ReadAllLines(file.FullName).ToList();
+                            var realContent = "";
+                            var title = "" + content[0];
+                            finalTitle = title;
+                            //content.RemoveAt(0);
+                            foreach (var item in content)
+                            {
+                                if (realContent == "")
+                                {
+                                    realContent = item;
+                                }
+                                realContent += Environment.NewLine + item;
+                            }
+                            response = PageTemplate.Replace("[Content]", Markdown.ToHtml(realContent));
+                        }
+
+
+                    }
+                    catch (Exception e)
+                    {
+                        Debugger.currentDebugger.Log(e.Message, MessageType.Error);
+                        response = PageTemplate.Replace("[Content]", e.Message);
+                    }
+                    Debugger.currentDebugger.Log("Resolving List...");
+                    string ListContent = "";
+                    finalTitle = (config.GetValues("Title").Count == 0 ? "Default Wiki" : config.GetValues("Title")[0]) + " - " + finalTitle;
+                    try
+                    {
+
+                        {
+                            //Generate List.
+                            bool usingStaticList = false;
+                            //usingStaticList = config.GetValues("useStaticList").Count == 0 ? false : bool.Parse(config.GetValues("useStaticList")[0]);
+                            List<FileInfo> listFiles = new List<FileInfo>();
+                            if (usingStaticList == true)
+                            {
+                                //listFiles =config.GetValues("StaticList");
+                            }
+                            else
+                            {
+                                if (file != null)
+                                {
+                                    foreach (var item in file.Directory.EnumerateFiles())
+                                    {
+                                        listFiles.Add(item);
+                                    }
+                                }
+                            }
+                            foreach (var item in listFiles)
+                            {
+
+                                ListContent += PageListItemTemplate.Replace("[URL]", "/" + item.Name).Replace("[NAME]", File.ReadLines(item.FullName).First());
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+
+                        Debugger.currentDebugger.Log(e.Message, MessageType.Error);
+                        response = PageTemplate.Replace("[Content]", e.Message);
+                    }
+                    Console.WriteLine("" + response);
+                    response = response.Replace("[PAGETITLE]", finalTitle).Replace("[LINKS]", ListContent);
+                    Console.WriteLine(""+response);
+                    //response = "FUCK!";
+                    httpResponseData.content = Encoding.UTF8.GetBytes(response);
+                    httpResponseData.Send(ref b.streamWriter);
+                    Debugger.currentDebugger.Log("Data sent.");
+                }
+            };
+            WebServer.AddHttpRequestHandler(eventHandler);
+            Task.Run(async () =>
+            {
                 Debugger.currentDebugger.Log("Automatic Configuration Reload task initialized.");
                 while (true)
                 {
@@ -23,14 +157,6 @@ namespace WikiModule
                     await Task.Delay(5000);
                 }
             });
-            WebServer.AddIgnoreUrlPrefix("/wiki");
-            EventHandler<HttpRequestData> eventHandler = (a, b) => {
-                if (b.requestUrl.ToUpper().StartsWith("/WIKI"))
-                {
-
-                }
-            };
-            WebServer.AddHttpRequestHandler(eventHandler);
             {
                 ModuleDescription description = new ModuleDescription();
                 description.Name = "Wiki-Module-Web";
@@ -40,7 +166,22 @@ namespace WikiModule
         }
         void Load()
         {
-            config = UniversalConfigurationLoader.LoadFromFile("./Configs/WikiModule.ini");
+            try
+            {
+                config = UniversalConfigurationMark2.LoadFromFile("./Configs/WikiModule.ini");
+
+            }
+            catch (Exception)
+            {
+            }
+            PageTemplate = File.ReadAllText(Path.Combine(rootDir, "WikiPage.html"));
+            PageListItemTemplate = File.ReadAllText(Path.Combine(rootDir, "PageListItemTemplate.html"));
+        }
+    }
+    public class FirstRun : FirstInit
+    {
+        public void Init()
+        {
 
         }
     }

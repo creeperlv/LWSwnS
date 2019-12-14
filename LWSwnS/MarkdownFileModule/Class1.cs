@@ -1,6 +1,7 @@
 ﻿using LWSwnS.Api.Modules;
 using LWSwnS.Api.Web;
 using LWSwnS.Core.Data;
+using LWSwnS.Diagnostic;
 using System;
 using System.IO;
 using System.Reflection;
@@ -17,6 +18,7 @@ namespace MarkdownFileModule
             WebServer.AddExemptFileType("md");
             var modDirectory =new FileInfo( Assembly.GetAssembly(this.GetType()).Location).Directory;
             EventHandler<HttpRequestData> eventHandler = (a, b) => {
+                if(b.Cancel==false)
                 if (b.requestUrl.ToUpper().EndsWith("MD"))
                 {
                     try
@@ -32,7 +34,7 @@ namespace MarkdownFileModule
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(e.Message);
+                        Debugger.currentDebugger.Log(e.Message, MessageType.Error);
                     }
                 }
             };
