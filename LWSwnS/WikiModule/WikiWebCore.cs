@@ -93,7 +93,7 @@ namespace WikiModule
                             var realContent = "";
                             var title = "" + content[0];
                             finalTitle = title;
-                            //content.RemoveAt(0);
+                            content.RemoveAt(0);
                             foreach (var item in content)
                             {
                                 if (realContent == "")
