@@ -41,12 +41,11 @@ namespace WikiModule
                     FileInfo file = null;
                     try
                     {
-                        Console.WriteLine("" + PageTemplate);
                         if (urlgrp[0].ToUpper().EndsWith("MD"))
                         {
                             Debugger.currentDebugger.Log("Requested wiki:" + b.requestUrl + " is a file.");
                             //PAGETITLE
-                            file = new FileInfo("." + urlgrp[0]);
+                            file = GetFileFromURL(urlgrp[0].Substring(1));
                             var content = File.ReadAllLines(file.FullName).ToList();
                             var realContent = "";
                             var title = "" + content[0];
@@ -60,7 +59,18 @@ namespace WikiModule
                                 }
                                 realContent += Environment.NewLine + item;
                             }
+
                             response = PageTemplate.Replace("[Content]", Markdown.ToHtml(realContent));
+                        }else if(urlgrp[0].ToUpper().EndsWith("PNG")|| urlgrp[0].ToUpper().EndsWith("JPG")|| urlgrp[0].ToUpper().EndsWith("GIF")|| urlgrp[0].ToUpper().EndsWith("BMP")|| urlgrp[0].ToUpper().EndsWith("MP4")|| urlgrp[0].ToUpper().EndsWith("WEBP"))
+                        {
+                            HttpResponseData binResponse = new HttpResponseData();
+                            binResponse.Additional = "Application/Binary";
+                            var RealUrl = URLConventor.Convert(b.requestUrl.Trim());
+                            var fi = GetFileFromURL(RealUrl);
+                            using (var fs = fi.OpenRead())
+                            {
+                                binResponse.SendFile(ref b.streamWriter, fs);
+                            }
                         }
                         else if (Directory.Exists("." + urlgrp[0]))
                         {
@@ -75,8 +85,8 @@ namespace WikiModule
                             {
                                 redirectUrl += "/";
                             }
-                            httpResponseData.Additional = $"Location: {redirectUrl}index.md";
-                            file = new FileInfo($"./{urlgrp[0]}/index.md");
+                            httpResponseData.Additional = $"Location: {redirectUrl}Index.md";
+                            file = new FileInfo($"./{urlgrp[0].Replace("/wiki", "/Wiki")}/index.md");
                             var content = File.ReadAllLines(file.FullName).ToList();
                             var realContent = "";
                             var title = "" + content[0];
@@ -164,6 +174,33 @@ namespace WikiModule
                 return description;
             }
         }
+        FileInfo GetFileFromURL(string location)
+        {
+            var paths = location.Split('/');
+            DirectoryInfo directoryInfo = new DirectoryInfo("./");
+            for (int i = 0; i < paths.Length; i++)
+            {
+                if (i != paths.Length - 1)
+                {
+                    foreach (var item in directoryInfo.GetDirectories())
+                    {
+                        if (item.Name.ToUpper() == paths[i].ToUpper())
+                        {
+                            directoryInfo = item;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var item in directoryInfo.GetFiles())
+                    {
+                        if (item.Name.ToUpper() == paths[i].ToUpper()) return item;
+                    }
+                }
+            }
+            throw new Exception("404,File not found!");
+        }
         void Load()
         {
             try
@@ -186,14 +223,14 @@ namespace WikiModule
             {
 
                 Directory.CreateDirectory("./Wiki");
-                
+
             }
             catch (Exception)
             {
             }
             try
             {
-                File.Create("./Wiki/index.md").Close();
+                File.Create("./Wiki/Index.md").Close();
             }
             catch (Exception)
             {
@@ -212,7 +249,7 @@ File format:
 >[Content]
 [Title] is very
 ";
-                File.WriteAllText("./Wiki/Index.md",content);
+                File.WriteAllText("./Wiki/Index.md", content);
             }
             catch (Exception)
             {

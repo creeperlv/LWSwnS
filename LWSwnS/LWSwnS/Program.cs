@@ -220,7 +220,6 @@ namespace LWSwnS
                     }
                 }
                 ServerConfiguration.CurrentConfiguration.AllowedModules.Add(p[0] as string);
-                ConfigurationLoader.SaveToFile(ServerConfiguration.CurrentConfiguration, "./Server.ini");
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Module is now allowed to be executed.");
                 Console.ForegroundColor = ConsoleColor.White;
