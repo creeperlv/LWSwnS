@@ -26,3 +26,4 @@ BinarySettings:
 	-Security:NormalUser
 Set-Main-Executable:
 	-Source:LWSwnS.exe
+	-Target:LWSwnS.exe

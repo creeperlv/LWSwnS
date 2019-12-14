@@ -55,6 +55,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeEmbededPageModule", "Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModuleManger", "ModuleManger\ModuleManger.csproj", "{9A11E655-1885-4D77-802F-25A9A718421B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WikiModule", "WikiModule\WikiModule.csproj", "{34693DF4-01AD-4CFC-92FE-78558C1A5182}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +127,10 @@ Global
 		{9A11E655-1885-4D77-802F-25A9A718421B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A11E655-1885-4D77-802F-25A9A718421B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A11E655-1885-4D77-802F-25A9A718421B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34693DF4-01AD-4CFC-92FE-78558C1A5182}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34693DF4-01AD-4CFC-92FE-78558C1A5182}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34693DF4-01AD-4CFC-92FE-78558C1A5182}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34693DF4-01AD-4CFC-92FE-78558C1A5182}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -140,6 +146,7 @@ Global
 		{DEB2F1A7-F4FD-47FB-9206-C32A127B213C} = {B6D233A1-4D01-4FDB-9418-568291D262A7}
 		{9036C826-C30D-43E3-9834-80CD160895FE} = {270630FB-A7E2-455E-952B-38DCEA02AB14}
 		{9A11E655-1885-4D77-802F-25A9A718421B} = {270630FB-A7E2-455E-952B-38DCEA02AB14}
+		{34693DF4-01AD-4CFC-92FE-78558C1A5182} = {270630FB-A7E2-455E-952B-38DCEA02AB14}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C8C4AB2E-6906-4A7D-AF56-C45397F946CC}
