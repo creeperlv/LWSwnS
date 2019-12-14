@@ -71,6 +71,7 @@ namespace WikiModule
                             {
                                 binResponse.SendFile(ref b.streamWriter, fs);
                             }
+                            return;
                         }
                         else if (DirectoryExist(urlgrp[0].Substring(1)))
                         {
@@ -275,8 +276,9 @@ namespace WikiModule
                 config = UniversalConfigurationMark2.LoadFromFile("./Configs/WikiModule.ini");
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Debugger.currentDebugger.Log("Fail on load configuration.", MessageType.Warning);
             }
             PageTemplate = File.ReadAllText(Path.Combine(rootDir, "WikiPage.html"));
             PageListItemTemplate = File.ReadAllText(Path.Combine(rootDir, "PageListItemTemplate.html"));
