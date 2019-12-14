@@ -86,7 +86,7 @@ namespace WikiModule
                                 redirectUrl += "/";
                             }
                             httpResponseData.Additional = $"Location: {redirectUrl}Index.md";
-                            file = new FileInfo($"./{urlgrp[0].Replace("/wiki", "/Wiki")}/Index.md");
+                            file = new FileInfo($"./{urlgrp[0]}/Index.md");
                             var content = File.ReadAllLines(file.FullName).ToList();
                             var realContent = "";
                             var title = "" + content[0];
