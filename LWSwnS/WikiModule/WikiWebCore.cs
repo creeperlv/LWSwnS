@@ -32,6 +32,14 @@ namespace WikiModule
                 if (b.requestUrl.ToUpper().StartsWith("/WIKI"))
                 {
                     b.Cancel = true;
+                    string tempTemplate = PageTemplate;
+                    if (config.GetValues("SplitMobil").Count != 0)
+                    {
+                        if (bool.Parse(config.GetValues("SplitMobil")[0]) == true && b.isMobile == true)
+                        {
+                            tempTemplate = MobilePageTemplate;
+                        }
+                    }
                     Debugger.currentDebugger.Log("Requested wiki:" + b.requestUrl);
                     HttpResponseData httpResponseData = new HttpResponseData();
                     var urlgrp = b.requestUrl.Split('?');
@@ -55,12 +63,14 @@ namespace WikiModule
                                 if (realContent == "")
                                 {
                                     realContent = item;
-                                }else
-                                realContent += Environment.NewLine + item;
+                                }
+                                else
+                                    realContent += Environment.NewLine + item;
                             }
 
-                            response = PageTemplate.Replace("[Content]", Markdown.ToHtml(realContent));
-                        }else if(urlgrp[0].ToUpper().EndsWith("PNG")|| urlgrp[0].ToUpper().EndsWith("JPG")|| urlgrp[0].ToUpper().EndsWith("GIF")|| urlgrp[0].ToUpper().EndsWith("BMP")|| urlgrp[0].ToUpper().EndsWith("MP4")|| urlgrp[0].ToUpper().EndsWith("WEBP"))
+                            response = tempTemplate.Replace("[Content]", Markdown.ToHtml(realContent));
+                        }
+                        else if (urlgrp[0].ToUpper().EndsWith("PNG") || urlgrp[0].ToUpper().EndsWith("JPG") || urlgrp[0].ToUpper().EndsWith("GIF") || urlgrp[0].ToUpper().EndsWith("BMP") || urlgrp[0].ToUpper().EndsWith("MP4") || urlgrp[0].ToUpper().EndsWith("WEBP"))
                         {
                             HttpResponseData binResponse = new HttpResponseData();
                             binResponse.Additional = "Application/Binary";
@@ -75,7 +85,7 @@ namespace WikiModule
                         else if (DirectoryExist(urlgrp[0].Substring(1)))
                         {
                             httpResponseData.StatusLine = "HTTP/1.1 307";
-                            response = PageTemplate.Replace("[Content]", "Redirect...");
+                            response = tempTemplate.Replace("[Content]", "Redirect...");
                             string redirectUrl = urlgrp[0].Substring(1);
                             if (redirectUrl.EndsWith("/"))
                             {
@@ -97,10 +107,11 @@ namespace WikiModule
                                 if (realContent == "")
                                 {
                                     realContent = item;
-                                }else
-                                realContent += Environment.NewLine + item;
+                                }
+                                else
+                                    realContent += Environment.NewLine + item;
                             }
-                            response = PageTemplate.Replace("[Content]", Markdown.ToHtml(realContent));
+                            response = tempTemplate.Replace("[Content]", Markdown.ToHtml(realContent));
                         }
 
 
@@ -108,7 +119,7 @@ namespace WikiModule
                     catch (Exception e)
                     {
                         Debugger.currentDebugger.Log(e.Message, MessageType.Error);
-                        response = PageTemplate.Replace("[Content]", e.Message);
+                        response = tempTemplate.Replace("[Content]", e.Message);
                     }
                     Debugger.currentDebugger.Log("Resolving List...");
                     string ListContent = "";
@@ -138,7 +149,7 @@ namespace WikiModule
                             foreach (var item in listFiles)
                             {
 
-                                ListContent += PageListItemTemplate.Replace("[URL]",  item.Name).Replace("[NAME]", File.ReadLines(item.FullName).First());
+                                ListContent += PageListItemTemplate.Replace("[URL]", item.Name).Replace("[NAME]", File.ReadLines(item.FullName).First());
                             }
                         }
                     }
@@ -193,7 +204,7 @@ namespace WikiModule
                             break;
                         }
                     }
-                    if(find==false)return false;
+                    if (find == false) return false;
                 }
                 else
                 {
@@ -226,7 +237,7 @@ namespace WikiModule
                             break;
                         }
                     }
-                    
+
                 }
                 else
                 {
@@ -260,7 +271,7 @@ namespace WikiModule
                 {
                     foreach (var item in directoryInfo.GetFiles())
                     {
-                        if (item.Name.ToUpper() == paths[i].ToUpper()) 
+                        if (item.Name.ToUpper() == paths[i].ToUpper())
                             return item;
                     }
                 }
@@ -276,10 +287,18 @@ namespace WikiModule
             }
             catch (Exception e)
             {
-                Debugger.currentDebugger.Log("Fail on load configuration."+e.Message, MessageType.Warning);
+                Debugger.currentDebugger.Log("Fail on load configuration." + e.Message, MessageType.Warning);
             }
             PageTemplate = File.ReadAllText(Path.Combine(rootDir, "WikiPage.html"));
-            PageListItemTemplate = File.ReadAllText(Path.Combine(rootDir, "PageListItemTemplate.html"));
+            try
+            {
+
+                PageListItemTemplate = File.ReadAllText(Path.Combine(rootDir, "PageListItemTemplate.html"));
+
+            }
+            catch (Exception)
+            {
+            }
         }
     }
     public class FirstRun : FirstInit

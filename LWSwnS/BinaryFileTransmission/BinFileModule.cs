@@ -3,9 +3,11 @@ using LWSwnS.Api.Modules;
 using LWSwnS.Api.Web;
 using LWSwnS.Configuration;
 using LWSwnS.Core.Data;
+using LWSwnS.Diagnostic;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace BinaryFileTransmission
 {
@@ -51,9 +53,25 @@ namespace BinaryFileTransmission
         {
             ModuleDescription description = new ModuleDescription();
             description.Name = "Binary-File-Transmission-Module";
-            description.version = new Version(0, 0, 1, 0);
+            description.version = new Version(0, 0, 2, 0);
             UniversalConfigurationMark2 fileType = new UniversalConfigurationMark2();
-            fileType = UniversalConfigurationMark2.LoadFromFile("./Configs/BinFileTransModule.ini");
+            Task.Run(async () => {
+                await Task.Delay(1000);
+                Debugger.currentDebugger.Log("Auto configuration reload initialized.");
+                while (true)
+                {
+                    try
+                    {
+
+                        fileType = UniversalConfigurationMark2.LoadFromFile("./Configs/BinFileTransModule.ini");
+
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    await Task.Delay(5000);
+                }
+            });
             var list = fileType.GetValues("Binary");
             foreach (var item in list)
             {
