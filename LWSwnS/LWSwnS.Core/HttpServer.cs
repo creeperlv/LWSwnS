@@ -305,7 +305,8 @@ namespace LWSwnS.Core
                 {
                     if (LS[i].StartsWith("User-Agent: "))
                     {
-                        requestData.UA = LS[i].Substring("User-Agent: ".Length);
+                        requestData.UA = LS[i].Substring("User-Agent:".Length).Trim();
+                        requestData.isMobile = requestData.UA.IndexOf("Android") > 0 || requestData.UA.IndexOf("iPhone") > 0 || requestData.UA.IndexOf("Windows Phone") > 0 || requestData.UA.IndexOf("Lumia") > 0;
                     }
                 }
             }

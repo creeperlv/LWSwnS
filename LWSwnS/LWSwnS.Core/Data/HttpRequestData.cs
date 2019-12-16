@@ -13,7 +13,7 @@ namespace LWSwnS.Core.Data
         public string requestUrl;
         public string UA;
         public HttpRequestType RequestType;
-
+        public bool isMobile = false;
         public bool willCancelNextHandle = false;
         public StreamWriter streamWriter;
     }
