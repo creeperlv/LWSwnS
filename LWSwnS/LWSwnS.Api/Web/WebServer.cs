@@ -1,6 +1,10 @@
-﻿using System;
+﻿using LWSwnS.Api.Modules;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace LWSwnS.Api.Web
@@ -40,6 +44,14 @@ namespace LWSwnS.Api.Web
         /// <param name="e"></param>
         public static void AddHttpRequestHandler(Object e)
         {
+            StackTrace stack = new StackTrace(true);
+            var f = stack.GetFrame(1);
+            var file = new FileInfo(Assembly.GetAssembly(f.GetMethod().DeclaringType).Location);
+            if (!ModuleManager.Handlers.ContainsKey(file.FullName))
+            {
+                ModuleManager.Handlers.Add(file.FullName, new List<Object>());
+            }
+            ModuleManager.Handlers[file.FullName].Add(e);
             UniParamater uniParamater = new UniParamater();
             uniParamater.Add(e);
             ApiManager.Functions["AddOnReq"](uniParamater);

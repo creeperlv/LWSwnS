@@ -18,5 +18,6 @@ namespace LWSwnS.Api.Modules
         public string Name;
         public Version version = new Version(0,0,0,0);
         public Assembly targetAssembly;
+        public Object Environment;
     }
 }

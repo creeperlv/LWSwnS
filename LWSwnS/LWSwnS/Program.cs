@@ -170,6 +170,15 @@ namespace LWSwnS
                 }
                 return new UniResult();
             });
+            ApiManager.AddFunction("UNREGCMD", (UniParamater p) =>
+            {
+                var name = p[0] as string;
+                if (ShellServer.Commands.ContainsKey(name))
+                {
+                    ShellServer.Commands.Remove(name);
+                }
+                return new UniResult();
+            });
             ApiManager.AddFunction("MODULE_INIT", (UniParamater p) =>
             {
                 Modules modules = new Modules((new FileInfo("./Modules/" + p[0])).DirectoryName);
@@ -196,6 +205,38 @@ namespace LWSwnS
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Module is now allowed to be executed.");
                 Console.ForegroundColor = ConsoleColor.White;
+                return new UniResult();
+            });
+            ApiManager.AddFunction("MODULE_UNLD", (UniParamater p) =>
+            {
+                try
+                {
+                    List<int> ids = new List<int>();
+                    for (int i = 0; i < ModuleManager.ExtModules.Count; i++)
+                    {
+                        try
+                        {
+                            ids.Add(i);
+                            var dllfile = new FileInfo(ModuleManager.ExtModules[i].targetAssembly.Location).FullName;
+                            var TargetFile = new FileInfo(p[0] as String).FullName;
+                            if (TargetFile == dllfile)
+                            {
+                                (ModuleManager.ExtModules[i].Environment as Modules).Unload();
+                            }
+                        }
+                        catch (Exception)
+                        {
+                        }
+                    }
+                    for (int i = ids.Count-1; i >=0; i--)
+                    {
+                        ModuleManager.ExtModules.RemoveAt(ids[i]);
+                    }
+                    //ModuleManager.ExtModules.RemoveAt();
+                }
+                catch (Exception)
+                {
+                }
                 return new UniResult();
             });
             ApiManager.AddFunction("MODULE_LOAD", (UniParamater p) =>
@@ -315,6 +356,7 @@ namespace LWSwnS
                             ExtModule extModule = Activator.CreateInstance(t) as ExtModule;
                             var ModDesc = extModule.InitModule();
                             ModDesc.targetAssembly = asm;
+                            ModDesc.Environment = modules;
                             ModuleManager.ExtModules.Add(ModDesc);
 
                             Console.Write("\t\tExtModule Description: ");

@@ -65,6 +65,11 @@ namespace LWSwnS.Core
                 OnRequest += p[0] as EventHandler<HttpRequestData>;
                 return new UniResult();
             });
+            ApiManager.AddFunction("RmOnReq", (UniParamater p) =>
+            {
+                OnRequest -= p[0] as EventHandler<HttpRequestData>;
+                return new UniResult();
+            });
             TCPListener = listener;
             OnRequest += (a, b) =>
             {
