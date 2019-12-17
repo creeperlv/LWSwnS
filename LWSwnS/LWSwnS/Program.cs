@@ -256,6 +256,7 @@ namespace LWSwnS
                     {
                         ExtModule extModule = Activator.CreateInstance(t) as ExtModule;
                         var ModDesc = extModule.InitModule();
+                        ModDesc.Environment = modules;
                         ModDesc.targetAssembly = asm;
                         result.Add(ModDesc);
                     }
