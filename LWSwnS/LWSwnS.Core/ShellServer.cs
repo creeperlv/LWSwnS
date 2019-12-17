@@ -12,7 +12,7 @@ namespace LWSwnS.Core
 {
     public class ShellServer
     {
-        public static Version ShellServerVersion = new Version("1.0.0.0");
+        public static Version ShellServerVersion = new Version("1.1.0.0");
         //public static string ShellPassword;
         TcpListener TCPListener;
         bool ShellStop = false;

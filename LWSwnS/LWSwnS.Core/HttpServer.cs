@@ -15,7 +15,7 @@ namespace LWSwnS.Core
 {
     public class HttpServer
     {
-        public static Version WebServerVersion = new Version(1, 0, 0, 0);
+        public static Version WebServerVersion = new Version(1, 1, 0, 0);
         public List<string> URLPrefix = new List<string>();
         public List<string> ExemptedFileTypes = new List<string>();
         public static Dictionary<string, IWebPage> WebPages = new Dictionary<string, IWebPage>();
