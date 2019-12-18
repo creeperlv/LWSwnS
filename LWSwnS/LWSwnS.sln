@@ -36,7 +36,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarkdownFileModule", "Markd
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E6C5802A-AD10-43BE-A676-476B479B28FA}"
 	ProjectSection(SolutionItems) = preProject
-		InstallScript.Windows.uapscript = InstallScript.Windows.uapscript
+		InstallScript.uapscript = InstallScript.uapscript
 		LWSwnS.uapmanifest = LWSwnS.uapmanifest
 		..\Readme.md = ..\Readme.md
 	EndProjectSection

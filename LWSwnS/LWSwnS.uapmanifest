@@ -4,4 +4,4 @@ Publisher=Creeper Lv
 PackageVersion=1.0.1.0,Preview
 LicenseURL=https://raw.githubusercontent.com/creeperlv/LWSwnS/master/LICENSE
 PackageHomeURL=https://github.com/creeperlv/LWSwnS/
-InstallationScript=https://raw.githubusercontent.com/creeperlv/LWSwnS/master/LWSwnS/InstallScript.{Platform}.uapscript
+InstallationScript=https://raw.githubusercontent.com/creeperlv/LWSwnS/master/LWSwnS/InstallScript.uapscript
