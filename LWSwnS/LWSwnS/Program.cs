@@ -5,6 +5,7 @@ using LWSwnS.Configuration;
 using LWSwnS.Core;
 using LWSwnS.Core.Data;
 using LWSwnS.Diagnostic;
+using LWSwnS.Globalization;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -301,8 +302,15 @@ namespace LWSwnS
         }
         static void Main(string[] args)
         {
+            Console.Title = "LWSwnS";
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("LWSwnS - Lite Web Server with uNsafe Shell");
+            Console.WriteLine("Initialize Localization Flavor");
+            Console.Write("Region:");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(System.Globalization.CultureInfo.CurrentCulture.Name);
+            Console.ForegroundColor = ConsoleColor.White;
+            Language.Load();
             if (!File.Exists("./Server.ini"))
             {
                 FirstInitialize();
@@ -332,9 +340,9 @@ namespace LWSwnS
             if (ServerConfiguration.CurrentConfiguration.isShellEnabled)
                 a.StartListenShell();
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Core Server Started.");
+            Console.WriteLine(Language.GetString("General", "Host.CoreStarted", "Core Server Started."));
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("Loading Modules");
+            Console.WriteLine(Language.GetString("General", "Host.LoadModules", "Loading Modules"));
             foreach (var item in ServerConfiguration.CurrentConfiguration.AllowedModules)
             {
                 try
@@ -345,7 +353,7 @@ namespace LWSwnS
                     //AssemblyLoadContext.Default.LoadFromAssemblyPath
                     //Console.WriteLine(ra);
                     var types = asm.GetTypes();
-                    Console.Write("\tLoad: ");
+                    Console.Write(Language.GetString("General", "Host.Module.Load", "\tLoad: "));
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine(new FileInfo("./Modules/" + item).Name);
                     Console.ForegroundColor = ConsoleColor.White;
@@ -360,7 +368,7 @@ namespace LWSwnS
                             ModDesc.Environment = modules;
                             ModuleManager.ExtModules.Add(ModDesc);
 
-                            Console.Write("\t\tExtModule Description: ");
+                            Console.Write(Language.GetString("General", "Host.Module.ExtMod", "\t\tExtModule Description: "));
                             Console.ForegroundColor = ConsoleColor.Green;
                             Console.Write(ModDesc.Name);
                             Console.ForegroundColor = ConsoleColor.White;
@@ -379,12 +387,12 @@ namespace LWSwnS
                 }
                 //ModuleManager.ExtModules.Add()
             }
-            Console.Write("Loaded ");
+            Console.Write(Language.GetString("General", "Host.LoadModule.FirstHalf", "Loaded "));
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write(ModuleManager.ExtModules.Count + "");
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(" ExtModule(s) in total.");
-            Console.WriteLine("The server is now fully running.");
+            Console.WriteLine(Language.GetString("General", "Host.LoadModule.SecondHalf", " ExtModule(s) in total."));
+            Console.WriteLine(Language.GetString("General", "Host.FullRun" ,"The server is now fully running."));
             string cmd;
             while ((cmd = Console.ReadLine()).ToUpper() != "EXIT")
             {

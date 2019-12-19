@@ -1,0 +1,11 @@
+﻿Host.CoreStarted=Core Server Started.
+Host.LoadModules=Loading Modules
+Host.Module.Load=	Load:
+Host.Module.ExtMod=		ExtModule Description:
+Host.Module.LoadDep=Loaded Dependency:
+Host.FullRun=The server is now fully running.
+Host.LoadModule.FirstHalf=Loaded 
+Host.LoadModule.SecondHalf= ExtModule(s) in total.
+Debugger.Normal=NORAML 
+Debugger.Warning=WARNING
+Debugger.Error=ERROR  

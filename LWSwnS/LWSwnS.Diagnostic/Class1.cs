@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LWSwnS.Globalization;
+using System;
 using System.IO;
 using System.Reflection;
 
@@ -102,7 +103,7 @@ namespace LWSwnS.Diagnostic
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("][");
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("NORAML ");
+            Console.Write(Language.GetString("General", "Debugger.Normal", "NORAML "));
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("]");
             Console.WriteLine(msg);
@@ -110,12 +111,12 @@ namespace LWSwnS.Diagnostic
             try
             {
 
-                CombinedMsg = $"[{(new FileInfo(Assembly.GetAssembly(f.GetMethod().DeclaringType).Location)).Name}][NORMAL ]{msg}";
+                CombinedMsg = $"[{(new FileInfo(Assembly.GetAssembly(f.GetMethod().DeclaringType).Location)).Name}][{Language.GetString("General", "Debugger.Normal", "NORAML ")}]{msg}";
             }
             catch (Exception)
             {
 
-                CombinedMsg = $"[CODE_SCRIPT][NORMAL ]{msg}";
+                CombinedMsg = $"[CODE_SCRIPT][{Language.GetString("General", "Debugger.Normal", "NORAML ")}]{msg}";
             }
             if (LogLevel == 0)
             {
@@ -160,25 +161,25 @@ namespace LWSwnS.Diagnostic
             {
                 case MessageType.Normal:
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("NORAML ");
+                    Console.Write(Language.GetString("General", "Debugger.Normal", "NORAML "));
                     if (LogLevel != 0)
                     {
                         willLog = false;
                     }
-                    CombinedMsg += "[NORMAL ]";
+                    CombinedMsg += $"[{Language.GetString("General", "Debugger.Normal", "NORAML ")}]";
                     Console.ForegroundColor = ConsoleColor.White;
                     break;
                 case MessageType.Warning:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write("WARNING");
-                    CombinedMsg += "[WARNING]";
+                    Console.ForegroundColor = ConsoleColor.Yellow;//Warning
+                    Console.Write(Language.GetString("General", "Debugger.Warning", "WARNING"));
+                    CombinedMsg += $"[{Language.GetString("General", "Debugger.Warning", "WARNING")}]";
                     if (LogLevel == 2) willLog = false;
                     Console.ForegroundColor = ConsoleColor.White;
                     break;
                 case MessageType.Error:
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write("ERROR  ");
-                    CombinedMsg += "[ERROR  ]";
+                    Console.Write(Language.GetString("General", "Debugger.Error", "ERROR  "));
+                    CombinedMsg += $"[{Language.GetString("General", "Debugger.Error", "ERROR  ")}]";
                     Console.ForegroundColor = ConsoleColor.White;
                     break;
                 default:

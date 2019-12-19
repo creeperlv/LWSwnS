@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyModel;
+﻿using LWSwnS.Globalization;
+using Microsoft.Extensions.DependencyModel;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -62,7 +63,7 @@ namespace LWSwnS
             var f=directoryInfo.EnumerateFiles("*.deps.json");
             foreach (var item in f)
             {
-                Console.WriteLine("Loaded Dependency:"+item.Name);
+                Console.WriteLine(Language.GetString("General", "Host.Module.LoadDep", "Loaded Dependency:") +item.Name);
                 Depss.Add(JObject.Parse(File.ReadAllText(item.FullName)));
             }
             this.Resolving += Modules_Resolving;
