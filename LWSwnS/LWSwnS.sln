@@ -59,6 +59,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModuleManger", "ModuleMange
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiModule", "WikiModule\WikiModule.csproj", "{34693DF4-01AD-4CFC-92FE-78558C1A5182}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LWSwnS.Globalization", "LWSwnS.Globalization\LWSwnS.Globalization.csproj", "{129B9258-1CA9-4ACC-A3FB-71A4E88C0140}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -133,6 +135,10 @@ Global
 		{34693DF4-01AD-4CFC-92FE-78558C1A5182}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34693DF4-01AD-4CFC-92FE-78558C1A5182}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34693DF4-01AD-4CFC-92FE-78558C1A5182}.Release|Any CPU.Build.0 = Release|Any CPU
+		{129B9258-1CA9-4ACC-A3FB-71A4E88C0140}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{129B9258-1CA9-4ACC-A3FB-71A4E88C0140}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{129B9258-1CA9-4ACC-A3FB-71A4E88C0140}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{129B9258-1CA9-4ACC-A3FB-71A4E88C0140}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
