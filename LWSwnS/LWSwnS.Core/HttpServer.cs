@@ -4,6 +4,7 @@ using LWSwnS.Configuration;
 using LWSwnS.Core.Data;
 using LWSwnS.Core.Extenstion;
 using LWSwnS.Diagnostic;
+using LWSwnS.Globalization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -108,7 +109,7 @@ namespace LWSwnS.Core
                         return;
                     }
                 }
-                Debugger.currentDebugger.Log("Request:" + RealUrl);
+                Debugger.currentDebugger.Log(Language.GetString("General","HttpServer.Request", "Request:" )+ RealUrl);
                 HttpResponseData httpResponseData = new HttpResponseData();
                 try
                 {
@@ -363,7 +364,7 @@ namespace LWSwnS.Core
                             }
                         }
                         string res=HttpServer.WebPages[path].Access(p, rec);
-                        Debugger.currentDebugger.Log("Executed:"+ (new FileInfo(path)).Name+": "+res);
+                        Debugger.currentDebugger.Log(Language.GetString("General", "HttpServer.Executed","Executed:" )+ (new FileInfo(path)).Name+": "+res);
                         continue;
                     }else
                     FatherServer.HandleRequest(rec);

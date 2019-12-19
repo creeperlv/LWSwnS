@@ -9,3 +9,5 @@ Host.LoadModule.SecondHalf= ExtModule(s) in total.
 Debugger.Normal=NORAML 
 Debugger.Warning=WARNING
 Debugger.Error=ERROR  
+HttpServer.Request=Request:
+HttpServer.Executed=Executed:
