@@ -11,3 +11,4 @@ Debugger.Warning=警告
 Debugger.Error=错误
 HttpServer.Request=请求：
 HttpServer.Executed=已执行：
+ShellServer.ReceiveCmd=收到指令：

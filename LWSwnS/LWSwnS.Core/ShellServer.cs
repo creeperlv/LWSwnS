@@ -1,5 +1,6 @@
 ﻿using LWSwnS.Api;
 using LWSwnS.Api.Data;
+using LWSwnS.Globalization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -163,7 +164,7 @@ namespace LWSwnS.Core
                         BinaryFormatter binary = new BinaryFormatter();
                         obj = binary.Deserialize(memoryStream);
                     }
-                    LWSwnS.Diagnostic.Debugger.currentDebugger.Log("Receive Command:"+name+".");
+                    LWSwnS.Diagnostic.Debugger.currentDebugger.Log(Language.GetString("General", "ShellServer.ReceiveCmd", "Receive Command:") + name);
                     bool isReacted = false;
                     bool isShellResponsed = false;
                     foreach (var item in ShellServer.Commands)

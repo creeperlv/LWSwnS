@@ -1,5 +1,6 @@
 ﻿using LWSwnS.Api;
 using LWSwnS.Api.Data;
+using LWSwnS.Api.Web;
 using LWSwnS.Configuration;
 using LWSwnS.Core.Data;
 using LWSwnS.Core.Extenstion;
@@ -10,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Sockets;
 using System.Runtime.Loader;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace LWSwnS.Core
@@ -138,7 +140,7 @@ namespace LWSwnS.Core
                         try
                         {
 
-                            httpResponseData.content = File.ReadAllBytes(ServerConfiguration.CurrentConfiguration.Page404);
+                            httpResponseData.content = Encoding.UTF8.GetBytes(SpecialPages.GetSpecialPage(KnownSpecialPages.Page404));
                         }
                         catch (Exception)
                         {

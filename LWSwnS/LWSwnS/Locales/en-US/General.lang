@@ -11,3 +11,4 @@ Debugger.Warning=WARNING
 Debugger.Error=ERROR  
 HttpServer.Request=Request:
 HttpServer.Executed=Executed:
+ShellServer.ReceiveCmd=Receive Command:

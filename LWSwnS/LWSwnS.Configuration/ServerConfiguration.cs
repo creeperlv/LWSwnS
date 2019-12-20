@@ -48,9 +48,9 @@ namespace LWSwnS.Configuration
                     serverConfiguration.IP = item.Substring("IP=".Length);
                 }
                 else
-                if (item.StartsWith("Page404 ="))
+                if (item.StartsWith("Page404="))
                 {
-                    serverConfiguration.Page404 = item.Substring("Page404 =".Length);
+                    serverConfiguration.Page404 = item.Substring("Page404=".Length);
                 }
                 else
                 if (item.StartsWith("ShellPassword="))

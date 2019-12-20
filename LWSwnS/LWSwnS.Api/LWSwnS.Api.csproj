@@ -8,4 +8,8 @@
     <PackageReference Include="NETCore.Encrypt" Version="2.0.8" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LWSwnS.Configuration\LWSwnS.Configuration.csproj" />
+  </ItemGroup>
+
 </Project>
