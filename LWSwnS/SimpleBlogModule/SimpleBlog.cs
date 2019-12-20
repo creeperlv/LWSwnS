@@ -188,6 +188,7 @@ namespace SimpleBlogModule
         {
             posts.Clear();
             DirectoryInfo directory = new DirectoryInfo("./Posts/");
+            if (!directory.Exists) directory.Create();
             var f = directory.GetFiles();
             SortFileByTime(ref f);
             foreach (var item in f)
