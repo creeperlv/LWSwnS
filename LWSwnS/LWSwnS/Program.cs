@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Threading.Tasks;
 
 namespace LWSwnS
 {
@@ -318,10 +319,22 @@ namespace LWSwnS
             try
             {
                 ServerConfiguration.CurrentConfiguration = ConfigurationLoader.LoadFromFile("./Server.ini");
+                
             }
             catch (Exception)
             {
             }
+            Task.Run(async () => {
+                while (true)
+                {
+                    await Task.Delay(10000);
+                    try
+                    {
+                        ServerConfiguration.CurrentConfiguration = ConfigurationLoader.LoadFromFile("./Server.ini");
+                    }
+                    catch {}
+                }
+            });
             if (ServerConfiguration.CurrentConfiguration.isLogEnabled == true)
             {
                 Debugger.currentDebugger = new Debugger(ServerConfiguration.CurrentConfiguration.LogLevel, ServerConfiguration.CurrentConfiguration.LogSeparateSize);
@@ -429,7 +442,7 @@ namespace LWSwnS
                     var file = cmd.Substring("Init-Module-From-List ".Length);
                     InitModuleFromList(file);
                 }
-                else if (cmd.StartsWith("initmods "))
+                else if (cmd.ToUpper().StartsWith("initmods ".ToUpper()))
                 {
                     var file = cmd.Substring("initmods ".Length);
                     InitModuleFromList(file);
