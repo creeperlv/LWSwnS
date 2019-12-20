@@ -48,16 +48,17 @@ namespace SimpleGitViewer
             }
             WebServer.AddIgnoreUrlPrefix("/Git");
             Load();
-            Task.Run(async () =>
-            {
-                await Task.Delay(1000);
-                Debugger.currentDebugger.Log("Auto reload task initialized.", MessageType.Normal);
-                while (true)
-                {
-                    await Task.Delay(5000);
-                    Load();
-                }
-            });
+            Tasks.RegisterTask(Load, Tasks.TaskType.Every5Seconds);
+            //Task.Run(async () =>
+            //{
+            //    await Task.Delay(1000);
+            //    Debugger.currentDebugger.Log("Auto reload task initialized.", MessageType.Normal);
+            //    while (true)
+            //    {
+            //        await Task.Delay(5000);
+            //        Load();
+            //    }
+            //});
             EventHandler<HttpRequestData> handler = (a, b) =>
             {
                 try

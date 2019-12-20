@@ -22,15 +22,25 @@ namespace FileReceiever
             moduleDescription.Name = "FileReceieverModule";
             moduleDescription.version = ModuleVersion;
             config = UniversalConfigurationLoader.LoadFromFile("./Configs/FileReceiever.ini");
-            Task.Run(async () => {
-                await Task.Delay(500);
-                Debugger.currentDebugger.Log("Auto Config Reload Initialized.");
-                while (true)
+            Tasks.RegisterTask(() => {
+                try
                 {
-                    await Task.Delay(5000);
                     config = UniversalConfigurationLoader.LoadFromFile("./Configs/FileReceiever.ini");
+
+                }
+                catch (Exception)
+                {
                 }
             });
+            //Task.Run(async () => {
+            //    await Task.Delay(500);
+            //    Debugger.currentDebugger.Log("Auto Config Reload Initialized.");
+            //    while (true)
+            //    {
+            //        await Task.Delay(5000);
+            //        config = UniversalConfigurationLoader.LoadFromFile("./Configs/FileReceiever.ini");
+            //    }
+            //});
             CommandHandler.RegisterCommand("push-file", (a, b, c) => {
                 string name = a;
                 string info = b as string;

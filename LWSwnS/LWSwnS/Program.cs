@@ -230,7 +230,7 @@ namespace LWSwnS
                         {
                         }
                     }
-                    for (int i = ids.Count-1; i >=0; i--)
+                    for (int i = ids.Count - 1; i >= 0; i--)
                     {
                         ModuleManager.ExtModules.RemoveAt(ids[i]);
                     }
@@ -267,7 +267,7 @@ namespace LWSwnS
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Module is now allowed to be executed.");
                 Console.ForegroundColor = ConsoleColor.White;
-                return new UniResult() { Data= result };
+                return new UniResult() { Data = result };
             });
         }
         static void InitModuleFromList(string lst)
@@ -319,20 +319,277 @@ namespace LWSwnS
             try
             {
                 ServerConfiguration.CurrentConfiguration = ConfigurationLoader.LoadFromFile("./Server.ini");
-                
+
             }
             catch (Exception)
             {
             }
-            Task.Run(async () => {
+            Task.Run(async () =>
+            {
                 while (true)
                 {
-                    await Task.Delay(10000);
-                    try
                     {
-                        ServerConfiguration.CurrentConfiguration = ConfigurationLoader.LoadFromFile("./Server.ini");
+
+                        await Task.Delay(5000);
+                        try
+                        {
+                            ServerConfiguration.CurrentConfiguration = ConfigurationLoader.LoadFromFile("./Server.ini");
+                        }
+                        catch { }
+                        try
+                        {
+
+                            foreach (var item in Tasks.TaskEvery5Seconds)
+                            {
+                                foreach (var action in item.Value)
+                                {
+                                    try
+                                    {
+
+                                        action();
+
+                                    }
+                                    catch
+                                    {
+                                    }
+                                }
+                            }
+                        }
+                        catch
+                        {
+                        }
+                        await Task.Delay(5000);
+                        try
+                        {
+                        }
+                        catch { }
+                        try
+                        {
+
+                            foreach (var item in Tasks.TaskEvery5Seconds)
+                            {
+                                foreach (var action in item.Value)
+                                {
+                                    try
+                                    {
+
+                                        action();
+
+                                    }
+                                    catch
+                                    {
+                                    }
+                                }
+                            }
+                        }
+                        catch
+                        {
+                        }
+                        try
+                        {
+
+                            foreach (var item in Tasks.TaskEvery10Seconds)
+                            {
+                                foreach (var action in item.Value)
+                                {
+                                    try
+                                    {
+
+                                        action();
+
+                                    }
+                                    catch
+                                    {
+                                    }
+                                }
+                            }
+                        }
+                        catch
+                        {
+                        }
                     }
-                    catch {}
+                    {
+
+                        await Task.Delay(5000);
+                        try
+                        {
+                            ServerConfiguration.CurrentConfiguration = ConfigurationLoader.LoadFromFile("./Server.ini");
+                        }
+                        catch { }
+                        try
+                        {
+
+                            foreach (var item in Tasks.TaskEvery5Seconds)
+                            {
+                                foreach (var action in item.Value)
+                                {
+                                    try
+                                    {
+
+                                        action();
+
+                                    }
+                                    catch
+                                    {
+                                    }
+                                }
+                            }
+                        }
+                        catch
+                        {
+                        }
+                        await Task.Delay(5000);
+                        try
+                        {
+                        }
+                        catch { }
+                        try
+                        {
+
+                            foreach (var item in Tasks.TaskEvery5Seconds)
+                            {
+                                foreach (var action in item.Value)
+                                {
+                                    try
+                                    {
+
+                                        action();
+
+                                    }
+                                    catch
+                                    {
+                                    }
+                                }
+                            }
+                        }
+                        catch
+                        {
+                        }
+                        try
+                        {
+
+                            foreach (var item in Tasks.TaskEvery10Seconds)
+                            {
+                                foreach (var action in item.Value)
+                                {
+                                    try
+                                    {
+
+                                        action();
+
+                                    }
+                                    catch
+                                    {
+                                    }
+                                }
+                            }
+                        }
+                        catch
+                        {
+                        }
+                    }
+                    {
+
+                        await Task.Delay(5000);
+                        try
+                        {
+                            ServerConfiguration.CurrentConfiguration = ConfigurationLoader.LoadFromFile("./Server.ini");
+                        }
+                        catch { }
+                        try
+                        {
+
+                            foreach (var item in Tasks.TaskEvery5Seconds)
+                            {
+                                foreach (var action in item.Value)
+                                {
+                                    try
+                                    {
+
+                                        action();
+
+                                    }
+                                    catch
+                                    {
+                                    }
+                                }
+                            }
+                        }
+                        catch
+                        {
+                        }
+                        await Task.Delay(5000);
+                        try
+                        {
+                        }
+                        catch { }
+                        try
+                        {
+
+                            foreach (var item in Tasks.TaskEvery5Seconds)
+                            {
+                                foreach (var action in item.Value)
+                                {
+                                    try
+                                    {
+
+                                        action();
+
+                                    }
+                                    catch
+                                    {
+                                    }
+                                }
+                            }
+                        }
+                        catch
+                        {
+                        }
+                        try
+                        {
+
+                            foreach (var item in Tasks.TaskEvery10Seconds)
+                            {
+                                foreach (var action in item.Value)
+                                {
+                                    try
+                                    {
+
+                                        action();
+
+                                    }
+                                    catch
+                                    {
+                                    }
+                                }
+                            }
+                        }
+                        catch
+                        {
+                        }
+                        try
+                        {
+
+                            foreach (var item in Tasks.TaskEvery30Seconds)
+                            {
+                                foreach (var action in item.Value)
+                                {
+                                    try
+                                    {
+
+                                        action();
+
+                                    }
+                                    catch
+                                    {
+                                    }
+                                }
+                            }
+                        }
+                        catch
+                        {
+                        }
+                    }
                 }
             });
             if (ServerConfiguration.CurrentConfiguration.isLogEnabled == true)
@@ -405,7 +662,7 @@ namespace LWSwnS
             Console.Write(ModuleManager.ExtModules.Count + "");
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine(Language.GetString("General", "Host.LoadModule.SecondHalf", " ExtModule(s) in total."));
-            Console.WriteLine(Language.GetString("General", "Host.FullRun" ,"The server is now fully running."));
+            Console.WriteLine(Language.GetString("General", "Host.FullRun", "The server is now fully running."));
             string cmd;
             while ((cmd = Console.ReadLine()).ToUpper() != "EXIT")
             {
@@ -461,7 +718,8 @@ namespace LWSwnS
                         }
                     }
                     Debugger.currentDebugger.Log("OK. Some modules may need restart to take effect.");
-                }else if (cmd.ToUpper().Equals("Help".ToUpper())||cmd.Equals("?"))
+                }
+                else if (cmd.ToUpper().Equals("Help".ToUpper()) || cmd.Equals("?"))
                 {
                     Console.WriteLine("");
                     Console.WriteLine("Help of LWSwnS server console");

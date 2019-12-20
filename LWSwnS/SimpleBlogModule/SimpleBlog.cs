@@ -46,17 +46,19 @@ namespace SimpleBlogModule
             string Template = File.ReadAllText(Path.Combine(RootDir, "Template.html"));
             string PostItemTemplate = File.ReadAllText(Path.Combine(RootDir, "PostItemTemplate.html"));
             WebServer.AddIgnoreUrlPrefix("/POSTS");
-            Task.Run(async () =>
-            {
-                LoadList();
-                await Task.Delay(500);
-                Debugger.currentDebugger.Log("List auto-rebuild task initialized.");
-                while (true)
-                {
-                    await Task.Delay(5000);
-                    LoadList();
-                }
-            });
+            LoadList();
+            Tasks.RegisterTask(LoadList, Tasks.TaskType.Every5Seconds);
+            //Task.Run(async () =>
+            //{
+            //    LoadList();
+            //    await Task.Delay(500);
+            //    Debugger.currentDebugger.Log("List auto-rebuild task initialized.");
+            //    while (true)
+            //    {
+            //        await Task.Delay(5000);
+            //        LoadList();
+            //    }
+            //});
             EventHandler<HttpRequestData> a = (object sender, HttpRequestData b) =>
             {
                 //Debugger.currentDebugger.Log("SimpleBlog Called");

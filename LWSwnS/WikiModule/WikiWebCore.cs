@@ -166,15 +166,16 @@ namespace WikiModule
                 }
             };
             WebServer.AddHttpRequestHandler(eventHandler);
-            Task.Run(async () =>
-            {
-                Debugger.currentDebugger.Log("Automatic Configuration Reload task initialized.");
-                while (true)
-                {
-                    Load();
-                    await Task.Delay(5000);
-                }
-            });
+            Tasks.RegisterTask(Load, Tasks.TaskType.Every5Seconds);
+            //Task.Run(async () =>
+            //{
+            //    Debugger.currentDebugger.Log("Automatic Configuration Reload task initialized.");
+            //    while (true)
+            //    {
+            //        Load();
+            //        await Task.Delay(5000);
+            //    }
+            //});
             {
                 ModuleDescription description = new ModuleDescription();
                 description.Name = "Wiki-Module-Web";
