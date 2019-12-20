@@ -17,5 +17,5 @@ dotnet build
 cd ..
 cd ..
 cd ..
-mv -f temp/LWSwnS/LWSwnS/LWSwnS/bin/netcoreapp3.0/ ./LWSwnS/
-rm -rf temp/LWSwnS
+mv -f temp/LWSwnS/LWSwnS/LWSwnS/bin/debug/netcoreapp3.0/ ./LWSwnS/
+rm -rf temp
