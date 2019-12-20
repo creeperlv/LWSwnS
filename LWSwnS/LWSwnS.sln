@@ -37,6 +37,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E6C5802A-AD10-43BE-A676-476B479B28FA}"
 	ProjectSection(SolutionItems) = preProject
 		InstallScript.uapscript = InstallScript.uapscript
+		LinuxInstall.sh = LinuxInstall.sh
 		LWSwnS.uapmanifest = LWSwnS.uapmanifest
 		..\Readme.md = ..\Readme.md
 	EndProjectSection
@@ -59,7 +60,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModuleManger", "ModuleMange
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiModule", "WikiModule\WikiModule.csproj", "{34693DF4-01AD-4CFC-92FE-78558C1A5182}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LWSwnS.Globalization", "LWSwnS.Globalization\LWSwnS.Globalization.csproj", "{129B9258-1CA9-4ACC-A3FB-71A4E88C0140}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LWSwnS.Globalization", "LWSwnS.Globalization\LWSwnS.Globalization.csproj", "{129B9258-1CA9-4ACC-A3FB-71A4E88C0140}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
