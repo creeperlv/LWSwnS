@@ -1,3 +1,4 @@
+#!/bin/bash
 echo '#######################################'
 echo '#Experimental Install Script for Linux#'
 echo '#######################################'
