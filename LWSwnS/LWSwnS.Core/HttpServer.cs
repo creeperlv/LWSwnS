@@ -60,8 +60,8 @@ namespace LWSwnS.Core
             });
             ApiManager.AddFunction("ExemptFT", (UniParamater a) =>
             {
-                if(!ExemptedFileTypes.Contains(a[0] as string))
-                ExemptedFileTypes.Add(a[0] as String);
+                if (!ExemptedFileTypes.Contains(a[0] as string))
+                    ExemptedFileTypes.Add(a[0] as String);
                 return new UniResult();
             });
             ApiManager.AddFunction("AddOnReq", (UniParamater p) =>
@@ -78,12 +78,12 @@ namespace LWSwnS.Core
             OnRequest += (a, b) =>
             {
                 bool isMobile = false;
-                if(ServerConfiguration.CurrentConfiguration.SplitModile==true)
-                if(b.UA.IndexOf("Android") > 0 || b.UA.IndexOf("iPhone") > 0|| b.UA.IndexOf("Windows Phone") > 0|| b.UA.IndexOf("Lumia") > 0)
-                {
-                    isMobile = true;
-                }
-                var RealUrl = URLConventor.Convert(b.requestUrl.Trim(),isMobile);
+                if (ServerConfiguration.CurrentConfiguration.SplitModile == true)
+                    if (b.UA.IndexOf("Android") > 0 || b.UA.IndexOf("iPhone") > 0 || b.UA.IndexOf("Windows Phone") > 0 || b.UA.IndexOf("Lumia") > 0)
+                    {
+                        isMobile = true;
+                    }
+                var RealUrl = URLConventor.Convert(b.requestUrl.Trim(), isMobile);
                 foreach (var item in URLPrefix)
                 {
                     if (b.requestUrl.ToUpper().StartsWith(item.ToUpper()))
@@ -112,7 +112,7 @@ namespace LWSwnS.Core
                         return;
                     }
                 }
-                Debugger.currentDebugger.Log(Language.GetString("General","HttpServer.Request", "Request:" )+ RealUrl);
+                Debugger.currentDebugger.Log(Language.GetString("General", "HttpServer.Request", "Request:") + RealUrl);
                 HttpResponseData httpResponseData = new HttpResponseData();
                 try
                 {
@@ -317,6 +317,31 @@ namespace LWSwnS.Core
                         requestData.UA = LS[i].Substring("User-Agent:".Length).Trim();
                         requestData.isMobile = requestData.UA.IndexOf("Android") > 0 || requestData.UA.IndexOf("iPhone") > 0 || requestData.UA.IndexOf("Windows Phone") > 0 || requestData.UA.IndexOf("Lumia") > 0;
                     }
+                    else if (LS[i].StartsWith("Range:"))
+                    {
+                        var rangeField = LS[i].Substring("Range:".Length).Trim();
+                        rangeField = rangeField.Substring("bytes=".Length);
+                        var ranges = rangeField.Split(',');
+                        foreach (var item in ranges)
+                        {
+                            var single = item.Trim();
+                            var pair = single.Split('-');
+                            long Lowest = 0;
+                            long Highest = 0;
+                            if (pair[0] == "")
+                            {
+                                Lowest = long.MinValue;
+                            }
+                            else Lowest = int.Parse(pair[0]);
+                            if (pair[1] == "")
+                            {
+                                Highest = long.MinValue;
+                            }
+                            else Highest = long.Parse(pair[1]);
+                            var SingleRange = new KeyValuePair<long, long>(Lowest, Highest);
+                            requestData.Range.Ranges.Add(SingleRange);
+                        }
+                    }
                 }
             }
             requestData.streamWriter = this.streamWriter;
@@ -366,11 +391,12 @@ namespace LWSwnS.Core
                                 }
                             }
                         }
-                        string res=HttpServer.WebPages[path].Access(p, rec);
-                        Debugger.currentDebugger.Log(Language.GetString("General", "HttpServer.Executed","Executed:" )+ (new FileInfo(path)).Name+": "+res);
+                        string res = HttpServer.WebPages[path].Access(p, rec);
+                        Debugger.currentDebugger.Log(Language.GetString("General", "HttpServer.Executed", "Executed:") + (new FileInfo(path)).Name + ": " + res);
                         continue;
-                    }else
-                    FatherServer.HandleRequest(rec);
+                    }
+                    else
+                        FatherServer.HandleRequest(rec);
                     //httpResponseData = null;
                     GC.Collect();
                 }
