@@ -322,6 +322,7 @@ namespace LWSwnS.Core
                         var rangeField = LS[i].Substring("Range:".Length).Trim();
                         rangeField = rangeField.Substring("bytes=".Length);
                         var ranges = rangeField.Split(',');
+                        requestData.Range = new HttpRange();
                         foreach (var item in ranges)
                         {
                             var single = item.Trim();
