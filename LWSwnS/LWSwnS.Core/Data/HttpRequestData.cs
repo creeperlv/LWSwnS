@@ -11,7 +11,7 @@ namespace LWSwnS.Core.Data
     {
         public TcpClientProcessor Processor;
         public string requestUrl;
-        public HttpRange Range;
+        public HttpRange Range=new HttpRange();
         public string UA;
         public HttpRequestType RequestType;
         public bool isMobile = false;
