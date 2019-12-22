@@ -28,10 +28,7 @@ namespace MarkdownFileModule
                         {
                             bool isMobile = false;
                             if (ServerConfiguration.CurrentConfiguration.SplitModile == true)
-                                if (b.UA.IndexOf("Android") > 0 || b.UA.IndexOf("iPhone") > 0 || b.UA.IndexOf("Windows Phone") > 0 || b.UA.IndexOf("Lumia") > 0)
-                                {
-                                    isMobile = true;
-                                }
+                                isMobile = b.isMobile;
 
                             HttpResponseData httpResponseData = new HttpResponseData();
                             var RealUrl = URLConventor.Convert(b.requestUrl.Trim(),isMobile);

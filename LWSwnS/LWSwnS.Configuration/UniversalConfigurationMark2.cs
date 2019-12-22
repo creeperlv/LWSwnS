@@ -50,13 +50,12 @@ namespace LWSwnS.Configuration
         }
         public void AddItem(string key, string value)
         {
-            if (this.ContainsKey(key))
-            {
-                this[key].Add(value);
-            }
-            else
+            if (!this.ContainsKey(key))
             {
                 this.Add(key, new List<String>());
+            }
+            if(!this[key].Contains(value))
+            {
                 this[key].Add(value);
             }
         }

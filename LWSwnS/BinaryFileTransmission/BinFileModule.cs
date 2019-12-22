@@ -19,25 +19,7 @@ namespace BinaryFileTransmission
         {
             Console.WriteLine("Generating file type configuration...");
             UniversalConfigurationMark2 fileType = new UniversalConfigurationMark2();
-            fileType.AddItem("Binary", "exe");
-            fileType.AddItem("Binary", "mp4");
-            fileType.AddItem("Binary", "7z");
-            fileType.AddItem("Binary", "zip");
-            fileType.AddItem("Binary", "mp3");
-            fileType.AddItem("Binary", "wav");
-            fileType.AddItem("Binary", "rar");
-            fileType.AddItem("Binary", "out");
-            fileType.AddItem("Binary", "dll");
-            fileType.AddItem("Binary", "png");
-            fileType.AddItem("Binary", "bmp");
-            fileType.AddItem("Binary", "dmg");
-            fileType.AddItem("Binary", "jpg");
-            fileType.AddItem("Binary", "png");
-            fileType.AddItem("Binary", "com");
-            fileType.AddItem("Binary", "lib");
-            fileType.AddItem("Binary", "so");
-            fileType.AddItem("Binary", "nuget");
-            fileType.SaveToFile("./Configs/BinFileTransModule.ini");
+            BinFileModule.UpdateList(ref fileType);
         }
     }
     public class BinFileModule : ExtModule
@@ -105,6 +87,16 @@ namespace BinaryFileTransmission
                     {
                     }
                 });
+                LocalShell.Register("BFT-Update-Basic-File-Type", (string s) => {
+                    try
+                    {
+                        UpdateList(ref fileType);
+                        Console.WriteLine("Target type has been added to the configuration file.");
+                    }
+                    catch
+                    {
+                    }
+                });
             }
             EventHandler<HttpRequestData> e= (a,b) => {
                 if (EndsWith(b.requestUrl.ToUpper(),list))
@@ -128,6 +120,37 @@ namespace BinaryFileTransmission
             };
             WebServer.AddHttpRequestHandler(e);
             return description;
+        }
+        public static void UpdateList(ref UniversalConfigurationMark2 fileType)
+        {
+            fileType.AddItem("Binary", "exe");
+            fileType.AddItem("Binary", "mp4");
+            fileType.AddItem("Binary", "7z");
+            fileType.AddItem("Binary", "zip");
+            fileType.AddItem("Binary", "mp3");
+            fileType.AddItem("Binary", "wav");
+            fileType.AddItem("Binary", "rar");
+            fileType.AddItem("Binary", "out");
+            fileType.AddItem("Binary", "dll");
+            fileType.AddItem("Binary", "png");
+            fileType.AddItem("Binary", "bmp");
+            fileType.AddItem("Binary", "dmg");
+            fileType.AddItem("Binary", "jpg");
+            fileType.AddItem("Binary", "png");
+            fileType.AddItem("Binary", "com");
+            fileType.AddItem("Binary", "lib");
+            fileType.AddItem("Binary", "so");
+            fileType.AddItem("Binary", "nuget");
+            fileType.AddItem("Binary", "deb");
+            fileType.AddItem("Binary", "jar");
+            fileType.AddItem("Binary", "com");
+            fileType.AddItem("Binary", "so");
+            fileType.AddItem("Binary", "lib");
+            fileType.AddItem("Binary", "tga");
+            fileType.AddItem("Binary", "webp");
+            fileType.AddItem("Binary", "iso");
+            fileType.SaveToFile("./Configs/BinFileTransModule.ini");
+
         }
     }
 }
