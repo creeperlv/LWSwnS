@@ -1,4 +1,4 @@
-﻿using LWSwnS.Api;
+using LWSwnS.Api;
 using LWSwnS.Api.Data;
 using LWSwnS.Api.Modules;
 using LWSwnS.Api.Shell.Local;
@@ -312,7 +312,16 @@ namespace LWSwnS
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(System.Globalization.CultureInfo.CurrentCulture.Name);
             Console.ForegroundColor = ConsoleColor.White;
-            Language.Load();
+            try
+            {
+                Language.Load();
+            }
+            catch (Exception e)
+            {
+                
+                Debugger.currentDebugger.Log("Cannot initialize localization flavor!:"+e.Message, MessageType.Error);
+                Debugger.currentDebugger.Log("Current Directory:"+(new DirectoryInfo("./").FullName), MessageType.Error);
+            }
             if (!File.Exists("./Server.ini"))
             {
                 FirstInitialize();

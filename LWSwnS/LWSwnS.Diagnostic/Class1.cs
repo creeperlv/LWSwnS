@@ -68,7 +68,7 @@ namespace LWSwnS.Diagnostic
     }
     public class Debugger : IDebugger
     {
-        public static IDebugger currentDebugger;
+        public static IDebugger currentDebugger=new EmptyDebugger();
         int LogLevel = 0;
         int LimitSize = 512;
         string fileName = "";
@@ -120,9 +120,16 @@ namespace LWSwnS.Diagnostic
             }
             if (LogLevel == 0)
             {
+                try
+                {
 
-                File.AppendAllText(fileName, "\r\n" + CombinedMsg);
-                FileSizeLimitDetect();
+                    File.AppendAllText(fileName, "\r\n" + CombinedMsg);
+                    FileSizeLimitDetect();
+                }
+                catch (Exception)
+                {
+
+                }
             }
         }
         public void FileSizeLimitDetect()
@@ -190,8 +197,16 @@ namespace LWSwnS.Diagnostic
             Console.WriteLine(msg);
             if (willLog == true)
             {
-                File.AppendAllText(fileName, "\r\n" + CombinedMsg);
-                FileSizeLimitDetect();
+                try
+                {
+
+                    File.AppendAllText(fileName, "\r\n" + CombinedMsg);
+                    FileSizeLimitDetect();
+                }
+                catch (Exception)
+                {
+
+                }
             }
         }
     }
