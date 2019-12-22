@@ -1,5 +1,6 @@
 ﻿using LWSwnS.Api.Data;
 using LWSwnS.Api.Modules;
+using LWSwnS.Api.Shell.Local;
 using LWSwnS.Api.Web;
 using LWSwnS.Configuration;
 using LWSwnS.Core.Data;
@@ -7,6 +8,7 @@ using LWSwnS.Diagnostic;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace BinaryFileTransmission
@@ -55,6 +57,7 @@ namespace BinaryFileTransmission
             description.Name = "Binary-File-Transmission-Module";
             description.version = new Version(0, 0, 2, 0);
             UniversalConfigurationMark2 fileType = new UniversalConfigurationMark2();
+            var list = new  List<string>();
             Tasks.RegisterTask(() =>
             {
                 try
@@ -62,6 +65,11 @@ namespace BinaryFileTransmission
 
                     fileType = UniversalConfigurationMark2.LoadFromFile("./Configs/BinFileTransModule.ini");
 
+                    list = fileType.GetValues("Binary");
+                    foreach (var item in list)
+                    {
+                        WebServer.AddExemptFileType(item);
+                    }
                 }
                 catch (Exception)
                 {
@@ -84,10 +92,19 @@ namespace BinaryFileTransmission
             //        await Task.Delay(5000);
             //    }
             //});
-            var list = fileType.GetValues("Binary");
-            foreach (var item in list)
             {
-                WebServer.AddExemptFileType(item);
+                LocalShell.Register("BFT-Add-File-Type", (string s) => {
+                    try
+                    {
+                        fileType.AddItem("Binary",s.Trim());
+                        fileType.SaveToFile("./Configs/BinFileTransModule.ini");
+                        WebServer.AddExemptFileType(s.Trim());
+                        Console.WriteLine("Target type has been added to the configuration file.");
+                    }
+                    catch
+                    {
+                    }
+                });
             }
             EventHandler<HttpRequestData> e= (a,b) => {
                 if (EndsWith(b.requestUrl.ToUpper(),list))

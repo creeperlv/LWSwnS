@@ -2,6 +2,7 @@
 using LWSwnS.Api.Data.Streams;
 using LWSwnS.Api.Modules;
 using LWSwnS.Api.Shell;
+using LWSwnS.Api.Shell.Local;
 using LWSwnS.Configuration;
 using LWSwnS.Diagnostic;
 using System;
@@ -22,6 +23,7 @@ namespace FileReceiever
             moduleDescription.Name = "FileReceieverModule";
             moduleDescription.version = ModuleVersion;
             config = UniversalConfigurationLoader.LoadFromFile("./Configs/FileReceiever.ini");
+
             Tasks.RegisterTask(() => {
                 try
                 {
@@ -32,6 +34,7 @@ namespace FileReceiever
                 {
                 }
             });
+           
             //Task.Run(async () => {
             //    await Task.Delay(500);
             //    Debugger.currentDebugger.Log("Auto Config Reload Initialized.");

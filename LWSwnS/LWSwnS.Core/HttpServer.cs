@@ -60,6 +60,7 @@ namespace LWSwnS.Core
             });
             ApiManager.AddFunction("ExemptFT", (UniParamater a) =>
             {
+                if(!ExemptedFileTypes.Contains(a[0] as string))
                 ExemptedFileTypes.Add(a[0] as String);
                 return new UniResult();
             });
