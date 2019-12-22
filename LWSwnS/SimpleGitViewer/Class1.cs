@@ -221,7 +221,7 @@ namespace SimpleGitViewer
                                             items = "<p>404 NOT Found</p>";
                                         }
                                     }
-                                    catch (Exception e)
+                                    catch (Exception)
                                     {
                                         Debugger.currentDebugger.Log(e.Message, MessageType.Warning);
                                     }
@@ -238,7 +238,7 @@ namespace SimpleGitViewer
                             httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
                             httpResponseData.Send(ref b.streamWriter);
                         }
-                        catch (Exception e)
+                        catch (Exception)
                         {
                         }
                     }

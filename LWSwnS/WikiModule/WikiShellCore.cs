@@ -1,5 +1,6 @@
 ﻿using LWSwnS.Api.Data;
 using LWSwnS.Api.Modules;
+using LWSwnS.Api.Shell.Local;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,6 +20,7 @@ namespace WikiModule
                 LWSwnS.Api.Shell.CommandHandler.RegisterCommand("Update-Wiki", UpdateWiki);
                 LWSwnS.Api.Shell.CommandHandler.RegisterCommand("Remove-Wiki", RemoveWiki);
             }
+         
             return moduleDescription;
         }
         public bool UpdateWiki(string a,object b,StreamWriter writer)

@@ -1,6 +1,7 @@
 ﻿using LWSwnS.Api;
 using LWSwnS.Api.Data;
 using LWSwnS.Api.Modules;
+using LWSwnS.Api.Shell.Local;
 using LWSwnS.Configuration;
 using LWSwnS.Core;
 using LWSwnS.Core.Data;
@@ -758,6 +759,32 @@ namespace LWSwnS
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.WriteLine(".");
                         Console.WriteLine("");
+                    }
+                }
+                else
+                {
+                    var subbed = cmd.ToUpper();
+                    if(subbed.IndexOf(' ') > 0)
+                    {
+                        subbed = subbed.Substring(0, subbed.IndexOf(' '));
+                    }
+                    bool Find = false;
+                    foreach (var moduleCMD in LocalShell.Commands)
+                    {
+                        foreach (var singleCMD in moduleCMD.Value)
+                        {
+                            if (subbed==(singleCMD.Key.ToUpper()))
+                            {
+                                singleCMD.Value(cmd.Substring(subbed.Length));
+                                Find = true;
+                            }
+                            if (Find == true) break;
+                        }
+                        if (Find == true) break;
+                    }
+                    if (Find == false)
+                    {
+                        Console.WriteLine($"\"{cmd}\" is neither an internal command nor external command.");
                     }
                 }
             }

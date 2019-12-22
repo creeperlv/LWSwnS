@@ -1,4 +1,5 @@
 ﻿using LWSwnS.Api.Modules;
+using LWSwnS.Api.Shell.Local;
 using LWSwnS.Api.Web;
 using LWSwnS.Configuration;
 using LWSwnS.Core.Data;
@@ -32,6 +33,30 @@ namespace WikiModule
             }
             catch
             {
+            }
+            {
+                LocalShell.Register("WikiModule-Copy-Language-Files", (string s) => {
+                    try
+                    {
+                        var locales = Path.Combine(rootDir, "Locales");
+                        var localesFolder = new DirectoryInfo(locales);
+                        foreach (var item in localesFolder.EnumerateDirectories())
+                        {
+                            if (!Directory.Exists("./Locales/" + item.Name))
+                            {
+                                Directory.CreateDirectory("./Locales/" + item.Name);
+                            }
+                            foreach (var file in item.EnumerateFiles())
+                            {
+                                file.CopyTo($"./Locales/{item.Name}/{file.Name}");
+                            }
+                        }
+                        Console.WriteLine("Completed without exceptions.");
+                    }
+                    catch
+                    {
+                    }
+                });
             }
             WebServer.AddIgnoreUrlPrefix("/WIKI");
             EventHandler<HttpRequestData> eventHandler = (a, b) =>

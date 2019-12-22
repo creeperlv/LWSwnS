@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LWSwnS.Api.Shell.Local;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -46,6 +47,10 @@ namespace LWSwnS.Api.Modules
             }
             catch (Exception)
             {
+            }
+            if (LocalShell.Commands.ContainsKey(fileInfo.FullName))
+            {
+                LocalShell.Commands.Remove(fileInfo.FullName);
             }
             if (shellCMDS.ContainsKey(fileInfo.FullName))
             {
