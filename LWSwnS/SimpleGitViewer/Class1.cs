@@ -42,7 +42,7 @@ namespace SimpleGitViewer
             {
                 Assembly.LoadFrom(Path.Combine(RootDir, "LibGit2Sharp.dll"));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Debugger.currentDebugger.Log("Cannot load git lib, is LibGit2Sharp.dll exist?", MessageType.Warning);
             }
@@ -221,7 +221,7 @@ namespace SimpleGitViewer
                                             items = "<p>404 NOT Found</p>";
                                         }
                                     }
-                                    catch (Exception)
+                                    catch (Exception e)
                                     {
                                         Debugger.currentDebugger.Log(e.Message, MessageType.Warning);
                                     }
