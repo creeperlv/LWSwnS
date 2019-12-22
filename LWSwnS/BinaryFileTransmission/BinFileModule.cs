@@ -101,28 +101,35 @@ namespace BinaryFileTransmission
             EventHandler<HttpRequestData> e= (a,b) => {
                 if (EndsWith(b.requestUrl.ToUpper(),list))
                 {
-                    
-                    bool isMobile = false;
-                    if (ServerConfiguration.CurrentConfiguration.SplitModile == true)
-                        isMobile = b.isMobile;
-                    HttpResponseData httpResponseData = new HttpResponseData();
-                    httpResponseData.Additional = "Application/Binary"+Environment.NewLine+ "Accept-Ranges: bytes";
-                    var RealUrl = URLConventor.Convert(b.requestUrl.Trim(),isMobile);
-                    var fi = FileUtilities.GetFileFromURL(RealUrl, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder);
-                    if (b.Range.Ranges.Count > 0)
+                    try
                     {
-                        //SendFileInRange
-                        using (var fs = fi.OpenRead())
+
+                        bool isMobile = false;
+                        if (ServerConfiguration.CurrentConfiguration.SplitModile == true)
+                            isMobile = b.isMobile;
+                        HttpResponseData httpResponseData = new HttpResponseData();
+                        httpResponseData.Additional = "Application/Binary" + Environment.NewLine + "Accept-Ranges: bytes";
+                        var RealUrl = URLConventor.Convert(b.requestUrl.Trim(), isMobile);
+                        var fi = FileUtilities.GetFileFromURL(RealUrl, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder);
+                        if (b.Range.Ranges.Count > 0)
                         {
-                            httpResponseData.StatusLine = "HTTP/1.1 206 Partial Content";
-                            httpResponseData.Additional += Environment.NewLine + $"Content-Range: bytes {b.Range.Ranges[0].Key}-{b.Range.Ranges[0].Value}/{fs.Length}";
-                            httpResponseData.SendFileInRange(ref b.streamWriter, fs,b.Range.Ranges[0]);
+                            //SendFileInRange
+                            using (var fs = fi.OpenRead())
+                            {
+                                httpResponseData.StatusLine = "HTTP/1.1 206 Partial Content";
+                                httpResponseData.Additional += Environment.NewLine + $"Content-Range: bytes {b.Range.Ranges[0].Key}-{b.Range.Ranges[0].Value}/{fs.Length}";
+                                httpResponseData.SendFileInRange(ref b.streamWriter, fs, b.Range.Ranges[0]);
+                            }
                         }
+                        else
+                            using (var fs = fi.OpenRead())
+                            {
+                                httpResponseData.SendFile(ref b.streamWriter, fs);
+                            }
                     }
-                    else
-                    using(var fs = fi.OpenRead())
+                    catch (Exception err)
                     {
-                        httpResponseData.SendFile(ref b.streamWriter, fs);
+                        Debugger.currentDebugger.Log("Something bad happened in BTF:"+err, MessageType.Error);
                     }
                 }
             };
