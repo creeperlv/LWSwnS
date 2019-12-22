@@ -3,6 +3,7 @@ using LWSwnS.Api.Web;
 using LWSwnS.Configuration;
 using LWSwnS.Core.Data;
 using LWSwnS.Diagnostic;
+using LWSwnS.Globalization;
 using Markdig;
 using System;
 using System.Collections.Generic;
@@ -25,7 +26,13 @@ namespace WikiModule
         public ModuleDescription InitModule()
         {
             rootDir = new FileInfo(Assembly.GetAssembly(this.GetType()).Location).Directory.FullName;
-
+            try
+            {
+                Language.LoadFile("WikiModule");
+            }
+            catch
+            {
+            }
             WebServer.AddIgnoreUrlPrefix("/WIKI");
             EventHandler<HttpRequestData> eventHandler = (a, b) =>
             {
@@ -51,7 +58,6 @@ namespace WikiModule
                     {
                         if (urlgrp[0].ToUpper().EndsWith("MD"))
                         {
-                            Debugger.currentDebugger.Log("Requested wiki:" + b.requestUrl + " is a file.");
                             //PAGETITLE
                             file = GetFileFromURL(urlgrp[0].Substring(1));
                             var content = File.ReadAllLines(file.FullName).ToList();
@@ -162,7 +168,7 @@ namespace WikiModule
                     //response = "FUCK!";
                     httpResponseData.content = Encoding.UTF8.GetBytes(response);
                     httpResponseData.Send(ref b.streamWriter);
-                    Debugger.currentDebugger.Log("Data sent.");
+                    //Debugger.currentDebugger.Log("Data sent.");
                 }
             };
             WebServer.AddHttpRequestHandler(eventHandler);
@@ -288,7 +294,7 @@ namespace WikiModule
             }
             catch (Exception e)
             {
-                Debugger.currentDebugger.Log("Fail on load configuration." + e.Message, MessageType.Warning);
+                Debugger.currentDebugger.Log(Language.GetString("WikiModule", "ConfigurationLoadFail", "Fail on load configuration.") + e.Message, MessageType.Warning);
             }
             PageTemplate = File.ReadAllText(Path.Combine(rootDir, "WikiPage.html"));
             try
@@ -318,6 +324,27 @@ namespace WikiModule
 
             }
             catch (Exception)
+            {
+            }
+            var
+            rootDir = new FileInfo(Assembly.GetAssembly(this.GetType()).Location).Directory;
+            try
+            {
+                var locales = Path.Combine(rootDir.FullName, "Locales");
+                var localesFolder = new DirectoryInfo(locales);
+                foreach (var item in localesFolder.EnumerateDirectories())
+                {
+                    if (!Directory.Exists("./Locales/" + item.Name))
+                    {
+                        Directory.CreateDirectory("./Locales/" + item.Name);
+                    }
+                    foreach (var file in item.EnumerateFiles())
+                    {
+                        file.CopyTo($"./Locales/{item.Name}/{file.Name}");
+                    }
+                }
+            }
+            catch 
             {
             }
             try
