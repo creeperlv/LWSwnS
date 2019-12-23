@@ -48,6 +48,11 @@ namespace LWSwnS.Configuration
                     serverConfiguration.IP = item.Substring("IP=".Length);
                 }
                 else
+                if (item.StartsWith("HttpsCert="))
+                {
+                    serverConfiguration.IP = item.Substring("HttpsCert=".Length);
+                }
+                else
                 if (item.StartsWith("Page404="))
                 {
                     serverConfiguration.Page404 = item.Substring("Page404=".Length);
@@ -86,6 +91,11 @@ namespace LWSwnS.Configuration
                 if (item.StartsWith("SplitModile="))
                 {
                     serverConfiguration.SplitModile = bool.Parse(item.Substring("SplitModile=".Length));
+                }
+                else
+                if (item.StartsWith("UseHttps="))
+                {
+                    serverConfiguration.UseHttps = bool.Parse(item.Substring("UseHttps=".Length));
                 }
                 else
                 if (item.StartsWith("isLogEnabled="))

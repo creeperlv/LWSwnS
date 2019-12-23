@@ -9,6 +9,7 @@ using LWSwnS.Globalization;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Runtime.Loader;
 using System.Text;
@@ -223,6 +224,7 @@ namespace LWSwnS.Core
             //networkStream.CanTimeout = true;
             networkStream.ReadTimeout = 3000;
             networkStream.WriteTimeout = 3000;
+            //SslStream ssl=new SslStream()
             streamReader = new StreamReader(networkStream);
             streamWriter = new StreamWriter(networkStream);
             Task.Run(MainThread);
