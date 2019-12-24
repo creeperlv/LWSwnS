@@ -38,9 +38,9 @@ namespace LWSwnS.Core
             catch (Exception)
             {
             }
-            if(ServerConfiguration.CurrentConfiguration.UseHttps==true)
-            serverCertificate = X509Certificate.CreateFromCertFile(ServerConfiguration.CurrentConfiguration.HttpsCert);
-
+            if (ServerConfiguration.CurrentConfiguration.UseHttps == true)
+                //serverCertificate = X509Certificate.CreateFromCertFile(ServerConfiguration.CurrentConfiguration.HttpsCert);
+                serverCertificate=X509Certificate.CreateFromCertFile(ServerConfiguration.CurrentConfiguration.HttpsCert);
             ApiManager.AddFunction("IgnoreUrl", (UniParamater a) =>
             {
                 URLPrefix.Add(a[0] as String);
@@ -232,10 +232,20 @@ namespace LWSwnS.Core
             networkStream.WriteTimeout = 3000;
             if (ServerConfiguration.CurrentConfiguration.UseHttps)
             {
-                sslStream = new SslStream(networkStream);
-                sslStream.AuthenticateAsServer(HttpServer.serverCertificate, false, System.Security.Authentication.SslProtocols.Default, true);
-                streamReader = new StreamReader(sslStream);
-                streamWriter = new StreamWriter(sslStream);
+                try
+                {
+                    sslStream = new SslStream(networkStream);
+                    sslStream.AuthenticateAsServer(HttpServer.serverCertificate, false, System.Security.Authentication.SslProtocols.Default, false);
+                    streamReader = new StreamReader(sslStream);
+                    streamWriter = new StreamWriter(sslStream);
+                }
+                catch (Exception e)
+                {
+                    Debugger.currentDebugger.Log(e.Message, MessageType.Error);
+
+                    streamReader = new StreamReader(networkStream);
+                    streamWriter = new StreamWriter(networkStream);
+                }
             }
             else
             {

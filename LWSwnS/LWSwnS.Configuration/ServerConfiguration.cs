@@ -50,7 +50,7 @@ namespace LWSwnS.Configuration
                 else
                 if (item.StartsWith("HttpsCert="))
                 {
-                    serverConfiguration.IP = item.Substring("HttpsCert=".Length);
+                    serverConfiguration.HttpsCert = item.Substring("HttpsCert=".Length);
                 }
                 else
                 if (item.StartsWith("Page404="))
@@ -130,6 +130,8 @@ namespace LWSwnS.Configuration
             content += "\r\nisLogEnabled=" + serverConfiguration.isLogEnabled;
             content += "\r\nLogLevel=" + serverConfiguration.LogLevel;
             content += "\r\nLogSeparateSize=" + serverConfiguration.LogSeparateSize;
+            content += "\r\nUseHttps=" + serverConfiguration.UseHttps;
+            content += "\r\nHttpsCert=" + serverConfiguration.HttpsCert;
             foreach (var item in serverConfiguration.AllowedModules)
             {
                 content += "\r\nAllowedModule=" + item;
