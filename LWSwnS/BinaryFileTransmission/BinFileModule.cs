@@ -164,6 +164,31 @@ namespace BinaryFileTransmission
             fileType.AddItem("Binary", "tga");
             fileType.AddItem("Binary", "webp");
             fileType.AddItem("Binary", "iso");
+            fileType.AddItem("Binary", "apk");
+            fileType.AddItem("Binary", "ipa");
+            fileType.AddItem("Binary", "pkg");
+            fileType.AddItem("Binary", "fbx");
+            fileType.AddItem("Binary", "pdb");
+            fileType.AddItem("Binary", "ogg");
+            fileType.AddItem("Binary", "avi");
+            fileType.AddItem("Binary", "wav");
+            fileType.AddItem("Binary", "flac");
+            fileType.AddItem("Binary", "ncm");
+            fileType.AddItem("Binary", "wim");
+            fileType.AddItem("Binary", "flv");
+            fileType.AddItem("Binary", "pdf");
+            fileType.AddItem("Binary", "doc");
+            fileType.AddItem("Binary", "docx");
+            fileType.AddItem("Binary", "xls");
+            fileType.AddItem("Binary", "xlsx");
+            fileType.AddItem("Binary", "ppt");
+            fileType.AddItem("Binary", "pptx");
+            fileType.AddItem("Binary", "db");
+            fileType.AddItem("Binary", "accdb");
+            fileType.AddItem("Binary", "stl");
+            fileType.AddItem("Binary", "dat");
+            fileType.AddItem("Binary", "appx");
+            fileType.AddItem("Binary", "msix");
             fileType.SaveToFile("./Configs/BinFileTransModule.ini");
 
         }
