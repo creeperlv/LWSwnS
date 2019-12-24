@@ -793,7 +793,7 @@ namespace LWSwnS
                     }
                     if (Find == false)
                     {
-                        Console.WriteLine($"\"{cmd}\" is neither an internal command nor external command.");
+                        Console.WriteLine(Language.GetString("Gerenal", "Host.Cmd.NotFound","\"{cmd}\" is neither an internal command nor external command.").Replace("{cmd}",cmd));
                     }
                 }
             }

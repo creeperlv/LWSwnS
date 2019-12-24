@@ -12,3 +12,4 @@ Debugger.Error=错误
 HttpServer.Request=请求：
 HttpServer.Executed=已执行：
 ShellServer.ReceiveCmd=收到指令：
+Host.Cmd.NotFound=“{cmd}”既不是内部命令，也不是外部命令。
