@@ -233,6 +233,7 @@ namespace LWSwnS.Core
             if (ServerConfiguration.CurrentConfiguration.UseHttps)
             {
                 sslStream = new SslStream(networkStream);
+                sslStream.AuthenticateAsServer(HttpServer.serverCertificate, false, System.Security.Authentication.SslProtocols.Default, true);
                 streamReader = new StreamReader(sslStream);
                 streamWriter = new StreamWriter(sslStream);
             }
