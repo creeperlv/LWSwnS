@@ -13,3 +13,4 @@ HttpServer.Request=Request:
 HttpServer.Executed=Executed:
 ShellServer.ReceiveCmd=Receive Command:
 Host.Cmd.NotFound="{cmd}" is neither an internal command nor external command.
+ExperimentalFeature=You are using experimental feature that is untested: {featureName}.

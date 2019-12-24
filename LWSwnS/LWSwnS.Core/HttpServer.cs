@@ -39,8 +39,11 @@ namespace LWSwnS.Core
             {
             }
             if (ServerConfiguration.CurrentConfiguration.UseHttps == true)
+            {
+                Debugger.currentDebugger.Log(Language.GetString("General", "ExperimentalFeature", "You are using experimental feature that is untested: {featureName}.").Replace("{featureName}","HTTPS"), MessageType.Warning);
+                serverCertificate = X509Certificate.CreateFromCertFile(ServerConfiguration.CurrentConfiguration.HttpsCert);
+            }
                 //serverCertificate = X509Certificate.CreateFromCertFile(ServerConfiguration.CurrentConfiguration.HttpsCert);
-                serverCertificate=X509Certificate.CreateFromCertFile(ServerConfiguration.CurrentConfiguration.HttpsCert);
             ApiManager.AddFunction("IgnoreUrl", (UniParamater a) =>
             {
                 URLPrefix.Add(a[0] as String);
