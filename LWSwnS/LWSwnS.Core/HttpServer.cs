@@ -12,6 +12,7 @@ using System.IO;
 using System.Net.Security;
 using System.Net.Sockets;
 using System.Runtime.Loader;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,6 +20,7 @@ namespace LWSwnS.Core
 {
     public class HttpServer
     {
+        public static X509Certificate serverCertificate = null;
         public static Version WebServerVersion = new Version(1, 1, 0, 0);
         public List<string> URLPrefix = new List<string>();
         public List<string> ExemptedFileTypes = new List<string>();
@@ -36,6 +38,9 @@ namespace LWSwnS.Core
             catch (Exception)
             {
             }
+            if(ServerConfiguration.CurrentConfiguration.UseHttps==true)
+            serverCertificate = X509Certificate.CreateFromCertFile(ServerConfiguration.CurrentConfiguration.HttpsCert);
+
             ApiManager.AddFunction("IgnoreUrl", (UniParamater a) =>
             {
                 URLPrefix.Add(a[0] as String);
@@ -212,6 +217,7 @@ namespace LWSwnS.Core
     public class TcpClientProcessor
     {
         NetworkStream networkStream;
+        SslStream sslStream;
         StreamReader streamReader;
         StreamWriter streamWriter;
         TcpClient currentClient;
@@ -224,9 +230,18 @@ namespace LWSwnS.Core
             //networkStream.CanTimeout = true;
             networkStream.ReadTimeout = 3000;
             networkStream.WriteTimeout = 3000;
+            if (ServerConfiguration.CurrentConfiguration.UseHttps)
+            {
+                sslStream = new SslStream(networkStream);
+                streamReader = new StreamReader(sslStream);
+                streamWriter = new StreamWriter(sslStream);
+            }
+            else
+            {
+                streamReader = new StreamReader(networkStream);
+                streamWriter = new StreamWriter(networkStream);
+            }
             //SslStream ssl=new SslStream()
-            streamReader = new StreamReader(networkStream);
-            streamWriter = new StreamWriter(networkStream);
             Task.Run(MainThread);
         }
         bool willStop = false;
