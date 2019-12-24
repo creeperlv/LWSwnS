@@ -312,6 +312,10 @@ namespace LWSwnS
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(System.Globalization.CultureInfo.CurrentCulture.Name);
             Console.ForegroundColor = ConsoleColor.White;
+            if (!Directory.Exists("./Configs/"))
+            {
+                Directory.CreateDirectory("./Configs");
+            }
             try
             {
                 Language.Load();
