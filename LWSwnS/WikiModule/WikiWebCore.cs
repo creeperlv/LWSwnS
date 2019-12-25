@@ -65,9 +65,9 @@ namespace WikiModule
                 {
                     b.Cancel = true;
                     string tempTemplate = PageTemplate;
-                    if (config.GetValues("SplitMobil").Count != 0)
+                    if (config.GetValues("SplitMobile").Count != 0)
                     {
-                        if (bool.Parse(config.GetValues("SplitMobil")[0]) == true && b.isMobile == true)
+                        if (bool.Parse(config.GetValues("SplitMobile")[0]) == true && b.isMobile == true)
                         {
                             tempTemplate = MobilePageTemplate;
                         }
@@ -163,6 +163,7 @@ namespace WikiModule
                             bool usingStaticList = false;
                             //usingStaticList = config.GetValues("useStaticList").Count == 0 ? false : bool.Parse(config.GetValues("useStaticList")[0]);
                             List<FileInfo> listFiles = new List<FileInfo>();
+                            List<DirectoryInfo> listDirs = new List<DirectoryInfo>();
                             if (usingStaticList == true)
                             {
                                 //listFiles =config.GetValues("StaticList");
@@ -173,9 +174,34 @@ namespace WikiModule
                                 {
                                     foreach (var item in file.Directory.EnumerateFiles())
                                     {
+                                        if(item.Name.EndsWith("md"))
                                         listFiles.Add(item);
                                     }
                                 }
+                                if (config.GetValues("ShowDirectoriesInList").Count != 0)
+                                {
+                                    if (bool.Parse(config.GetValues("ShowDirectoriesInList")[0]))
+                                    {
+                                        foreach (var item in file.Directory.EnumerateDirectories())
+                                        {
+
+                                            foreach (var itemFile in item.EnumerateFiles())
+                                            {
+                                                if (itemFile.Name.Equals("Folder.info"))
+                                                {
+                                                    listDirs.Add(item);
+                                                    break;
+                                                }
+                                            }
+                                            
+                                        }
+                                    }
+                                }
+                            }
+                            foreach (var item in listDirs)
+                            {
+                                var info = File.ReadLines(Path.Combine(item.FullName, "Folder.info")).ToArray();
+                                ListContent += PageListItemTemplate.Replace("[URL]", item.Name+"/"+info[1]).Replace("[NAME]", info.First());
                             }
                             foreach (var item in listFiles)
                             {
