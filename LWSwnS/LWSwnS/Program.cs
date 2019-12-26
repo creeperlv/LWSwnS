@@ -777,36 +777,57 @@ namespace LWSwnS
                 else
                 {
                     var subbed = cmd.ToUpper();
-                    if(subbed.IndexOf(' ') > 0)
+                    try
                     {
-                        subbed = subbed.Substring(0, subbed.IndexOf(' '));
-                    }
-                    bool Find = false;
-                    if (subbed.IndexOf('/') > 0)
-                    {
-                        // fully qualified command.
-                        string Origin = subbed.Split('/')[0];
-                        string SpecifiedCMD = subbed.Split('/')[1];
-                        Find = true;
-                        LocalShell.Commands[Origin][SpecifiedCMD](cmd.Substring(subbed.Length).Trim());
-                    }
-                    if(Find==false)
-                    foreach (var moduleCMD in LocalShell.Commands)
-                    {
-                        foreach (var singleCMD in moduleCMD.Value)
+
+                        if (subbed.IndexOf(' ') > 0)
                         {
-                            if (subbed==(singleCMD.Key.ToUpper()))
-                            {
-                                singleCMD.Value(cmd.Substring(subbed.Length).Trim());
-                                Find = true;
-                            }
-                            if (Find == true) break;
+                            subbed = subbed.Substring(0, subbed.IndexOf(' '));
                         }
-                        if (Find == true) break;
+                        bool Find = false;
+                        if (subbed.IndexOf('/') > 0)
+                        {
+                            // fully qualified command.
+                            string Origin = subbed.Split('/')[0];
+                            string SpecifiedCMD = subbed.Split('/')[1];
+                            foreach (var moduleCMD in LocalShell.Commands)
+                            {
+                                if (moduleCMD.Key.ToUpper() == Origin.ToUpper())
+                                    foreach (var singleCMD in moduleCMD.Value)
+                                    {
+                                        if (SpecifiedCMD == (singleCMD.Key.ToUpper()))
+                                        {
+                                            singleCMD.Value(cmd.Substring(subbed.Length).Trim());
+                                            Find = true;
+                                        }
+                                        if (Find == true) break;
+                                    }
+                                if (Find == true) break;
+                            }
+                            LocalShell.Commands[Origin][SpecifiedCMD](cmd.Substring(subbed.Length).Trim());
+                        }
+                        if (Find == false)
+                            foreach (var moduleCMD in LocalShell.Commands)
+                            {
+                                foreach (var singleCMD in moduleCMD.Value)
+                                {
+                                    if (subbed == (singleCMD.Key.ToUpper()))
+                                    {
+                                        singleCMD.Value(cmd.Substring(subbed.Length).Trim());
+                                        Find = true;
+                                    }
+                                    if (Find == true) break;
+                                }
+                                if (Find == true) break;
+                            }
+                        if (Find == false)
+                        {
+                            Console.WriteLine(Language.GetString("General", "Host.Cmd.NotFound", "\"{cmd}\" is neither an internal command nor external command.").Replace("{cmd}", cmd));
+                        }
                     }
-                    if (Find == false)
+                    catch (Exception e)
                     {
-                        Console.WriteLine(Language.GetString("General", "Host.Cmd.NotFound","\"{cmd}\" is neither an internal command nor external command.").Replace("{cmd}",cmd));
+                        Debugger.currentDebugger.Log("Error in executing command:"+subbed.Trim()+"\r\n\t"+e.Message);
                     }
                 }
             }
