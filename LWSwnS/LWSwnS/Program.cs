@@ -804,7 +804,7 @@ namespace LWSwnS
                                     }
                                 if (Find == true) break;
                             }
-                            LocalShell.Commands[Origin][SpecifiedCMD](cmd.Substring(subbed.Length).Trim());
+                            //LocalShell.Commands[Origin][SpecifiedCMD](cmd.Substring(subbed.Length).Trim());
                         }
                         if (Find == false)
                             foreach (var moduleCMD in LocalShell.Commands)
