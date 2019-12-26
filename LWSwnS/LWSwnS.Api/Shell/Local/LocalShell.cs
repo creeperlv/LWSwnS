@@ -17,11 +17,11 @@ namespace LWSwnS.Api.Shell.Local
             var f = stack.GetFrame(1);
             var file = new FileInfo(Assembly.GetAssembly(f.GetMethod().DeclaringType).Location);
 
-            if (!Commands.ContainsKey(file.FullName))
+            if (!Commands.ContainsKey(file.Name))
             {
-                Commands.Add(file.FullName, new Dictionary<string, Action<string>>());
+                Commands.Add(file.Name, new Dictionary<string, Action<string>>());
             }
-            Commands[file.FullName].Add(cmdName, action);
+            Commands[file.Name].Add(cmdName, action);
         }
     }
 }

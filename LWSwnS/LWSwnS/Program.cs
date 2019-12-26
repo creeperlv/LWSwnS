@@ -782,13 +782,22 @@ namespace LWSwnS
                         subbed = subbed.Substring(0, subbed.IndexOf(' '));
                     }
                     bool Find = false;
+                    if (subbed.IndexOf('/') > 0)
+                    {
+                        // fully qualified command.
+                        string Origin = subbed.Split('/')[0];
+                        string SpecifiedCMD = subbed.Split('/')[1];
+                        Find = true;
+                        LocalShell.Commands[Origin][SpecifiedCMD](cmd.Substring(subbed.Length).Trim());
+                    }
+                    if(Find==false)
                     foreach (var moduleCMD in LocalShell.Commands)
                     {
                         foreach (var singleCMD in moduleCMD.Value)
                         {
                             if (subbed==(singleCMD.Key.ToUpper()))
                             {
-                                singleCMD.Value(cmd.Substring(subbed.Length));
+                                singleCMD.Value(cmd.Substring(subbed.Length).Trim());
                                 Find = true;
                             }
                             if (Find == true) break;

@@ -1,4 +1,5 @@
 ﻿using LWSwnS.Api.Modules;
+using LWSwnS.Api.Shell.Local;
 using LWSwnS.Core;
 using System;
 
@@ -13,10 +14,11 @@ namespace BasicCommandModule
             moduleDescription.Name = "BasicCommandModule";
             moduleDescription.version = version;
             {
-                LWSwnS.Api.Shell.Local.LocalShell.Register("cls", ClearScreen);
-                LWSwnS.Api.Shell.Local.LocalShell.Register("clear", ClearScreen);
-                LWSwnS.Api.Shell.Local.LocalShell.Register("version", ShowVersion);
-                LWSwnS.Api.Shell.Local.LocalShell.Register("ver", ShowVersion);
+                LocalShell.Register("cls", ClearScreen);
+                LocalShell.Register("clear", ClearScreen);
+                LocalShell.Register("list-all-commands", listcmds);
+                LocalShell.Register("version", ShowVersion);
+                LocalShell.Register("ver", ShowVersion);
             }
 
             return moduleDescription;
@@ -35,6 +37,16 @@ namespace BasicCommandModule
         void ClearScreen(string s)
         {
             Console.Clear();
+        }
+        void listcmds(string s)
+        {
+            foreach (var item in LocalShell.Commands)
+            {
+                foreach (var cmd in item.Value)
+                {
+                    Console.Write($"{cmd.Key} from {item.Key}");
+                }
+            }
         }
     }
 }

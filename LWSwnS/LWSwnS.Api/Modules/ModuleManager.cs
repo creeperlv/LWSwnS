@@ -48,9 +48,9 @@ namespace LWSwnS.Api.Modules
             catch (Exception)
             {
             }
-            if (LocalShell.Commands.ContainsKey(fileInfo.FullName))
+            if (LocalShell.Commands.ContainsKey(fileInfo.Name))
             {
-                LocalShell.Commands.Remove(fileInfo.FullName);
+                LocalShell.Commands.Remove(fileInfo.Name);
             }
             if (shellCMDS.ContainsKey(fileInfo.FullName))
             {
