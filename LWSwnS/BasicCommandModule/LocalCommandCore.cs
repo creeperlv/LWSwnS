@@ -44,7 +44,13 @@ namespace BasicCommandModule
             {
                 foreach (var cmd in item.Value)
                 {
-                    Console.Write($"{cmd.Key} from {item.Key}");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write($"{cmd.Key}");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(" from ");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"{item.Key}");
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
             }
         }
