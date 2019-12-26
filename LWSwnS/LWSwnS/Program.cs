@@ -827,7 +827,7 @@ namespace LWSwnS
                     }
                     catch (Exception e)
                     {
-                        Debugger.currentDebugger.Log("Error in executing command:"+subbed.Trim()+"\r\n\t"+e.Message);
+                        Debugger.currentDebugger.Log("Error in executing command:"+subbed.Trim()+"\r\n\t"+e.Message, MessageType.Error);
                     }
                 }
             }
