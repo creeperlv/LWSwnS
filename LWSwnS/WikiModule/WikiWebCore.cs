@@ -216,7 +216,7 @@ namespace WikiModule
                         Debugger.currentDebugger.Log(e.Message, MessageType.Error);
                     }
                     response = response.Replace("[PAGETITLE]", finalTitle).Replace("[LINKS]", ListContent);
-                    //response = "FUCK!";
+                    WebPagePresets.ApplyPreset(ref response);
                     httpResponseData.content = Encoding.UTF8.GetBytes(response);
                     httpResponseData.Send(ref b.streamWriter);
                     //Debugger.currentDebugger.Log("Data sent.");
@@ -224,15 +224,6 @@ namespace WikiModule
             };
             WebServer.AddHttpRequestHandler(eventHandler);
             Tasks.RegisterTask(Load, Tasks.TaskType.Every5Seconds);
-            //Task.Run(async () =>
-            //{
-            //    Debugger.currentDebugger.Log("Automatic Configuration Reload task initialized.");
-            //    while (true)
-            //    {
-            //        Load();
-            //        await Task.Delay(5000);
-            //    }
-            //});
             {
                 ModuleDescription description = new ModuleDescription();
                 description.Name = "Wiki-Module-Web";

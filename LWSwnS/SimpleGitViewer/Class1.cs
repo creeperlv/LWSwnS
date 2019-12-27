@@ -233,7 +233,8 @@ namespace SimpleGitViewer
                         try
                         {
 
-                            HttpResponseData httpResponseData = new HttpResponseData();
+                            HttpResponseData httpResponseData = new HttpResponseData(); 
+                            WebPagePresets.ApplyPreset(ref content);
                             httpResponseData.content = Encoding.UTF8.GetBytes(content);
                             httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
                             httpResponseData.Send(ref b.streamWriter);

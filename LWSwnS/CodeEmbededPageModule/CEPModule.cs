@@ -110,7 +110,9 @@ namespace CodeEmbededPageModule
                         var e = codeEmbededPage.ExecuteAndRetire(refs.ToArray(),parameter);
                         e.Wait();
                         HttpResponseData httpResponseData = new HttpResponseData();
-                        httpResponseData.content = Encoding.UTF8.GetBytes(e.Result);
+                        var content = e.Result;
+                        WebPagePresets.ApplyPreset(ref content);
+                        httpResponseData.content = Encoding.UTF8.GetBytes(content);
                         httpResponseData.Send(ref b.streamWriter);
                         b.Cancel = true;
                     }

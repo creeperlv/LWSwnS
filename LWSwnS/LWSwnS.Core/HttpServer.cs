@@ -125,21 +125,35 @@ namespace LWSwnS.Core
                     if (FileUtilities.GetFileFromURL(RealUrl, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder) != null)
                     {
                         if (!RealUrl.ToUpper().EndsWith(".ico".ToUpper()))
-                            httpResponseData.content = File.ReadAllBytes(FileUtilities.GetFileFromURL(RealUrl, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder).FullName);
+                        {
+                            var content = File.ReadAllBytes(FileUtilities.GetFileFromURL(RealUrl, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder).FullName);
+                            if (RealUrl.ToUpper().EndsWith(".html") || RealUrl.ToUpper().EndsWith(".htm"))
+                            {
+                                var str = Encoding.UTF8.GetString(content);
+                                WebPagePresets.ApplyPreset(ref str);
+                                content = Encoding.UTF8.GetBytes(str);
+                            }
+                            httpResponseData.content = content;
+
+                        }
                     }
                     else if (FileUtilities.DirectoryExist(RealUrl, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder))
                     {
                         if (File.Exists(Path.Combine(RealUrl, "index.htm")))
                         {
                             string location = Path.Combine(RealUrl, "index.htm");
-                            httpResponseData.content = File.ReadAllBytes(FileUtilities.GetFileFromURL(location, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder).FullName);
+                            var content = File.ReadAllText(FileUtilities.GetFileFromURL(location, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder).FullName);
+                            WebPagePresets.ApplyPreset(ref content);
+                            httpResponseData.content = Encoding.UTF8.GetBytes(content);
                         }
                         else if (File.Exists(Path.Combine(RealUrl, "index.html")))
                         {
                             //httpResponseData.content = File.ReadAllBytes(Path.Combine(RealUrl, "index.html"));
 
                             string location = Path.Combine(RealUrl, "index.html");
-                            httpResponseData.content = File.ReadAllBytes(FileUtilities.GetFileFromURL(location, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder).FullName);
+                            var content = File.ReadAllText(FileUtilities.GetFileFromURL(location, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder).FullName);
+                            WebPagePresets.ApplyPreset(ref content);
+                            httpResponseData.content = Encoding.UTF8.GetBytes(content);
                         }
                     }
                     else

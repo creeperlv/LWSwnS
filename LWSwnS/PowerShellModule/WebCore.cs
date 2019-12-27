@@ -49,7 +49,9 @@ namespace PowerShellModule
                                 .Replace("[ScriptIndex]", VariablesPool.PSInstances.IndexOf(item) + "");
                             items += itemHTML;
                         }
-                        httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody.Replace("[ScriptList]", items).Replace("[WebVersion]", WebVersion.ToString()).Replace("[ShellVersion]", ShellCore.ShellVersion.ToString()));
+                        htmlbody = htmlbody.Replace("[ScriptList]", items).Replace("[WebVersion]", WebVersion.ToString()).Replace("[ShellVersion]", ShellCore.ShellVersion.ToString());
+                        WebPagePresets.ApplyPreset(ref htmlbody);
+                        httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody);
                     }
                     else if (url.ToUpper().StartsWith("/ScriptList".ToUpper()))
                     {
@@ -72,8 +74,9 @@ namespace PowerShellModule
                                 items += itemHTML;
                             }
                         }
-                        string htmlbody = ContentHostHTML;
-                        httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody.Replace("[ScriptList]", items).Replace("[WebVersion]", WebVersion.ToString()).Replace("[ShellVersion]", ShellCore.ShellVersion.ToString()));
+                        string htmlbody = ContentHostHTML.Replace("[ScriptList]", items).Replace("[WebVersion]", WebVersion.ToString()).Replace("[ShellVersion]", ShellCore.ShellVersion.ToString());
+                        WebPagePresets.ApplyPreset(ref htmlbody);
+                        httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody);
                     }
                     else if (url.ToUpper().StartsWith("/View-Script:".ToUpper()))
                     {
@@ -81,8 +84,9 @@ namespace PowerShellModule
                         var scriptHome = VariablesPool.config.Get("ScriptHome", "./PSScripts/");
 
                         string code = File.ReadAllText(scriptHome + file).Replace(Environment.NewLine, "<br />");
-                        string htmlbody = ContentHostHTML;
-                        httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody.Replace("[ScriptList]", code).Replace("[WebVersion]", WebVersion.ToString()).Replace("[ShellVersion]", ShellCore.ShellVersion.ToString()));
+                        string htmlbody = ContentHostHTML.Replace("[ScriptList]", code).Replace("[WebVersion]", WebVersion.ToString()).Replace("[ShellVersion]", ShellCore.ShellVersion.ToString());
+                        WebPagePresets.ApplyPreset(ref htmlbody);
+                        httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody);
                     }
                     else if (url.ToUpper().StartsWith("/View-Result:".ToUpper()))
                     {
@@ -90,8 +94,9 @@ namespace PowerShellModule
                         var scriptHome = VariablesPool.config.Get("ScriptHome", "./PSScripts/");
 
                         string code = VariablesPool.PSInstances[int.Parse(file)].ResultContent.Replace(Environment.NewLine, "<br />");
-                        string htmlbody = ContentHostHTML;
-                        httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody.Replace("[ScriptList]", code).Replace("[WebVersion]", WebVersion.ToString()).Replace("[ShellVersion]", ShellCore.ShellVersion.ToString()));
+                        string htmlbody = ContentHostHTML.Replace("[ScriptList]", code).Replace("[WebVersion]", WebVersion.ToString()).Replace("[ShellVersion]", ShellCore.ShellVersion.ToString());
+                        WebPagePresets.ApplyPreset(ref htmlbody);
+                        httpResponseData.content = Encoding.UTF8.GetBytes(htmlbody);
                     }
                     b.Cancel = true;
                     httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";

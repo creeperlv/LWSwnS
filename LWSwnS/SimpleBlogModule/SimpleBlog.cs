@@ -48,17 +48,6 @@ namespace SimpleBlogModule
             WebServer.AddIgnoreUrlPrefix("/POSTS");
             LoadList();
             Tasks.RegisterTask(LoadList, Tasks.TaskType.Every5Seconds);
-            //Task.Run(async () =>
-            //{
-            //    LoadList();
-            //    await Task.Delay(500);
-            //    Debugger.currentDebugger.Log("List auto-rebuild task initialized.");
-            //    while (true)
-            //    {
-            //        await Task.Delay(5000);
-            //        LoadList();
-            //    }
-            //});
             EventHandler<HttpRequestData> a = (object sender, HttpRequestData b) =>
             {
                 //Debugger.currentDebugger.Log("SimpleBlog Called");
@@ -87,6 +76,7 @@ namespace SimpleBlogModule
                             List = "<p style=\"32\">No Posts<p>";
                         }
                         var content = PostList.Replace("[BLOGNAME]", BlogName).Replace("[POSTLIST]", List);
+                        WebPagePresets.ApplyPreset(ref content);
                         httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
                         httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
                         httpResponseData.Send(ref b.streamWriter);
@@ -132,6 +122,7 @@ namespace SimpleBlogModule
                                     }
                                 }
                                 var content = PostList.Replace("[BLOGNAME]", BlogName).Replace("[POSTLIST]", List);
+                                WebPagePresets.ApplyPreset(ref content);
                                 httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
                                 httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
                                 httpResponseData.Send(ref b.streamWriter);
@@ -160,11 +151,13 @@ namespace SimpleBlogModule
                                         }
                                     }
                                     var content = Template.Replace("[POSTNAME]", title).Replace("[BLOGNAME]", BlogName).Replace("[POSTCONTENT]", Markdig.Markdown.ToHtml(MDContent));
+                                    WebPagePresets.ApplyPreset(ref content);
                                     httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
                                 }
                                 else
                                 {
                                     var content = Template.Replace("[POSTNAME]", "File Not Found!").Replace("[BLOGNAME]", BlogName).Replace("[POSTCONTENT]", Markdig.Markdown.ToHtml("# Unable to locate requesting file!"));
+                                    WebPagePresets.ApplyPreset(ref content);
                                     httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
                                 }
                             }
@@ -172,6 +165,7 @@ namespace SimpleBlogModule
                         catch (Exception)
                         {
                             var content = File.ReadAllText(Path.Combine(RootDir, "UnderCounstruction.html")).Replace("[MODULE_NAME]", moduleDescription.Name).Replace("[MODULE_VERSION]", moduleDescription.version.ToString());
+                            WebPagePresets.ApplyPreset(ref content);
                             httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
                         }
                         httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";

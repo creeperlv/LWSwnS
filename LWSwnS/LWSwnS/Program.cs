@@ -2,6 +2,7 @@ using LWSwnS.Api;
 using LWSwnS.Api.Data;
 using LWSwnS.Api.Modules;
 using LWSwnS.Api.Shell.Local;
+using LWSwnS.Api.Web;
 using LWSwnS.Configuration;
 using LWSwnS.Core;
 using LWSwnS.Core.Data;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Loader;
 using System.Threading.Tasks;
 
@@ -270,6 +272,14 @@ namespace LWSwnS
                 Console.ForegroundColor = ConsoleColor.White;
                 return new UniResult() { Data = result };
             });
+
+            {
+                //Determine System Infos.
+                WebPagePresets.AddPreset("Sys.Description", RuntimeInformation.OSDescription);
+                WebPagePresets.AddPreset("Sys.Architecture", RuntimeInformation.OSArchitecture.ToString());
+                Console.WriteLine(Language.GetString("General", "Host.AddPreset", "Added Preset:") + "Sys.Description=" + RuntimeInformation.OSDescription);
+                Console.WriteLine(Language.GetString("General", "Host.AddPreset", "Added Preset:") + "Sys.Architecture=" + RuntimeInformation.OSArchitecture.ToString());
+            }
         }
         static void InitModuleFromList(string lst)
         {
@@ -322,9 +332,9 @@ namespace LWSwnS
             }
             catch (Exception e)
             {
-                
-                Debugger.currentDebugger.Log("Cannot initialize localization flavor!:"+e.Message, MessageType.Error);
-                Debugger.currentDebugger.Log("Current Directory:"+(new DirectoryInfo("./").FullName), MessageType.Error);
+
+                Debugger.currentDebugger.Log("Cannot initialize localization flavor!:" + e.Message, MessageType.Error);
+                Debugger.currentDebugger.Log("Current Directory:" + (new DirectoryInfo("./").FullName), MessageType.Error);
             }
             if (!File.Exists("./Server.ini"))
             {
@@ -827,7 +837,7 @@ namespace LWSwnS
                     }
                     catch (Exception e)
                     {
-                        Debugger.currentDebugger.Log("Error in executing command:"+subbed.Trim()+"\r\n\t"+e.Message, MessageType.Error);
+                        Debugger.currentDebugger.Log("Error in executing command:" + subbed.Trim() + "\r\n\t" + e.Message, MessageType.Error);
                     }
                 }
             }

@@ -34,6 +34,7 @@ namespace MarkdownFileModule
                             var RealUrl = URLConventor.Convert(b.requestUrl.Trim(),isMobile);
                             var MDContent = File.ReadAllText(FileUtilities.GetFileFromURL(RealUrl, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder).FullName);
                             var content = File.ReadAllText(Path.Combine(modDirectory.FullName, "ContentTemplate.html")).Replace("[FileName]", (new FileInfo(RealUrl)).Name).Replace("[MDContent]", Markdig.Markdown.ToHtml(MDContent));
+                            WebPagePresets.ApplyPreset(ref content);
                             httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);
                             httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
                             httpResponseData.Send(ref b.streamWriter);
