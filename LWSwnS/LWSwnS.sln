@@ -63,7 +63,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WikiModule", "WikiModule\Wi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LWSwnS.Globalization", "LWSwnS.Globalization\LWSwnS.Globalization.csproj", "{129B9258-1CA9-4ACC-A3FB-71A4E88C0140}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BasicCommandModule", "BasicCommandModule\BasicCommandModule.csproj", "{32272F6F-317A-4BDC-9A03-4174DA43C73B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicCommandModule", "BasicCommandModule\BasicCommandModule.csproj", "{32272F6F-317A-4BDC-9A03-4174DA43C73B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DirectoryModule", "DirectoryModule\DirectoryModule.csproj", "{7662A9F3-3A6B-47C7-B85D-3522B35C1EB1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -147,6 +149,10 @@ Global
 		{32272F6F-317A-4BDC-9A03-4174DA43C73B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32272F6F-317A-4BDC-9A03-4174DA43C73B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32272F6F-317A-4BDC-9A03-4174DA43C73B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7662A9F3-3A6B-47C7-B85D-3522B35C1EB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7662A9F3-3A6B-47C7-B85D-3522B35C1EB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7662A9F3-3A6B-47C7-B85D-3522B35C1EB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7662A9F3-3A6B-47C7-B85D-3522B35C1EB1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -164,6 +170,7 @@ Global
 		{9A11E655-1885-4D77-802F-25A9A718421B} = {270630FB-A7E2-455E-952B-38DCEA02AB14}
 		{34693DF4-01AD-4CFC-92FE-78558C1A5182} = {270630FB-A7E2-455E-952B-38DCEA02AB14}
 		{32272F6F-317A-4BDC-9A03-4174DA43C73B} = {270630FB-A7E2-455E-952B-38DCEA02AB14}
+		{7662A9F3-3A6B-47C7-B85D-3522B35C1EB1} = {270630FB-A7E2-455E-952B-38DCEA02AB14}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C8C4AB2E-6906-4A7D-AF56-C45397F946CC}

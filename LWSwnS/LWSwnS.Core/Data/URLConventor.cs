@@ -33,7 +33,7 @@ namespace LWSwnS.Core.Data
                 catch
                 {
                 }
-            }, Api.Modules.Tasks.TaskType.Every5Seconds);
+            }, Tasks.TaskType.Every5Seconds);
 
         }
         public static string Convert(string Str, bool isMobile = false)
