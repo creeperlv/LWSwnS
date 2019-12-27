@@ -20,7 +20,7 @@ namespace LWSwnS.Api.Web
         {
             foreach (var item in Presets)
             {
-                content = content.Replace($"{item.Key}", item.Value);
+                content = content.Replace($"{{{item.Key}}}", item.Value);
             }
         }
     }
