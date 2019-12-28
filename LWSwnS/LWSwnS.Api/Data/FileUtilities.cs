@@ -53,6 +53,16 @@ namespace LWSwnS.Api.Data
             }
             return false;
         }
+        public static string AssemblyLocation { get; private set; }
+        public static string ConvertRelativeToAbsolute(string origin)
+        {
+            return origin.Replace("./", AssemblyLocation);
+        }
+        public static void InitLocation(Type t)
+        {
+            AssemblyLocation = new FileInfo(t.Assembly.Location).Directory.FullName;
+            if (!AssemblyLocation.EndsWith("/")) AssemblyLocation += "/";
+        }
         public static DirectoryInfo GetFolderFromURL(string location, string baselocation)
         {
             string locationF = location;
@@ -60,6 +70,9 @@ namespace LWSwnS.Api.Data
             if (locationF.StartsWith("/"))
             {
                 locationF = locationF.Substring(1);
+            }if (locationF.EndsWith("/"))
+            {
+                locationF = locationF.Remove(locationF.Length-1);
             }
             var paths = locationF.Split('/');
 

@@ -160,7 +160,7 @@ namespace LWSwnS
         }
         static void InitApis()
         {
-
+            FileUtilities.InitLocation(typeof(Program));
             ApiManager.AddFunction("REGCMD", (UniParamater p) =>
             {
                 var name = p[0] as string;

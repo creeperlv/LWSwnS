@@ -86,10 +86,6 @@ namespace LWSwnS.Core
             TCPListener = listener;
             OnRequest += (a, b) =>
             {
-                bool isMobile = false;
-                if (ServerConfiguration.CurrentConfiguration.SplitModile == true)
-                    isMobile = b.isMobile;
-                var RealUrl = URLConventor.Convert(b.requestUrl.Trim(), isMobile);
                 foreach (var item in URLPrefix)
                 {
                     if (b.requestUrl.ToUpper().StartsWith(item.ToUpper()))
@@ -118,6 +114,10 @@ namespace LWSwnS.Core
                         return;
                     }
                 }
+                bool isMobile = false;
+                if (ServerConfiguration.CurrentConfiguration.SplitModile == true)
+                    isMobile = b.isMobile;
+                var RealUrl = URLConventor.Convert(b.requestUrl.Trim(), isMobile);
                 Debugger.currentDebugger.Log(Language.GetString("General", "HttpServer.Request", "Request:") + RealUrl);
                 HttpResponseData httpResponseData = new HttpResponseData();
                 try
