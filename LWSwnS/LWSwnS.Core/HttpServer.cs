@@ -400,7 +400,7 @@ namespace LWSwnS.Core
                 {
                     var rec = ReceiveMessage();
                     rec.Processor = this;
-                    if (rec.requestUrl.Split('?')[0].ToUpper().EndsWith("dll".ToUpper()))
+                    if (rec.requestUrl.Split('?')[0].ToUpper().EndsWith("dll".ToUpper())&&ServerConfiguration.CurrentConfiguration.isDLLPageEnabled==true)
                     {
                         string path = rec.requestUrl.Split('?')[0];
                         path = URLConventor.Convert(path); string p = "";

@@ -107,6 +107,7 @@ namespace BinaryFileTransmission
                         bool isMobile = false;
                         if (ServerConfiguration.CurrentConfiguration.SplitModile == true)
                             isMobile = b.isMobile;
+                        b.Cancel = true;
                         HttpResponseData httpResponseData = new HttpResponseData();
                         httpResponseData.Additional = "Application/Binary" + Environment.NewLine + "Accept-Ranges: bytes";
                         var RealUrl = URLConventor.Convert(b.requestUrl.Trim(), isMobile);

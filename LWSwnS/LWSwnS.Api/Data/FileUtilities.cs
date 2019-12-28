@@ -77,6 +77,10 @@ namespace LWSwnS.Api.Data
             var paths = locationF.Split('/');
 
             DirectoryInfo directoryInfo = new DirectoryInfo(baselocation);
+            if (locationF == "")
+            {
+                return directoryInfo;
+            }
             for (int i = 0; i < paths.Length; i++)
             {
                 if (i != paths.Length - 1)

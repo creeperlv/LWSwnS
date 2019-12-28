@@ -85,6 +85,7 @@ namespace DirectoryModule
                                             {
                                                 HttpResponseData httpResponseData = new HttpResponseData();
                                                 string content = File.ReadAllText(f.FullName);
+                                                b.Cancel = true;
                                                 WebPagePresets.ApplyPreset(ref content);
                                                 httpResponseData.content = Encoding.UTF8.GetBytes(content);
                                                 httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
@@ -92,6 +93,7 @@ namespace DirectoryModule
                                             }
                                         }
                                     }
+                                    return;
                                 }
                                 catch(Exception e)
                                 {

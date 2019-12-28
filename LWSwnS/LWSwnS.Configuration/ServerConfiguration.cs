@@ -17,6 +17,7 @@ namespace LWSwnS.Configuration
         public bool UseHttps = false;
         public string HttpsCert = "";
         public bool isShellEnabled = true;
+        public bool isDLLPageEnabled = false;
         public bool isLogEnabled = true;
         public bool SplitModile = false;
         public string MobileWebContentRoot = "./Mobile";
@@ -88,6 +89,11 @@ namespace LWSwnS.Configuration
                     serverConfiguration.isWebEnabled = bool.Parse(item.Substring("isWebEnabled=".Length));
                 }
                 else
+                if (item.StartsWith("isDLLPageEnabled="))
+                {
+                    serverConfiguration.isDLLPageEnabled = bool.Parse(item.Substring("isDLLPageEnabled=".Length));
+                }
+                else
                 if (item.StartsWith("SplitModile="))
                 {
                     serverConfiguration.SplitModile = bool.Parse(item.Substring("SplitModile=".Length));
@@ -123,6 +129,7 @@ namespace LWSwnS.Configuration
             content += "\r\nShellPort=" + serverConfiguration.ShellPort;
             content += "\r\nisWebEnabled=" + serverConfiguration.isWebEnabled;
             content += "\r\nisShellEnabled=" + serverConfiguration.isShellEnabled;
+            content += "\r\nisDLLPageEnabled=" + serverConfiguration.isDLLPageEnabled;
             content += "\r\nWebRoot=" + serverConfiguration.WebContentRoot;
             content += "\r\nMobileWebRoot=" + serverConfiguration.MobileWebContentRoot;
             content += "\r\nSplitModile=" + serverConfiguration.SplitModile;
