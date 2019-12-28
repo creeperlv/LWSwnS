@@ -27,6 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="404.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Locales\en-US\General.lang">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

@@ -127,6 +127,7 @@ namespace LWSwnS.Configuration
             content += "\r\nIP=" + serverConfiguration.IP;
             content += "\r\nWebPort=" + serverConfiguration.WebPort;
             content += "\r\nShellPort=" + serverConfiguration.ShellPort;
+            content += "\r\nPage404=" + serverConfiguration.Page404;
             content += "\r\nisWebEnabled=" + serverConfiguration.isWebEnabled;
             content += "\r\nisShellEnabled=" + serverConfiguration.isShellEnabled;
             content += "\r\nisDLLPageEnabled=" + serverConfiguration.isDLLPageEnabled;

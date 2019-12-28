@@ -15,6 +15,7 @@ using System.Runtime.Loader;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace LWSwnS.Core
 {
@@ -155,12 +156,15 @@ namespace LWSwnS.Core
                             WebPagePresets.ApplyPreset(ref content);
                             httpResponseData.content = Encoding.UTF8.GetBytes(content);
                         }
+                        else
+                        {
+                            httpResponseData.content = Encoding.UTF8.GetBytes(SpecialPages.GetSpecialPage(KnownSpecialPages.Page404));
+                        }
                     }
                     else
                     {
                         try
                         {
-
                             httpResponseData.content = Encoding.UTF8.GetBytes(SpecialPages.GetSpecialPage(KnownSpecialPages.Page404));
                         }
                         catch (Exception)
@@ -196,7 +200,6 @@ namespace LWSwnS.Core
                 }
                 else
                 {
-
                     httpResponseData.Send(ref b.streamWriter);
                 }
             };
@@ -343,12 +346,14 @@ namespace LWSwnS.Core
                     if (LS[i].StartsWith("GET "))
                     {
                         requestData.requestUrl = LS[i].Substring("GET ".Length, LS[i].Length - "GET ".Length - " HTTP/1.1".Length);
+                        requestData.requestUrl = HttpUtility.UrlDecode(requestData.requestUrl);
                         requestData.RequestType = HttpRequestType.GET;
                     }
                     else
                     if (LS[i].StartsWith("POST "))
                     {
                         requestData.requestUrl = LS[i].Substring("POST ".Length, LS[i].Length - "POST ".Length - " HTTP/1.1".Length);
+                        requestData.requestUrl = HttpUtility.UrlDecode(requestData.requestUrl);
                         requestData.RequestType = HttpRequestType.GET;
                     }
                 }

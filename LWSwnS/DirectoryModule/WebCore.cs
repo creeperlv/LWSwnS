@@ -92,6 +92,14 @@ namespace DirectoryModule
                                                 httpResponseData.Send(ref b.streamWriter);
                                             }
                                         }
+                                        else
+                                        {
+                                            HttpResponseData httpResponseData = new HttpResponseData();
+                                            httpResponseData.content = Encoding.UTF8.GetBytes(SpecialPages.GetSpecialPage(KnownSpecialPages.Page404));
+                                            httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
+                                            httpResponseData.Send(ref b.streamWriter);
+
+                                        }
                                     }
                                     return;
                                 }
