@@ -30,7 +30,7 @@ namespace LWSwnS.Core.Data
         public bool ContentOnly;
         public byte[] content;
         public string StatusLine = "HTTP/1.1 200 OK";
-        public string Additional = "HTTP/1.1 200 OK";
+        public string Additional = "";
         public string Date = "Date: " + DateTime.Now.ToString();
         public void Send(ref StreamWriter writer)
         {
