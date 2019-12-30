@@ -18,7 +18,6 @@ namespace PowerShellModule
             ModuleDescription module = new ModuleDescription();
             module.Name = "PowerShellModule-Web";
             module.version = WebVersion;
-            WebServer.AddIgnoreUrlPrefix(VariablesPool.config.Get("WebHost", "/PS"));
             String RootDir = new FileInfo(Assembly.GetAssembly(this.GetType()).Location).Directory.FullName;
             string HostHTML = File.ReadAllText(Path.Combine(RootDir,"Template.html"));
             string ContentHostHTML = File.ReadAllText(Path.Combine(RootDir,"ContentTemplate.html"));

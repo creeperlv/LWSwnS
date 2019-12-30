@@ -1,6 +1,7 @@
 ﻿using LWSwnS.Api.Data;
 using LWSwnS.Api.Modules;
 using LWSwnS.Api.Shell;
+using LWSwnS.Api.Web;
 using LWSwnS.Configuration;
 using Microsoft.CodeAnalysis.FlowAnalysis;
 using System;
@@ -20,13 +21,8 @@ namespace PowerShellModule
         public ModuleDescription InitModule()
         {
             ModuleDescription moduleDescription = new ModuleDescription();
-            try
-            {
-                VariablesPool.config = UniversalConfigurationLoader.LoadFromFile("./Configs/psmodule.ini");
-            }
-            catch (Exception)
-            {
-            }
+            Load();
+            Tasks.RegisterTask(Load, Tasks.TaskType.Every30Seconds);
             moduleDescription.Name = "PowerShellModule-Shell";
             moduleDescription.version = ShellVersion;
             CommandHandler.RegisterCommand("powershell-execute", PSE);
@@ -36,6 +32,17 @@ namespace PowerShellModule
             CommandHandler.RegisterCommand("powershell-del-script", DelScript);
             CommandHandler.RegisterCommand("ps-d-s", DelScript);
             return moduleDescription;
+        }
+        void Load()
+        {
+            try
+            {
+                VariablesPool.config = UniversalConfigurationLoader.LoadFromFile("./Configs/psmodule.ini");
+                WebServer.AddIgnoreUrlPrefix(VariablesPool.config.Get("WebHost", "/PS"));
+            }
+            catch (Exception)
+            {
+            }
         }
         bool DelScript(string a, object b, StreamWriter c)
         {
