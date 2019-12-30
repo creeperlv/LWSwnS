@@ -63,7 +63,7 @@ namespace LWSwnS.Core.Data
             writer.BaseStream.Flush();
             writer.Flush();
         }
-        public void SendFileInRange(ref StreamWriter writer, FileStream reader,KeyValuePair<long,long> SingleRange)
+        public void SendFileInRange(ref StreamWriter writer, FileStream reader,KeyValuePair<long,long> SingleRange,int speedLimit=int.MaxValue)
         {
             writer.WriteLine(StatusLine);
             writer.WriteLine(Date);
@@ -91,18 +91,53 @@ namespace LWSwnS.Core.Data
             reader.Position = startPosition;
             int retireValue = 1;
             bool StopImmediately = false;
+            int count = 0;
+            bool wait = false;
+            DateTime LastCompare=DateTime.Now;
             while (retireValue != 0&&StopImmediately==false)
             {
-                long targetLength = buffer.Length;
-                if (reader.Position + buffer.Length > Length)
+                if (wait == false)
                 {
-                    targetLength=Length-reader.Position;
-                    StopImmediately = true;
+
+                    long targetLength = buffer.Length;
+                    if (reader.Position + buffer.Length > Length)
+                    {
+                        targetLength = Length - reader.Position;
+                        StopImmediately = true;
+                    }
+                    retireValue = reader.Read(buffer, 0, (int)targetLength);
+
+                    if (speedLimit != int.MaxValue)
+                    {
+                        count += retireValue;
+                        if (count >= speedLimit)
+                        {
+                            var t = DateTime.Now - LastCompare;
+                            if (t > TimeSpan.FromSeconds(1))
+                            {
+                                count = 0;
+                            }
+                            else
+                            {
+                                wait = true;
+                            }
+                        }
+                    }
+                    writer.BaseStream.Write(buffer, 0, buffer.Length);
+                    writer.BaseStream.Flush();
+                    writer.Flush();
+                }else
+                {
+                    if (count >= speedLimit)
+                    {
+                        var t = DateTime.Now - LastCompare;
+                        if (t > TimeSpan.FromSeconds(1))
+                        {
+                            count = 0;
+                            wait = false;
+                        }
+                    }
                 }
-                retireValue = reader.Read(buffer, 0, (int)targetLength);
-                writer.BaseStream.Write(buffer, 0, buffer.Length);
-                writer.BaseStream.Flush();
-                writer.Flush();
             }
             writer.BaseStream.Flush();
             writer.Flush();
