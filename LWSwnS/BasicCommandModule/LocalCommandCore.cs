@@ -1,7 +1,9 @@
 ﻿using LWSwnS.Api.Modules;
 using LWSwnS.Api.Shell.Local;
+using LWSwnS.Configuration;
 using LWSwnS.Core;
 using System;
+using System.IO;
 
 namespace BasicCommandModule
 {
@@ -17,14 +19,28 @@ namespace BasicCommandModule
                 LocalShell.Register("cls", ClearScreen);
                 LocalShell.Register("clear", ClearScreen);
                 LocalShell.Register("list-all-commands", listcmds);
+                LocalShell.Register("change-working-directory", ChangeWorkingDirectory);
                 LocalShell.Register("version", ShowVersion);
                 LocalShell.Register("ver", ShowVersion);
             }
 
             return moduleDescription;
         }
+        void ChangeWorkingDirectory(string s)
+        {
+            if (Directory.Exists(s))
+            {
+                ConfigurationLoader.SaveToFile(ServerConfiguration.CurrentConfiguration, "./Server.ini");
+                ServerConfiguration.CurrentConfiguration.OverrideWorkingDirectory = s;
+                Environment.CurrentDirectory = s;
+            }
+        }
         void ShowVersion(string s)
         {
+            Console.Write("ServerConfiguration:");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(ServerConfiguration.ConfigurationVersion.ToString());
+            Console.ForegroundColor = ConsoleColor.White;
             Console.Write("WebServer:");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(HttpServer.WebServerVersion.ToString());

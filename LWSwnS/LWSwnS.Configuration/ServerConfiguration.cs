@@ -6,9 +6,11 @@ namespace LWSwnS.Configuration
 {
     public class ServerConfiguration
     {
+        public static readonly Version ConfigurationVersion = new Version(1, 1, 0, 0);
         public static ServerConfiguration CurrentConfiguration = new ServerConfiguration();
         public string WebContentRoot = ".";
         public string Page404 = "./404.html";
+        public string OverrideWorkingDirectory = "NONE";
         public string IP = "0.0.0.0";
         public string ShellPassword = "";
         public int WebPort = 8080;
@@ -42,6 +44,15 @@ namespace LWSwnS.Configuration
                 if (item.StartsWith("MobileWebRoot="))
                 {
                     serverConfiguration.MobileWebContentRoot = item.Substring("MobileWebRoot=".Length);
+                }
+                else
+                if (item.StartsWith("OverrideWorkingDirectory="))
+                {
+                    serverConfiguration.OverrideWorkingDirectory = item.Substring("OverrideWorkingDirectory=".Length);
+                    if (Directory.Exists(serverConfiguration.OverrideWorkingDirectory))
+                    {
+                        Environment.CurrentDirectory = serverConfiguration.OverrideWorkingDirectory;
+                    }
                 }
                 else
                 if (item.StartsWith("IP="))
@@ -131,6 +142,7 @@ namespace LWSwnS.Configuration
             content += "\r\nisWebEnabled=" + serverConfiguration.isWebEnabled;
             content += "\r\nisShellEnabled=" + serverConfiguration.isShellEnabled;
             content += "\r\nisDLLPageEnabled=" + serverConfiguration.isDLLPageEnabled;
+            content += "\r\nOverrideWorkingDirectory=" + serverConfiguration.OverrideWorkingDirectory;
             content += "\r\nWebRoot=" + serverConfiguration.WebContentRoot;
             content += "\r\nMobileWebRoot=" + serverConfiguration.MobileWebContentRoot;
             content += "\r\nSplitModile=" + serverConfiguration.SplitModile;
