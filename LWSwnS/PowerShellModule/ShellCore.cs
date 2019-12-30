@@ -4,6 +4,7 @@ using LWSwnS.Api.Shell;
 using LWSwnS.Configuration;
 using Microsoft.CodeAnalysis.FlowAnalysis;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Management.Automation;
 using System.Management.Automation.Host;
@@ -15,7 +16,7 @@ namespace PowerShellModule
 {
     public class ShellCore : ExtModule
     {
-        public static Version ShellVersion=new Version(0, 0, 2, 0);
+        public static Version ShellVersion=new Version(0, 1, 3, 0);
         public ModuleDescription InitModule()
         {
             ModuleDescription moduleDescription = new ModuleDescription();
@@ -117,30 +118,87 @@ namespace PowerShellModule
             string Result = "";
             try
             {
-                
-                PowerShell ps = PowerShell.Create( RunspaceMode.NewRunspace);
+                bool useNativeShell = false;
+                try
                 {
-                    var scriptHome = VariablesPool.config.Get("ScriptHome", "./PSScripts/");
-                    ps = ps.AddScript(File.ReadAllText(scriptHome + script));
-                    if (parameter != "")
-                        ps = ps.AddParameter(parameter);
-                    var results = ps.Invoke();
-                    isCompleted = true;
-                    foreach (var item in results)
+                    useNativeShell = bool.Parse(VariablesPool.config.Get("UseNativePS", "False"));
+                }
+                catch
+                {
+                }
+                if (useNativeShell == false)
+                {
+
+                    PowerShell ps = PowerShell.Create(RunspaceMode.NewRunspace);
                     {
-                        if (Result == "")
+                        var scriptHome = VariablesPool.config.Get("ScriptHome", "./PSScripts/");
+                        ps = ps.AddScript(File.ReadAllText(scriptHome + script));
+                        if (parameter != "")
+                            ps = ps.AddParameter(parameter);
+                        var results = ps.Invoke();
+                        isCompleted = true;
+                        foreach (var item in results)
                         {
-                            Result += item;
+                            if (Result == "")
+                            {
+                                Result += item;
+                            }
+                            else
+                            {
+                                Result += Environment.NewLine + item;
+                            }
                         }
-                        else
+                        ResultContent = Result;
+                        LWSwnS.Diagnostic.Debugger.currentDebugger.Log(Result);
+                    }
+                    ps.Dispose();
+                }
+                else
+                {
+                    bool usePreview = false;
+                    try
+                    {
+                        usePreview = bool.Parse(VariablesPool.config.Get("UseNativePreviewPS", "False"));
+                    }
+                    catch
+                    {
+                    }
+                    ProcessStartInfo startInfo;
+                    if (usePreview == false)
+                    {
+                        startInfo = new ProcessStartInfo("pwsh");
+                    }
+                    else
+                    {
+                        startInfo = new ProcessStartInfo("pwsh-preview");
+                    }
+
+                    var scriptHome = VariablesPool.config.Get("ScriptHome", "./PSScripts/");
+                    var scriptF = Path.Combine(scriptHome, script);
+                    startInfo.Arguments = scriptF+" "+parameter;
+                    startInfo.WorkingDirectory = Environment.CurrentDirectory;
+                    startInfo.CreateNoWindow = true;
+                    startInfo.RedirectStandardOutput = true;
+                    var p=Process.Start(startInfo);
+                    string s;
+                    while (p.HasExited)
+                    {
+                        if((s = p.StandardOutput.ReadLine()) != null)
                         {
-                            Result += Environment.NewLine + item;
+
+                            if (Result == "")
+                            {
+                                Result += s;
+                            }
+                            else
+                            {
+                                Result += Environment.NewLine + s;
+                            }
                         }
                     }
-                    ResultContent = Result;
+                    isCompleted = true;
                     LWSwnS.Diagnostic.Debugger.currentDebugger.Log(Result);
                 }
-                ps.Dispose();
             }
             catch (Exception e)
             {
