@@ -44,6 +44,19 @@ namespace LWSwnS.Configuration
             }
             return new List<string>();
         }
+        public List<string> GetValues(string key,string Fallback="")
+        {
+            foreach (var item in Keys)
+            {
+                if (item.ToUpper() == key.ToUpper())
+                {
+                    return this[item];
+                }
+            }
+            var vs=new List<string>();
+            vs.Add(Fallback);
+            return vs;
+        }
         public List<string> GetValuesSensitive(string key)
         {
             if (this.ContainsKey(key)) return this[key]; else return new List<string>();

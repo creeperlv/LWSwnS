@@ -23,5 +23,11 @@ namespace LWSwnS.Api.Shell.Local
             }
             Commands[file.Name].Add(cmdName, action);
         }
+        public static void Invoke(string cmd)
+        {
+            UniParamater uniParamater = new UniParamater();
+            uniParamater.Add(cmd);
+            ApiManager.Functions["LOCAL-SHELL-INVOKE"](uniParamater);
+        }
     }
 }

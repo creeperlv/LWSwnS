@@ -175,6 +175,64 @@ namespace LWSwnS
                 }
                 return new UniResult();
             });
+            ApiManager.AddFunction("LOCAL-SHELL-INVOKE", (UniParamater p) =>
+            {
+                var cmd = p[0] as string;
+                var subbed = cmd.ToUpper();
+                try
+                {
+
+                    if (subbed.IndexOf(' ') > 0)
+                    {
+                        subbed = subbed.Substring(0, subbed.IndexOf(' '));
+                    }
+                    bool Find = false;
+                    if (subbed.IndexOf('/') > 0)
+                    {
+                        // fully qualified command.
+                        string Origin = subbed.Split('/')[0];
+                        string SpecifiedCMD = subbed.Split('/')[1];
+                        foreach (var moduleCMD in LocalShell.Commands)
+                        {
+                            if (moduleCMD.Key.ToUpper() == Origin.ToUpper())
+                                foreach (var singleCMD in moduleCMD.Value)
+                                {
+                                    if (SpecifiedCMD == (singleCMD.Key.ToUpper()))
+                                    {
+                                        singleCMD.Value(cmd.Substring(subbed.Length).Trim());
+                                        Find = true;
+                                    }
+                                    if (Find == true) break;
+                                }
+                            if (Find == true) break;
+                        }
+                        //LocalShell.Commands[Origin][SpecifiedCMD](cmd.Substring(subbed.Length).Trim());
+                    }
+                    if (Find == false)
+                        foreach (var moduleCMD in LocalShell.Commands)
+                        {
+                            foreach (var singleCMD in moduleCMD.Value)
+                            {
+                                if (subbed == (singleCMD.Key.ToUpper()))
+                                {
+                                    singleCMD.Value(cmd.Substring(subbed.Length).Trim());
+                                    Find = true;
+                                }
+                                if (Find == true) break;
+                            }
+                            if (Find == true) break;
+                        }
+                    if (Find == false)
+                    {
+                        Console.WriteLine(Language.GetString("General", "Host.Cmd.NotFound", "\"{cmd}\" is neither an internal command nor external command.").Replace("{cmd}", cmd));
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debugger.currentDebugger.Log("Error in executing command:" + subbed.Trim() + "\r\n\t" + e.Message, MessageType.Error);
+                }
+                return new UniResult();
+            });
             ApiManager.AddFunction("UNREGCMD", (UniParamater p) =>
             {
                 var name = p[0] as string;
@@ -281,73 +339,8 @@ namespace LWSwnS
                 Console.WriteLine(Language.GetString("General", "Host.AddPreset", "Added Preset:") + "Sys.Architecture=" + RuntimeInformation.OSArchitecture.ToString());
             }
         }
-        static void InitModuleFromList(string lst)
+        static void StartTasks()
         {
-            if (File.Exists(lst))
-            {
-                var list = File.ReadAllLines(lst);
-                foreach (var item in list)
-                {
-                    if (File.Exists(item))
-                    {
-                        try
-                        {
-                            ModuleManager.InitModule(item);
-                            foreach (var desc in ModuleManager.LoadModule(item))
-                            {
-                                ModuleManager.ExtModules.Add(desc);
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("Failed on loading:" + item);
-                            Console.ForegroundColor = ConsoleColor.White;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                Debugger.currentDebugger.Log("List file not found.", MessageType.Warning);
-            }
-        }
-        static void Main(string[] args)
-        {
-            Console.Title = "LWSwnS";
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("LWSwnS - Lite Web Server with uNsafe Shell");
-            Console.WriteLine("Initialize Localization Flavor");
-            Console.Write("Region:");
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(System.Globalization.CultureInfo.CurrentCulture.Name);
-            Console.ForegroundColor = ConsoleColor.White;
-            if (!Directory.Exists("./Configs/"))
-            {
-                Directory.CreateDirectory("./Configs");
-            }
-            try
-            {
-                Language.Load();
-            }
-            catch (Exception e)
-            {
-
-                Debugger.currentDebugger.Log("Cannot initialize localization flavor!:" + e.Message, MessageType.Error);
-                Debugger.currentDebugger.Log("Current Directory:" + (new DirectoryInfo("./").FullName), MessageType.Error);
-            }
-            if (!File.Exists("./Server.ini"))
-            {
-                FirstInitialize();
-            }
-            try
-            {
-                ServerConfiguration.CurrentConfiguration = ConfigurationLoader.LoadFromFile("./Server.ini");
-
-            }
-            catch (Exception)
-            {
-            }
             Task.Run(async () =>
             {
                 while (true)
@@ -616,6 +609,74 @@ namespace LWSwnS
                     }
                 }
             });
+        }
+        static void InitModuleFromList(string lst)
+        {
+            if (File.Exists(lst))
+            {
+                var list = File.ReadAllLines(lst);
+                foreach (var item in list)
+                {
+                    if (File.Exists(item))
+                    {
+                        try
+                        {
+                            ModuleManager.InitModule(item);
+                            foreach (var desc in ModuleManager.LoadModule(item))
+                            {
+                                ModuleManager.ExtModules.Add(desc);
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Failed on loading:" + item);
+                            Console.ForegroundColor = ConsoleColor.White;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Debugger.currentDebugger.Log("List file not found.", MessageType.Warning);
+            }
+        }
+        static void Main(string[] args)
+        {
+            Console.Title = "LWSwnS";
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("LWSwnS - Lite Web Server with uNsafe Shell");
+            Console.WriteLine("Initialize Localization Flavor");
+            Console.Write("Region:");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(System.Globalization.CultureInfo.CurrentCulture.Name);
+            Console.ForegroundColor = ConsoleColor.White;
+            if (!Directory.Exists("./Configs/"))
+            {
+                Directory.CreateDirectory("./Configs");
+            }
+            try
+            {
+                Language.Load();
+            }
+            catch (Exception e)
+            {
+
+                Debugger.currentDebugger.Log("Cannot initialize localization flavor!:" + e.Message, MessageType.Error);
+                Debugger.currentDebugger.Log("Current Directory:" + (new DirectoryInfo("./").FullName), MessageType.Error);
+            }
+            if (!File.Exists("./Server.ini"))
+            {
+                FirstInitialize();
+            }
+            try
+            {
+                ServerConfiguration.CurrentConfiguration = ConfigurationLoader.LoadFromFile("./Server.ini");
+
+            }
+            catch (Exception)
+            {
+            }
             if (ServerConfiguration.CurrentConfiguration.isLogEnabled == true)
             {
                 Debugger.currentDebugger = new Debugger(ServerConfiguration.CurrentConfiguration.LogLevel, ServerConfiguration.CurrentConfiguration.LogSeparateSize);
@@ -687,6 +748,7 @@ namespace LWSwnS
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine(Language.GetString("General", "Host.LoadModule.SecondHalf", " ExtModule(s) in total."));
             Console.WriteLine(Language.GetString("General", "Host.FullRun", "The server is now fully running."));
+            StartTasks();
             string cmd;
             while ((cmd = Console.ReadLine()).ToUpper() != "EXIT")
             {
@@ -786,59 +848,7 @@ namespace LWSwnS
                 }
                 else
                 {
-                    var subbed = cmd.ToUpper();
-                    try
-                    {
-
-                        if (subbed.IndexOf(' ') > 0)
-                        {
-                            subbed = subbed.Substring(0, subbed.IndexOf(' '));
-                        }
-                        bool Find = false;
-                        if (subbed.IndexOf('/') > 0)
-                        {
-                            // fully qualified command.
-                            string Origin = subbed.Split('/')[0];
-                            string SpecifiedCMD = subbed.Split('/')[1];
-                            foreach (var moduleCMD in LocalShell.Commands)
-                            {
-                                if (moduleCMD.Key.ToUpper() == Origin.ToUpper())
-                                    foreach (var singleCMD in moduleCMD.Value)
-                                    {
-                                        if (SpecifiedCMD == (singleCMD.Key.ToUpper()))
-                                        {
-                                            singleCMD.Value(cmd.Substring(subbed.Length).Trim());
-                                            Find = true;
-                                        }
-                                        if (Find == true) break;
-                                    }
-                                if (Find == true) break;
-                            }
-                            //LocalShell.Commands[Origin][SpecifiedCMD](cmd.Substring(subbed.Length).Trim());
-                        }
-                        if (Find == false)
-                            foreach (var moduleCMD in LocalShell.Commands)
-                            {
-                                foreach (var singleCMD in moduleCMD.Value)
-                                {
-                                    if (subbed == (singleCMD.Key.ToUpper()))
-                                    {
-                                        singleCMD.Value(cmd.Substring(subbed.Length).Trim());
-                                        Find = true;
-                                    }
-                                    if (Find == true) break;
-                                }
-                                if (Find == true) break;
-                            }
-                        if (Find == false)
-                        {
-                            Console.WriteLine(Language.GetString("General", "Host.Cmd.NotFound", "\"{cmd}\" is neither an internal command nor external command.").Replace("{cmd}", cmd));
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Debugger.currentDebugger.Log("Error in executing command:" + subbed.Trim() + "\r\n\t" + e.Message, MessageType.Error);
-                    }
+                    LocalShell.Invoke(cmd);
                 }
             }
         }

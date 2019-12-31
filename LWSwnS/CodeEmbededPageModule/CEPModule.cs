@@ -24,7 +24,7 @@ namespace CodeEmbededPageModule
             ModuleDescription moduleDescription = new ModuleDescription();
             RootDir = new FileInfo(Assembly.GetAssembly(this.GetType()).Location).Directory.FullName;
             moduleDescription.Name = "CEPModule";
-            
+
             moduleDescription.version = ModuleVersion;
             {
                 UniversalConfigurationMark2 config = new UniversalConfigurationMark2();
@@ -71,7 +71,7 @@ namespace CodeEmbededPageModule
                 }
                 try
                 {
-                    
+
                     Assembly.LoadFrom(Path.Combine(RootDir, "Microsoft.CodeAnalysis.Scripting.dll"));
                 }
                 catch (Exception)
@@ -99,26 +99,41 @@ namespace CodeEmbededPageModule
                     {
 
                         var p = URLConventor.Convert(url[0]);
-                        var originP=url[1].Split('&');
                         Parameter parameter = new Parameter();
-                        foreach (var item in originP)
+                        try
                         {
-                            parameter.Parameters.Add(item.Substring(0,item.IndexOf('=')), item.Substring(item.IndexOf('=') + 1));
+
+                            var originP = url[1].Split('&');
+                            foreach (var item in originP)
+                            {
+                                parameter.Parameters.Add(item.Substring(0, item.IndexOf('=')), item.Substring(item.IndexOf('=') + 1));
+                            }
                         }
-                        Debugger.currentDebugger.Log("Running on CEP:"+p+"("+ url[0]+")");
+                        catch (Exception)
+                        {
+                        }
+                        Debugger.currentDebugger.Log("Running on CEP:" + p + "(" + url[0] + ")");
                         CodeEmbededPage codeEmbededPage = new CodeEmbededPage(p);
-                        var e = codeEmbededPage.ExecuteAndRetire(refs.ToArray(),parameter);
+                        var e = codeEmbededPage.ExecuteAndRetire(refs.ToArray(), parameter);
                         e.Wait();
                         HttpResponseData httpResponseData = new HttpResponseData();
                         var content = e.Result;
-                        WebPagePresets.ApplyPreset(ref content);
+                        try
+                        {
+
+                            WebPagePresets.ApplyPreset(ref content);
+
+                        }
+                        catch (Exception)
+                        {
+                        }
                         httpResponseData.content = Encoding.UTF8.GetBytes(content);
                         httpResponseData.Send(ref b.streamWriter);
                         b.Cancel = true;
                     }
                     catch (Exception e)
                     {
-                        Debugger.currentDebugger.Log("Error on CEP:"+e.Message, MessageType.Error);
+                        Debugger.currentDebugger.Log("Error on CEP:" + e.Message, MessageType.Error);
                         var p = URLConventor.Convert(url[0]);
                         HttpResponseData httpResponseData = new HttpResponseData();
                         httpResponseData.content = Encoding.UTF8.GetBytes(e.Message);

@@ -1,5 +1,6 @@
 ﻿using LWSwnS.Api.Modules;
 using LWSwnS.Api.Shell.Local;
+using LWSwnS.Api.Web;
 using LWSwnS.Configuration;
 using LWSwnS.Core;
 using System;
@@ -7,24 +8,53 @@ using System.IO;
 
 namespace BasicCommandModule
 {
+    public static class Flags
+    {
+        public static bool AutoReLoad = false;
+    }
     public class LocalCommandCore : ExtModule
     {
         public static readonly Version version = new Version(1, 0, 0, 0);
+        public static UniversalConfigurationMark2 config = new UniversalConfigurationMark2();
         public ModuleDescription InitModule()
         {
             ModuleDescription moduleDescription = new ModuleDescription();
             moduleDescription.Name = "BasicCommandModule";
             moduleDescription.version = version;
+            Load();
+            if(Flags.AutoReLoad)
+            Tasks.RegisterTask(Load, Tasks.TaskType.Every10Seconds);
             {
                 LocalShell.Register("cls", ClearScreen);
                 LocalShell.Register("clear", ClearScreen);
                 LocalShell.Register("list-all-commands", listcmds);
+                LocalShell.Register("set-preset", SetPreset);
                 LocalShell.Register("change-working-directory", ChangeWorkingDirectory);
                 LocalShell.Register("version", ShowVersion);
                 LocalShell.Register("ver", ShowVersion);
             }
 
             return moduleDescription;
+        }
+        void Load()
+        {
+            try
+            {
+                config = UniversalConfigurationMark2.LoadFromFile("./Configs/BasicCommand.ini");
+            }
+            catch{}
+            try
+            {
+                //config.GetValues;
+            }
+            catch{}
+
+        }
+        void SetPreset(string s)
+        {
+            var key = s.Substring(0,s.IndexOf('='));
+            var value = s.Substring(s.IndexOf('=')+1);
+            WebPagePresets.AddPreset(key, value);
         }
         void ChangeWorkingDirectory(string s)
         {
