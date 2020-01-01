@@ -77,6 +77,11 @@ namespace LWSwnS.Api.Modules
         public static Dictionary<string, List<Action>> TaskEvery5Seconds {  get; private set; } = new Dictionary<string, List<Action>>();
         public static Dictionary<string, List<Action>> TaskEvery10Seconds { get; private set; } = new Dictionary<string, List<Action>>();
         public static Dictionary<string, List<Action>> TaskEvery30Seconds { get; private set; } = new Dictionary<string, List<Action>>();
+        public static Dictionary<string, List<Action>> AfterAllModulesLoaded { get; private set; } = new Dictionary<string, List<Action>>();
+        public static void ClearTask_AfterAllModulesLoaded()
+        {
+            AfterAllModulesLoaded.Clear();
+        }
         public static void RegisterTask(Action a, TaskType taskType= TaskType.Every5Seconds)
         {
             string Identifier = "";
@@ -133,7 +138,7 @@ namespace LWSwnS.Api.Modules
         }
         public enum TaskType
         {
-            Every5Seconds,Every10Seconds,Every30Seconds
+            Every5Seconds,Every10Seconds,Every30Seconds,AfterAllModuleLoaded
         }
     }
 }

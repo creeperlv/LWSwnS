@@ -178,6 +178,7 @@ namespace LWSwnS
             ApiManager.AddFunction("LOCAL-SHELL-INVOKE", (UniParamater p) =>
             {
                 var cmd = p[0] as string;
+
                 var subbed = cmd.ToUpper();
                 try
                 {
@@ -189,6 +190,7 @@ namespace LWSwnS
                     bool Find = false;
                     if (subbed.IndexOf('/') > 0)
                     {
+
                         // fully qualified command.
                         string Origin = subbed.Split('/')[0];
                         string SpecifiedCMD = subbed.Split('/')[1];
@@ -335,8 +337,10 @@ namespace LWSwnS
                 //Determine System Infos.
                 WebPagePresets.AddPreset("Sys.Description", RuntimeInformation.OSDescription);
                 WebPagePresets.AddPreset("Sys.Architecture", RuntimeInformation.OSArchitecture.ToString());
+                WebPagePresets.AddPreset("LWSwnS.Web.Version", HttpServer.WebServerVersion.ToString());
                 Console.WriteLine(Language.GetString("General", "Host.AddPreset", "Added Preset:") + "Sys.Description=" + RuntimeInformation.OSDescription);
                 Console.WriteLine(Language.GetString("General", "Host.AddPreset", "Added Preset:") + "Sys.Architecture=" + RuntimeInformation.OSArchitecture.ToString());
+                Console.WriteLine(Language.GetString("General", "Host.AddPreset", "Added Preset:") + "LWSwnS.Web.Version=" + HttpServer.WebServerVersion.ToString());
             }
         }
         static void StartTasks()
@@ -750,62 +754,65 @@ namespace LWSwnS
             Console.WriteLine(Language.GetString("General", "Host.FullRun", "The server is now fully running."));
             StartTasks();
             string cmd;
+            LocalShell.Register("Init-Module", (s) =>
+            {
+                var item = s.Trim();
+                try
+                {
+                    ModuleManager.InitModule(item);
+                    foreach (var desc in ModuleManager.LoadModule(item))
+                    {
+                        ModuleManager.ExtModules.Add(desc);
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Failed on loading:" + item);
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+            });
+            LocalShell.Register("Disable-Module", (s) =>
+            {
+                var item = s.Trim();
+                ServerConfiguration.CurrentConfiguration.AllowedModules.Remove(item);
+                ConfigurationLoader.SaveToFile(ServerConfiguration.CurrentConfiguration, "./Server.ini");
+            });
+            LocalShell.Register("Init-Module-From-List", InitModuleFromList);
+            LocalShell.Register("initmods", InitModuleFromList);
+            LocalShell.Register("Move-All-Configs", (s) =>
+            {
+                Debugger.currentDebugger.Log("Finding ini files...");
+                {
+                    DirectoryInfo directoryInfo = new DirectoryInfo(".");
+                    var configs = directoryInfo.EnumerateFiles("*.ini");
+                    if (!Directory.Exists("./Configs/")) Directory.CreateDirectory("./Configs/");
+                    foreach (var item in configs)
+                    {
+                        if (item.Name != "Server.ini")
+                            item.MoveTo("./Configs/" + item.Name);
+                    }
+                }
+                Debugger.currentDebugger.Log("OK. Some modules may need restart to take effect.");
+            });
+            LocalShell.Register("Reconfig", (s) =>
+            {
+                FirstInitialize();
+            });
+            {
+                //FINALIZE LASR STEP
+                foreach (var item in Tasks.AfterAllModulesLoaded)
+                {
+                    foreach (var action in item.Value)
+                    {
+                        action();
+                    }
+                }
+                Tasks.ClearTask_AfterAllModulesLoaded();
+            }
             while ((cmd = Console.ReadLine()).ToUpper() != "EXIT")
             {
-                if (cmd.StartsWith("Init-Module "))
-                {
-                    var item = cmd.Substring("Init-Module ".Length);
-                    try
-                    {
-                        ModuleManager.InitModule(item);
-                        foreach (var desc in ModuleManager.LoadModule(item))
-                        {
-                            ModuleManager.ExtModules.Add(desc);
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Failed on loading:" + item);
-                        Console.ForegroundColor = ConsoleColor.White;
-                    }
-                }
-                else if (cmd.Equals("Reconfig"))
-                {
-                    FirstInitialize();
-                }
-                else if (cmd.StartsWith("Disable-Module "))
-                {
-                    var item = cmd.Substring("Disable-Module ".Length);
-                    ServerConfiguration.CurrentConfiguration.AllowedModules.Remove(item);
-                    ConfigurationLoader.SaveToFile(ServerConfiguration.CurrentConfiguration, "./Server.ini");
-                }
-                else if (cmd.StartsWith("Init-Module-From-List "))
-                {
-                    var file = cmd.Substring("Init-Module-From-List ".Length);
-                    InitModuleFromList(file);
-                }
-                else if (cmd.ToUpper().StartsWith("initmods ".ToUpper()))
-                {
-                    var file = cmd.Substring("initmods ".Length);
-                    InitModuleFromList(file);
-                }
-                else if (cmd.Equals("Move-All-Configs"))
-                {
-                    Debugger.currentDebugger.Log("Finding ini files...");
-                    {
-                        DirectoryInfo directoryInfo = new DirectoryInfo(".");
-                        var configs = directoryInfo.EnumerateFiles("*.ini");
-                        if (!Directory.Exists("./Configs/")) Directory.CreateDirectory("./Configs/");
-                        foreach (var item in configs)
-                        {
-                            if (item.Name != "Server.ini")
-                                item.MoveTo("./Configs/" + item.Name);
-                        }
-                    }
-                    Debugger.currentDebugger.Log("OK. Some modules may need restart to take effect.");
-                }
-                else if (cmd.ToUpper().Equals("Help".ToUpper()) || cmd.Equals("?"))
+                if (cmd.ToUpper().Equals("Help".ToUpper()) || cmd.Equals("?"))
                 {
                     Console.WriteLine("");
                     Console.WriteLine("Help of LWSwnS server console");

@@ -11,6 +11,7 @@ namespace BasicCommandModule
     public static class Flags
     {
         public static bool AutoReLoad = false;
+        public static bool AutoRun = false;
     }
     public class LocalCommandCore : ExtModule
     {
@@ -24,6 +25,21 @@ namespace BasicCommandModule
             Load();
             if(Flags.AutoReLoad)
             Tasks.RegisterTask(Load, Tasks.TaskType.Every10Seconds);
+            if (Flags.AutoRun)
+            {
+                Tasks.RegisterTask(() =>
+                {
+                    var f = config.GetValues("AutoRunFile", "./AUTORUN")[0];
+                    var lines = File.ReadAllLines(f);
+                    foreach (var item in lines)
+                    {
+                        if (!item.StartsWith("") && item != "")
+                        {
+                            LocalShell.Invoke(item);
+                        }
+                    }
+                }, Tasks.TaskType.AfterAllModuleLoaded);
+            }
             {
                 LocalShell.Register("cls", ClearScreen);
                 LocalShell.Register("clear", ClearScreen);
@@ -45,7 +61,14 @@ namespace BasicCommandModule
             catch{}
             try
             {
-                //config.GetValues;
+                var a=bool.Parse(config.GetValues("Flags.AutoReload","False")[0]);
+                Flags.AutoReLoad = a;
+            }
+            catch{}
+            try
+            {
+                var a=bool.Parse(config.GetValues("Flags.AutoRun","False")[0]);
+                Flags.AutoRun = a;
             }
             catch{}
 
