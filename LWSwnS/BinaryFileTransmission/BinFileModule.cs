@@ -190,6 +190,13 @@ namespace BinaryFileTransmission
             fileType.AddItem("Binary", "dat");
             fileType.AddItem("Binary", "appx");
             fileType.AddItem("Binary", "msix");
+            fileType.AddItem("Binary", "msi");
+            fileType.AddItem("Binary", "pdb");
+            fileType.AddItem("Binary", "gz");
+            fileType.AddItem("Binary", "tar");
+            fileType.AddItem("Binary", "xz");
+            fileType.AddItem("Binary", "rpm");
+            fileType.AddItem("Binary", "mkv");
             fileType.SaveToFile("./Configs/BinFileTransModule.ini");
 
         }

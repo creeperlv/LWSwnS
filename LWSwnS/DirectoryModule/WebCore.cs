@@ -48,26 +48,49 @@ namespace DirectoryModule
                                     string dir = URLConventor.Convert(b.requestUrl);
                                     if (FileUtilities.DirectoryExist(dir, URLConventor.RootFolder))
                                     {
-                                        Debugger.currentDebugger.Log("Browsing:" + item + ":" + dir+","+URLConventor.RootFolder);
+                                        Debugger.currentDebugger.Log("Browsing:" + item + ":" + dir + "," + URLConventor.RootFolder);
                                         var dirInfo = LWSwnS.Api.Data.FileUtilities.GetFolderFromURL(dir, URLConventor.RootFolder);
-                                        Console.WriteLine("Real Folder:"+dirInfo.FullName);
+                                        Console.WriteLine("Real Folder:" + dirInfo.FullName);
                                         string items = "";
                                         items += TemplateItem.Replace("[ItemLink]", (b.requestUrl.EndsWith("/") ? "" : "./" + dirInfo.Name + "/") + "../").Replace("[ItemName]", "" + "..")
                                             .Replace("[ItemDate]", "TimeNotApplicable").Replace("[ItemSize]", "-");
 
                                         foreach (var dirs in dirInfo.EnumerateDirectories())
                                         {
-                                            items += TemplateItem.Replace("[ItemLink]",(b.requestUrl.EndsWith("/")?"":"./"+dirInfo.Name+"/")+ dirs.Name+"/").Replace("[ItemName]",""+ dirs.Name+"")
-                                            .Replace("[ItemDate]",""+ dirs.LastWriteTime+"").Replace("[ItemSize]","-");
+                                            items += TemplateItem.Replace("[ItemLink]", (b.requestUrl.EndsWith("/") ? "" : "./" + dirInfo.Name + "/") + dirs.Name + "/").Replace("[ItemName]", "" + dirs.Name + "")
+                                            .Replace("[ItemDate]", "" + dirs.LastWriteTime + "").Replace("[ItemSize]", "-");
                                         }
+                                        string FolderInfo = "";
                                         foreach (var file in dirInfo.EnumerateFiles())
                                         {
-                                            float fl= (float)file.Length / 1024.0f;
-                                            
-                                            items += TemplateItem.Replace("[ItemLink]", (b.requestUrl.EndsWith("/") ? "" : "./" + dirInfo.Name + "/")+file.Name+"").Replace("[ItemName]", file.Name+"")
-                                            .Replace("[ItemDate]",""+ file.LastWriteTime+"").Replace("[ItemSize]",(fl<1024?fl+" KB":(fl<1024*1024?fl/1024f+" MB":((fl/1024f)/1024f)+" GB")));
+                                            if (file.Name == "Folder.Info")
+                                            {
+                                                try
+                                                {
+
+                                                    FolderInfo = File.ReadAllText(file.FullName);
+
+                                                }
+                                                catch (Exception)
+                                                {
+                                                    FolderInfo = "";
+                                                }
+                                                continue;
+                                            }
+                                            float fl = (float)file.Length / 1024.0f;
+                                            items += TemplateItem.Replace("[ItemLink]", (b.requestUrl.EndsWith("/") ? "" : "./" + dirInfo.Name + "/") + file.Name + "").Replace("[ItemName]", file.Name + "")
+                                            .Replace("[ItemDate]", "" + file.LastWriteTime + "").Replace("[ItemSize]", (fl < 1024 ? fl + " KB" : (fl < 1024 * 1024 ? fl / 1024f + " MB" : ((fl / 1024f) / 1024f) + " GB")));
                                         }
-                                        string content = TemplatePage.Replace("[DirName]", dirInfo.Name).Replace("[Location]", b.requestUrl).Replace("[ItemList]",items);
+                                        string content = TemplatePage.Replace("[DirName]", dirInfo.Name).Replace("[Location]", b.requestUrl).Replace("[ItemList]", items);
+                                        if (FolderInfo != "")
+                                        {
+                                            content=content.Replace("[FolderInfo.Display]", "inline");
+                                            content=content.Replace("[FolderInfo.Content]", Markdig.Markdown.ToHtml(FolderInfo));
+                                        }
+                                        else
+                                        {
+                                            content = content.Replace("[FolderInfo.Display]", "none");
+                                        }
                                         content = content.Replace("[ModuleVersion]", version.ToString());
                                         WebPagePresets.ApplyPreset(ref content);
                                         b.Cancel = true;
@@ -76,10 +99,10 @@ namespace DirectoryModule
                                         httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
                                         httpResponseData.Send(ref b.streamWriter);
                                     }
-                                    else if(!dir.EndsWith("/"))
+                                    else if (!dir.EndsWith("/"))
                                     {
                                         FileInfo f;
-                                        if ((f=FileUtilities.GetFileFromURL(dir, URLConventor.RootFolder)) != null)
+                                        if ((f = FileUtilities.GetFileFromURL(dir, URLConventor.RootFolder)) != null)
                                         {
                                             if (f.Name.EndsWith("html") || f.Name.EndsWith("htm"))
                                             {
@@ -103,7 +126,7 @@ namespace DirectoryModule
                                     }
                                     return;
                                 }
-                                catch(Exception e)
+                                catch (Exception e)
                                 {
                                     Debugger.currentDebugger.Log(e.Message);
                                 }
