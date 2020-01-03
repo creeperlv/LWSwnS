@@ -16,3 +16,4 @@ HttpServer.Executed=Executed:
 ShellServer.ReceiveCmd=Receive Command:
 ExperimentalFeature=You are using experimental feature that is untested: {featureName}.
 Alert.ExecuteFromCode=This command {0} is invoked from a certain module.\nDo you want to continue?(Y/n)
+Alert.ExecuteFromCode.Canceled=Canceled.

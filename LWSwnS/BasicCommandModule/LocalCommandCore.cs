@@ -111,16 +111,28 @@ namespace BasicCommandModule
         {
             foreach (var item in LocalShell.Commands)
             {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write("Commands in ");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write($"{item.Key}");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine($":");
+                Console.WriteLine();
                 foreach (var cmd in item.Value)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write($"{cmd.Key}");
+                    Console.WriteLine($"\t{cmd.Key}");
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write(" from ");
+                    Console.Write("\t\tFull name:");
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"{item.Key}");
+                    Console.Write($"{item.Key}");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(":");
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"{cmd.Key}");
                     Console.ForegroundColor = ConsoleColor.White;
                 }
+                Console.WriteLine();
             }
         }
     }

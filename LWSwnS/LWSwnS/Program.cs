@@ -178,7 +178,7 @@ namespace LWSwnS
             ApiManager.AddFunction("LOCAL-SHELL-INVOKE", (UniParamater p) =>
             {
                 var cmd = p[0] as string;
-
+                var InvokeFromCode = (bool)p[1];
                 var subbed = cmd.ToUpper();
                 try
                 {
@@ -201,7 +201,7 @@ namespace LWSwnS
                                 {
                                     if (SpecifiedCMD == (singleCMD.Key.ToUpper()))
                                     {
-                                        singleCMD.Value(cmd.Substring(subbed.Length).Trim(),true);
+                                        singleCMD.Value(cmd.Substring(subbed.Length).Trim(), InvokeFromCode);
                                         Find = true;
                                     }
                                     if (Find == true) break;
@@ -217,7 +217,7 @@ namespace LWSwnS
                             {
                                 if (subbed == (singleCMD.Key.ToUpper()))
                                 {
-                                    singleCMD.Value(cmd.Substring(subbed.Length).Trim(),true);
+                                    singleCMD.Value(cmd.Substring(subbed.Length).Trim(), InvokeFromCode);
                                     Find = true;
                                 }
                                 if (Find == true) break;
@@ -614,7 +614,7 @@ namespace LWSwnS
                 }
             });
         }
-        static void InitModuleFromList(string lst,bool b)
+        static void InitModuleFromList(string lst, bool b)
         {
             if (b == true)
             {
@@ -762,11 +762,15 @@ namespace LWSwnS
             Console.WriteLine(Language.GetString("General", "Host.FullRun", "The server is now fully running."));
             StartTasks();
             string cmd;
-            LocalShell.Register("Init-Module", (s,b) =>
+            LocalShell.Register("Init-Module", (s, b) =>
             {
                 if (b == true)
                 {
-                    if (LocalShell.RequireAuthCMD("Init-Module")==true) { return; }
+                    if (LocalShell.RequireAuthCMD("Init-Module") == false)
+                    {
+                        Console.WriteLine(Language.GetString("General", "Alert.ExecuteFromCode.Canceled", "Canceled."));
+                        return;
+                    }
                 }
                 else
                 {
@@ -850,6 +854,9 @@ namespace LWSwnS
                 }
                 Tasks.ClearTask_AfterAllModulesLoaded();
             }
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(">");
+            Console.ForegroundColor = ConsoleColor.White;
             while ((cmd = Console.ReadLine()).ToUpper() != "EXIT")
             {
                 if (cmd.ToUpper().Equals("Help".ToUpper()) || cmd.Equals("?"))
@@ -900,6 +907,9 @@ namespace LWSwnS
                     uniParamater.Add(false);
                     ApiManager.Functions["LOCAL-SHELL-INVOKE"](uniParamater);
                 }
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write(">");
+                Console.ForegroundColor = ConsoleColor.White;
             }
         }
     }
