@@ -201,7 +201,7 @@ namespace LWSwnS
                                 {
                                     if (SpecifiedCMD == (singleCMD.Key.ToUpper()))
                                     {
-                                        singleCMD.Value(cmd.Substring(subbed.Length).Trim());
+                                        singleCMD.Value(cmd.Substring(subbed.Length).Trim(),true);
                                         Find = true;
                                     }
                                     if (Find == true) break;
@@ -217,7 +217,7 @@ namespace LWSwnS
                             {
                                 if (subbed == (singleCMD.Key.ToUpper()))
                                 {
-                                    singleCMD.Value(cmd.Substring(subbed.Length).Trim());
+                                    singleCMD.Value(cmd.Substring(subbed.Length).Trim(),true);
                                     Find = true;
                                 }
                                 if (Find == true) break;
@@ -614,7 +614,7 @@ namespace LWSwnS
                 }
             });
         }
-        static void InitModuleFromList(string lst)
+        static void InitModuleFromList(string lst,bool b)
         {
             if (File.Exists(lst))
             {
@@ -754,8 +754,16 @@ namespace LWSwnS
             Console.WriteLine(Language.GetString("General", "Host.FullRun", "The server is now fully running."));
             StartTasks();
             string cmd;
-            LocalShell.Register("Init-Module", (s) =>
+            LocalShell.Register("Init-Module", (s,b) =>
             {
+                if (b == true)
+                {
+                    
+                }
+                else
+                {
+
+                }
                 var item = s.Trim();
                 try
                 {
@@ -772,7 +780,7 @@ namespace LWSwnS
                     Console.ForegroundColor = ConsoleColor.White;
                 }
             });
-            LocalShell.Register("Disable-Module", (s) =>
+            LocalShell.Register("Disable-Module", (s, b) =>
             {
                 var item = s.Trim();
                 ServerConfiguration.CurrentConfiguration.AllowedModules.Remove(item);
@@ -780,7 +788,7 @@ namespace LWSwnS
             });
             LocalShell.Register("Init-Module-From-List", InitModuleFromList);
             LocalShell.Register("initmods", InitModuleFromList);
-            LocalShell.Register("Move-All-Configs", (s) =>
+            LocalShell.Register("Move-All-Configs", (s, b) =>
             {
                 Debugger.currentDebugger.Log("Finding ini files...");
                 {
@@ -795,7 +803,7 @@ namespace LWSwnS
                 }
                 Debugger.currentDebugger.Log("OK. Some modules may need restart to take effect.");
             });
-            LocalShell.Register("Reconfig", (s) =>
+            LocalShell.Register("Reconfig", (s, b) =>
             {
                 FirstInitialize();
             });
@@ -855,7 +863,10 @@ namespace LWSwnS
                 }
                 else
                 {
-                    LocalShell.Invoke(cmd);
+                    UniParamater uniParamater = new UniParamater();
+                    uniParamater.Add(cmd);
+                    uniParamater.Add(false);
+                    ApiManager.Functions["LOCAL-SHELL-INVOKE"](uniParamater);
                 }
             }
         }

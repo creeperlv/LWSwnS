@@ -73,13 +73,13 @@ namespace BasicCommandModule
             catch{}
 
         }
-        void SetPreset(string s)
+        void SetPreset(string s,bool b)
         {
             var key = s.Substring(0,s.IndexOf('='));
             var value = s.Substring(s.IndexOf('=')+1);
             WebPagePresets.AddPreset(key, value);
         }
-        void ChangeWorkingDirectory(string s)
+        void ChangeWorkingDirectory(string s, bool b)
         {
             if (Directory.Exists(s))
             {
@@ -88,7 +88,7 @@ namespace BasicCommandModule
                 Environment.CurrentDirectory = s;
             }
         }
-        void ShowVersion(string s)
+        void ShowVersion(string s, bool b)
         {
             Console.Write("ServerConfiguration:");
             Console.ForegroundColor = ConsoleColor.Green;
@@ -103,11 +103,11 @@ namespace BasicCommandModule
             Console.WriteLine(ShellServer.ShellServerVersion.ToString());
             Console.ForegroundColor = ConsoleColor.White;
         }
-        void ClearScreen(string s)
+        void ClearScreen(string s, bool b)
         {
             Console.Clear();
         }
-        void listcmds(string s)
+        void listcmds(string s, bool b)
         {
             foreach (var item in LocalShell.Commands)
             {

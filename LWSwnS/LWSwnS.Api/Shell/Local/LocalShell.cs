@@ -9,8 +9,8 @@ namespace LWSwnS.Api.Shell.Local
 {
     public class LocalShell
     {
-        public static Dictionary<string, Dictionary<string,Action<string>>> Commands { get; internal set; } = new Dictionary<string, Dictionary<string, Action<string>>>();
-        public static void Register(string cmdName,Action<string> action)
+        public static Dictionary<string, Dictionary<string,Action<string,bool>>> Commands { get; internal set; } = new Dictionary<string, Dictionary<string, Action<string, bool>>>();
+        public static void Register(string cmdName,Action<string,bool> action)
         {
 
             StackTrace stack = new StackTrace(true);
@@ -19,7 +19,7 @@ namespace LWSwnS.Api.Shell.Local
 
             if (!Commands.ContainsKey(file.Name))
             {
-                Commands.Add(file.Name, new Dictionary<string, Action<string>>());
+                Commands.Add(file.Name, new Dictionary<string, Action<string, bool>>());
             }
             Commands[file.Name].Add(cmdName, action);
         }
@@ -27,6 +27,7 @@ namespace LWSwnS.Api.Shell.Local
         {
             UniParamater uniParamater = new UniParamater();
             uniParamater.Add(cmd);
+            uniParamater.Add(true);
             ApiManager.Functions["LOCAL-SHELL-INVOKE"](uniParamater);
         }
     }

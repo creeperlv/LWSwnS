@@ -49,7 +49,7 @@ namespace DirectoryModule
                                     if (FileUtilities.DirectoryExist(dir, URLConventor.RootFolder))
                                     {
                                         Debugger.currentDebugger.Log("Browsing:" + item + ":" + dir + "," + URLConventor.RootFolder);
-                                        var dirInfo = LWSwnS.Api.Data.FileUtilities.GetFolderFromURL(dir, URLConventor.RootFolder);
+                                        var dirInfo = FileUtilities.GetFolderFromURL(dir, URLConventor.RootFolder);
                                         Console.WriteLine("Real Folder:" + dirInfo.FullName);
                                         string items = "";
                                         items += TemplateItem.Replace("[ItemLink]", (b.requestUrl.EndsWith("/") ? "" : "./" + dirInfo.Name + "/") + "../").Replace("[ItemName]", "" + "..")

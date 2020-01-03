@@ -75,7 +75,7 @@ namespace BinaryFileTransmission
             //    }
             //});
             {
-                LocalShell.Register("BFT-Add-File-Type", (string s) => {
+                LocalShell.Register("BFT-Add-File-Type", (string s, bool b) => {
                     try
                     {
                         fileType.AddItem("Binary",s.Trim());
@@ -87,7 +87,7 @@ namespace BinaryFileTransmission
                     {
                     }
                 });
-                LocalShell.Register("BFT-Update-Basic-File-Type", (string s) => {
+                LocalShell.Register("BFT-Update-Basic-File-Type", (string s, bool b) => {
                     try
                     {
                         UpdateList(ref fileType);

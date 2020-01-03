@@ -35,7 +35,7 @@ namespace WikiModule
             {
             }
             {
-                LocalShell.Register("WikiModule-Copy-Language-Files", (string s) => {
+                LocalShell.Register("WikiModule-Copy-Language-Files", (string s,bool t) => {
                     try
                     {
                         var locales = Path.Combine(rootDir, "Locales");

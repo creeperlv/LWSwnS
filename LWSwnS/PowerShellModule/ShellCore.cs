@@ -26,7 +26,7 @@ namespace PowerShellModule
             Tasks.RegisterTask(Load, Tasks.TaskType.Every30Seconds);
             moduleDescription.Name = "PowerShellModule-Shell";
             moduleDescription.version = ShellVersion;
-            LocalShell.Register("SetNativePS", (s) =>
+            LocalShell.Register("SetNativePS", (s,t) =>
             {
                 try
                 {
@@ -38,7 +38,7 @@ namespace PowerShellModule
                 {
                 }
             });
-            LocalShell.Register("SetNativePreviewPS", (s) =>
+            LocalShell.Register("SetNativePreviewPS", (s, t) =>
             {
                 try
                 {
@@ -50,7 +50,7 @@ namespace PowerShellModule
                 {
                 }
             });
-            LocalShell.Register("SetDestoryDelay", (s) =>
+            LocalShell.Register("SetDestoryDelay", (s, t) =>
             {
                 try
                 {
