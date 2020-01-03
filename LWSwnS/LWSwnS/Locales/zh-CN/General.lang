@@ -15,3 +15,4 @@ HttpServer.Request=请求：
 HttpServer.Executed=已执行：
 ShellServer.ReceiveCmd=收到指令：
 ExperimentalFeature=你正在使用未测试过的实验性功能：{featureName}。
+Alert.ExecuteFromCode=命令{0}调用自某个模块。\n你希望继续吗？(Y/n)

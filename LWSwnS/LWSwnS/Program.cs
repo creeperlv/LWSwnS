@@ -616,6 +616,14 @@ namespace LWSwnS
         }
         static void InitModuleFromList(string lst,bool b)
         {
+            if (b == true)
+            {
+                if (LocalShell.RequireAuthCMD("Init-Module") == true) { return; }
+            }
+            else
+            {
+
+            }
             if (File.Exists(lst))
             {
                 var list = File.ReadAllLines(lst);
@@ -758,7 +766,7 @@ namespace LWSwnS
             {
                 if (b == true)
                 {
-                    
+                    if (LocalShell.RequireAuthCMD("Init-Module")==true) { return; }
                 }
                 else
                 {
@@ -782,6 +790,14 @@ namespace LWSwnS
             });
             LocalShell.Register("Disable-Module", (s, b) =>
             {
+                if (b == true)
+                {
+                    if (LocalShell.RequireAuthCMD("Init-Module") == true) { return; }
+                }
+                else
+                {
+
+                }
                 var item = s.Trim();
                 ServerConfiguration.CurrentConfiguration.AllowedModules.Remove(item);
                 ConfigurationLoader.SaveToFile(ServerConfiguration.CurrentConfiguration, "./Server.ini");
@@ -790,6 +806,14 @@ namespace LWSwnS
             LocalShell.Register("initmods", InitModuleFromList);
             LocalShell.Register("Move-All-Configs", (s, b) =>
             {
+                if (b == true)
+                {
+                    if (LocalShell.RequireAuthCMD("Init-Module") == true) { return; }
+                }
+                else
+                {
+
+                }
                 Debugger.currentDebugger.Log("Finding ini files...");
                 {
                     DirectoryInfo directoryInfo = new DirectoryInfo(".");
@@ -805,6 +829,14 @@ namespace LWSwnS
             });
             LocalShell.Register("Reconfig", (s, b) =>
             {
+                if (b == true)
+                {
+                    if (LocalShell.RequireAuthCMD("Init-Module") == true) { return; }
+                }
+                else
+                {
+
+                }
                 FirstInitialize();
             });
             {

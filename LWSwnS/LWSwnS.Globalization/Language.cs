@@ -14,10 +14,10 @@ namespace LWSwnS.Globalization
             {
                 if (LanguageDict[LanguageFilePrefix].ContainsKey(key))
                 {
-                    return LanguageDict[LanguageFilePrefix][key];
+                    return LanguageDict[LanguageFilePrefix][key].Replace("\\n",Environment.NewLine);
                 }
             }
-            return fallback;
+            return fallback.Replace("\\n", Environment.NewLine);
         }
         public static void LoadFile(string name)
         {

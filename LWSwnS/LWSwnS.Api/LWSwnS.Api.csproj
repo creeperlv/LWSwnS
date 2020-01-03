@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LWSwnS.Configuration\LWSwnS.Configuration.csproj" />
+    <ProjectReference Include="..\LWSwnS.Globalization\LWSwnS.Globalization.csproj" />
   </ItemGroup>
 
 </Project>

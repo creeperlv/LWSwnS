@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LWSwnS.Globalization;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -29,6 +30,25 @@ namespace LWSwnS.Api.Shell.Local
             uniParamater.Add(cmd);
             uniParamater.Add(true);
             ApiManager.Functions["LOCAL-SHELL-INVOKE"](uniParamater);
+        }
+        public static bool RequireAuthCMD(string CMD)
+        {
+            while (true)
+            {
+                Console.WriteLine(Language.GetString("General", "Alert.ExecuteFromCode", "This command {0} is invoked from a certain module.\nDo you want to continue?(Y/n)"), CMD);
+                var str = Console.ReadLine();
+                switch (str.ToUpper())
+                {
+                    case "Y":
+                        return true;
+                    case "N":
+                        return false;
+                    case "":
+                        return true;
+                    default:
+                        break;
+                }
+            }
         }
     }
 }
