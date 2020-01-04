@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LWSwnS.Api\LWSwnS.Api.csproj" />
+    <ProjectReference Include="..\LWSwnS.Diagnostic\LWSwnS.Diagnostic.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\LWSwnS\bin\Debug\netcoreapp3.0\Modules\AMM</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\LWSwnS\bin\Release\netcoreapp3.0\Modules\AMM</OutputPath>
+  </PropertyGroup>
+</Project>
