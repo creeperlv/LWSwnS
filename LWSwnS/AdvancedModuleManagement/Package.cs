@@ -11,6 +11,7 @@ namespace AdvancedModuleManagement
         public string Name;
         public string ID;
         public string Version;
+        public string MainDLL;
         public string OriginalSource;
     }
 }

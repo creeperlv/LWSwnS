@@ -1,37 +1,121 @@
-﻿using LWSwnS.Api.Modules;
+﻿using LWSwnS.Api.Data;
+using LWSwnS.Api.Modules;
 using LWSwnS.Api.Shell.Local;
+using LWSwnS.Configuration;
 using LWSwnS.Diagnostic;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Reflection;
+using System.Xml.Serialization;
 
 namespace AdvancedModuleManagement
 {
     public class MainEntrance : ExtModule
     {
         public readonly static Version version = new Version(0, 0, 1, 0);
+        public static Dictionary<DirectoryInfo, Package> InstalledModules = new Dictionary<DirectoryInfo, Package>();
+        public static Dictionary<string, Package> ActivatedModules = new Dictionary<string, Package>();
         public ModuleDescription InitModule()
         {
             ModuleDescription moduleDescription = new ModuleDescription();
             moduleDescription.Name = "AdvModMan";
             moduleDescription.version = version;
-            LocalShell.Register("install-module", (s, b) => { 
-            //3 Stage:
-            //  1. Find from source
-            //  2. Download Package (A Zip File)
-            //  3. Unzip the package.
+            LocalShell.Register("install-module", InstallModule);
+            LocalShell.Register("deploy-module", DeployModule);
+            LocalShell.Register("update-module", (s, b) =>
+            {
             });
-            LocalShell.Register("update-module", (s, b) => { 
+            LocalShell.Register("activate-module", (s, b) =>
+            {
             });
-            LocalShell.Register("check-update", (s, b) => { 
+            LocalShell.Register("unload-module", (s, b) =>
+            {
             });
-            LocalShell.Register("uninstall-module", (s, b) => { 
+            LocalShell.Register("deactivate-module", (s, b) =>
+            {
+            });
+            LocalShell.Register("update-source", (s, b) =>
+            {
+            });
+            LocalShell.Register("check-update", (s, b) =>
+            {
+            });
+            LocalShell.Register("uninstall-module", (s, b) =>
+            {
             });
             Debugger.currentDebugger.Log("Loading modules...");
-            var thisFile=new FileInfo(Assembly.GetAssembly(typeof(MainEntrance)).Location);
-            var directory = thisFile.Directory;
+            var CurrentModuleDir = FileUtilities.GetFolderFromAssembly(typeof(MainEntrance));
+            var LWSwnSDir = FileUtilities.GetFolderFromAssembly(typeof(LWSwnS.Configuration.ConfigurationLoader));
+            {
+                string ModuleInstallationDir = Path.Combine(CurrentModuleDir.FullName, "AMM.Modules");
+                DirectoryInfo directoryInfo = new DirectoryInfo(ModuleInstallationDir);
+                foreach (var item in directoryInfo.EnumerateDirectories())
+                {
+                    if (item.EnumerateFiles("Package.manifest").ToArray().Length != 0)
+                    {
+                        XmlSerializer xmlSerializer = new XmlSerializer(typeof(Package));
+                        using (var a = item.EnumerateFiles("Package.manifest").First().OpenRead())
+                        {
+                            InstalledModules.Add(item, xmlSerializer.Deserialize(a) as Package);
+                        }
+                    }
+                }
+            }
+            {
+                string confF = Path.Combine(LWSwnSDir.FullName, "Configs", "AMM.ActivatedModules.ini");
+                UniversalConfigurationMark2 conf = new UniversalConfigurationMark2();
+                var a = conf.GetValues("PackageID", "[NULL]");
+                if (a[0] != "[NULL]")
+                {
+                    foreach (var item in a)
+                    {
+                        foreach (var mod in InstalledModules)
+                        {
+                            if (mod.Value.ID.ToUpper() == item.Split(',')[0].ToUpper())
+                            {
+                                try
+                                {
+                                    if (item.Split(',').Length == 2)
+                                    {
+                                        if (mod.Value.Version.ToUpper() != item.Split(',')[1].ToUpper()) continue;
+                                    }
+                                    ModuleManager.InitModule(Path.Combine(mod.Key.FullName, mod.Value.MainDLL));
+                                    ActivatedModules.Add(mod.Value.ID, mod.Value);
+                                }
+                                catch
+                                {
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             return moduleDescription;
+        }
+        void InstallModule(string s, bool b)
+        {
+            if (b == true)
+            {
+                if (LocalShell.RequireAuthCMD("Deploy-Module") == false)
+                {
+                    return;
+                }
+            }
+
+            DeployModule("", false);
+        }
+        void DeployModule(string s, bool b)
+        {
+            if (b == true)
+            {
+                if (LocalShell.RequireAuthCMD("Deploy-Module") == false)
+                {
+                    return;
+                }
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace LWSwnS.Api.Data
@@ -140,6 +141,10 @@ namespace LWSwnS.Api.Data
                 }
             }
             return null;
+        }
+        public static DirectoryInfo GetFolderFromAssembly(Type t)
+        {
+            return new FileInfo((Assembly.GetAssembly(t).Location)).Directory;
         }
     }
 }
