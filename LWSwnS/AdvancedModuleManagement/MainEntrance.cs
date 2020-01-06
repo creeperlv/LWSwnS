@@ -19,6 +19,8 @@ namespace AdvancedModuleManagement
         public static Dictionary<DirectoryInfo, Package> InstalledModules = new Dictionary<DirectoryInfo, Package>();
         public static Dictionary<string, Package> ActivatedModules = new Dictionary<string, Package>();
         public static List<Source> Sources=new List<Source>();
+        public static DirectoryInfo CurrentModuleDir;
+        public static DirectoryInfo LWSwnSDir;
         public ModuleDescription InitModule()
         {
             ModuleDescription moduleDescription = new ModuleDescription();
@@ -48,8 +50,8 @@ namespace AdvancedModuleManagement
             {
             });
             Debugger.currentDebugger.Log("Loading modules...");
-            var CurrentModuleDir = FileUtilities.GetFolderFromAssembly(typeof(MainEntrance));
-            var LWSwnSDir = FileUtilities.GetFolderFromAssembly(typeof(LWSwnS.Configuration.ConfigurationLoader));
+            CurrentModuleDir = FileUtilities.GetFolderFromAssembly(typeof(MainEntrance));
+            LWSwnSDir = FileUtilities.GetFolderFromAssembly(typeof(LWSwnS.Configuration.ConfigurationLoader));
             {
                 string ModuleInstallationDir = Path.Combine(CurrentModuleDir.FullName, "AMM.Modules");
                 DirectoryInfo directoryInfo = new DirectoryInfo(ModuleInstallationDir);
@@ -134,6 +136,10 @@ namespace AdvancedModuleManagement
                     return;
                 }
             }
+            var target = Path.Combine(CurrentModuleDir.FullName, "AMM.Modules", new FileInfo(s).Name);
+            var origin = new FileInfo(s);
+            Debugger.currentDebugger.Log($"Extract \"{origin.FullName}\" to ");
+            ZipFile.ExtractToDirectory(origin.FullName, target);
         }
     }
 }
