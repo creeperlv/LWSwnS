@@ -18,6 +18,7 @@ namespace AdvancedModuleManagement
         public readonly static Version version = new Version(0, 0, 1, 0);
         public static Dictionary<DirectoryInfo, Package> InstalledModules = new Dictionary<DirectoryInfo, Package>();
         public static Dictionary<string, Package> ActivatedModules = new Dictionary<string, Package>();
+        public static List<Source> Sources=new List<Source>();
         public ModuleDescription InitModule()
         {
             ModuleDescription moduleDescription = new ModuleDescription();
@@ -93,6 +94,20 @@ namespace AdvancedModuleManagement
                     }
                 }
             }
+            #region ReadSource
+            {
+                var SourceLstDir=new DirectoryInfo( Path.Combine(CurrentModuleDir.FullName, "Source.List.Cache"));
+                foreach (var item in SourceLstDir.EnumerateFiles("*.src")) 
+                {
+
+                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(Source));
+                    using (var a = item.OpenRead())
+                    {
+                        Sources.Add(xmlSerializer.Deserialize(a) as Source);
+                    }
+                }
+            }
+            #endregion
             return moduleDescription;
         }
         void InstallModule(string s, bool b)
@@ -104,7 +119,10 @@ namespace AdvancedModuleManagement
                     return;
                 }
             }
+            //foreach (var item in Source)
+            //{
 
+            //}
             DeployModule("", false);
         }
         void DeployModule(string s, bool b)

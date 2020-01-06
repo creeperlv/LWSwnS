@@ -8,6 +8,8 @@ namespace AdvancedModuleManagement
     [Serializable,XmlRoot("Source")]
     public class Source
     {
+        [XmlElement("SourceName")]
+        public string Name;
         [XmlElement("PackageNames")]
         public List<string> PackageName=new List<string>();
         [XmlElement("PackageFiles")]
