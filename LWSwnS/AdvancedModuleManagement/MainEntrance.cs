@@ -55,6 +55,7 @@ namespace AdvancedModuleManagement
             {
                 string ModuleInstallationDir = Path.Combine(CurrentModuleDir.FullName, "AMM.Modules");
                 DirectoryInfo directoryInfo = new DirectoryInfo(ModuleInstallationDir);
+                if (!directoryInfo.Exists) directoryInfo.Create();
                 foreach (var item in directoryInfo.EnumerateDirectories())
                 {
                     if (item.EnumerateFiles("Package.manifest").ToArray().Length != 0)
@@ -99,6 +100,7 @@ namespace AdvancedModuleManagement
             #region ReadSource
             {
                 var SourceLstDir=new DirectoryInfo( Path.Combine(CurrentModuleDir.FullName, "Source.List.Cache"));
+                if (!SourceLstDir.Exists) SourceLstDir.Create();
                 foreach (var item in SourceLstDir.EnumerateFiles("*.src")) 
                 {
 
