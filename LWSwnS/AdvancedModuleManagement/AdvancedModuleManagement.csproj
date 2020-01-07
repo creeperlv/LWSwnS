@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NETCore.Encrypt" Version="2.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\LWSwnS.Api\LWSwnS.Api.csproj" />
     <ProjectReference Include="..\LWSwnS.Diagnostic\LWSwnS.Diagnostic.csproj" />
   </ItemGroup>

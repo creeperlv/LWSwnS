@@ -12,6 +12,8 @@ namespace AdvancedModuleManagement
         public string Name;
         [XmlElement("PackageNames")]
         public List<string> PackageName=new List<string>();
+        [XmlElement("PackageVersions")]
+        public List<string> PackageVersion=new List<string>();
         [XmlElement("PackageFiles")]
         public List<string> PackageFile=new List<string>();
     }

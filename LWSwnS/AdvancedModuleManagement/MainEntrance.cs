@@ -3,6 +3,7 @@ using LWSwnS.Api.Modules;
 using LWSwnS.Api.Shell.Local;
 using LWSwnS.Configuration;
 using LWSwnS.Diagnostic;
+using NETCore.Encrypt;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -103,11 +104,23 @@ namespace AdvancedModuleManagement
                 if (!SourceLstDir.Exists) SourceLstDir.Create();
                 foreach (var item in SourceLstDir.EnumerateFiles("*.src")) 
                 {
-
-                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(Source));
-                    using (var a = item.OpenRead())
+                    //EncryptProvider.RSAEncrypt()
+                    if (item.FullName.ToUpper().EndsWith(".src".ToUpper()))
                     {
-                        Sources.Add(xmlSerializer.Deserialize(a) as Source);
+
+                        var key = new FileInfo(item.FullName + ".key");
+                        XmlSerializer xmlSerializer = new XmlSerializer(typeof(Source));
+                        if (key.Exists)
+                        {
+                            var KeyStr = File.ReadAllText(key.FullName);
+                            var Content = EncryptProvider.RSADecrypt(KeyStr, File.ReadAllText(item.FullName));
+                            Sources.Add(xmlSerializer.Deserialize(new StringReader(Content)) as Source);
+                        }
+                        else
+                        using (var a = item.OpenRead())
+                        {
+                            Sources.Add(xmlSerializer.Deserialize(a) as Source);
+                        }
                     }
                 }
             }
@@ -123,10 +136,22 @@ namespace AdvancedModuleManagement
                     return;
                 }
             }
-            //foreach (var item in Source)
-            //{
+            var Patterns = s.Split(',');
+            var name = Patterns[0];
+            var Version = Patterns.Length > 1 ? "" : Patterns[1];
+            foreach (var SingleSource in Sources)
+            {
+                for (int i = 0; i < SingleSource.PackageName.Count; i++)
+                {
+                    if (SingleSource.PackageName[i].ToUpper() == name.ToUpper())
+                    {
+                        if (SingleSource.PackageVersion[i].ToUpper().StartsWith(Version.ToUpper()))
+                        {
 
-            //}
+                        }
+                    }
+                }
+            }
             DeployModule("", false);
         }
         void DeployModule(string s, bool b)
