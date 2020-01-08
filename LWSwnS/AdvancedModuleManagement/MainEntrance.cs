@@ -41,9 +41,7 @@ namespace AdvancedModuleManagement
             LocalShell.Register("deactivate-module", (s, b) =>
             {
             });
-            LocalShell.Register("update-source", (s, b) =>
-            {
-            });
+            LocalShell.Register("update-source", UpdateSource);
             LocalShell.Register("check-update", (s, b) =>
             {
             });
@@ -72,6 +70,14 @@ namespace AdvancedModuleManagement
             {
                 string confF = Path.Combine(LWSwnSDir.FullName, "Configs", "AMM.ActivatedModules.ini");
                 UniversalConfigurationMark2 conf = new UniversalConfigurationMark2();
+                try
+                {
+                    if (!File.Exists(confF)) File.Create(confF).Close();
+                    conf = UniversalConfigurationMark2.LoadFromFile(confF);
+                }
+                catch (Exception)
+                {
+                }
                 var a = conf.GetValues("PackageID", "[NULL]");
                 if (a[0] != "[NULL]")
                 {
@@ -126,6 +132,26 @@ namespace AdvancedModuleManagement
             }
             #endregion
             return moduleDescription;
+        }
+        void UpdateSource(string s,bool b)
+        {
+            var SourceLstDir = new DirectoryInfo(Path.Combine(CurrentModuleDir.FullName, "Source.List.d"));
+            if (!SourceLstDir.Exists) SourceLstDir.Create();
+
+            foreach (var item in SourceLstDir.EnumerateFiles("*.list"))
+            {
+                if (item.FullName.ToUpper().EndsWith(".list".ToUpper()))
+                {
+                    var listFile = File.ReadAllLines(item.FullName);
+                    foreach (var line in listFile)
+                    {
+                        if (!line.StartsWith('#'))
+                        {
+
+                        }
+                    }
+                }
+            }
         }
         void InstallModule(string s, bool b)
         {
