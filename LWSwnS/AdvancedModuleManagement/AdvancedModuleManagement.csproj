@@ -13,6 +13,12 @@
     <ProjectReference Include="..\LWSwnS.Diagnostic\LWSwnS.Diagnostic.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="LiteManagedHttpDownload">
+      <HintPath>Library\LiteManagedHttpDownload.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\LWSwnS\bin\Debug\netcoreapp3.0\Modules\AMM</OutputPath>
   </PropertyGroup>

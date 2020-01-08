@@ -40,6 +40,7 @@ namespace BinaryFileTransmission
             description.version = new Version(0, 0, 2, 0);
             UniversalConfigurationMark2 fileType = new UniversalConfigurationMark2();
             var list = new  List<string>();
+            var TextList = new  List<string>();
             Tasks.RegisterTask(() =>
             {
                 try
@@ -49,6 +50,11 @@ namespace BinaryFileTransmission
 
                     list = fileType.GetValues("Binary");
                     foreach (var item in list)
+                    {
+                        WebServer.AddExemptFileType(item);
+                    }
+                    TextList= fileType.GetValues("Text-based");
+                    foreach (var item in TextList)
                     {
                         WebServer.AddExemptFileType(item);
                     }
@@ -109,9 +115,45 @@ namespace BinaryFileTransmission
                             isMobile = b.isMobile;
                         b.Cancel = true;
                         HttpResponseData httpResponseData = new HttpResponseData();
-                        httpResponseData.Additional = "Application/Binary" + Environment.NewLine + "Accept-Ranges: bytes";
+                        httpResponseData.Additional = "Content-Type: Application/Binary" + Environment.NewLine + "Accept-Ranges: bytes";
                         var RealUrl = URLConventor.Convert(b.requestUrl.Trim(), isMobile);
                         var fi = FileUtilities.GetFileFromURL(RealUrl, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder);
+                        httpResponseData.Additional += Environment.NewLine + $"Content-Disposition: attachment; filename=\"{fi.Name}\"";
+                        if (b.Range.Ranges.Count > 0)
+                        {
+                            //SendFileInRange
+                            using (var fs = fi.OpenRead())
+                            {
+                                httpResponseData.StatusLine = "HTTP/1.1 206 Partial Content";
+                                httpResponseData.Additional += Environment.NewLine + $"Content-Range: bytes {b.Range.Ranges[0].Key}-{b.Range.Ranges[0].Value}/{fs.Length}";
+                                httpResponseData.SendFileInRange(ref b.streamWriter, fs, b.Range.Ranges[0]);
+                            }
+                        }
+                        else
+                            using (var fs = fi.OpenRead())
+                            {
+                                httpResponseData.SendFile(ref b.streamWriter, fs);
+                            }
+                    }
+                    catch (Exception err)
+                    {
+                        Debugger.currentDebugger.Log("Something bad happened in BTF:"+err, MessageType.Error);
+                    }
+                }else
+                if (EndsWith(b.requestUrl.ToUpper(),TextList))
+                {
+                    try
+                    {
+
+                        bool isMobile = false;
+                        if (ServerConfiguration.CurrentConfiguration.SplitModile == true)
+                            isMobile = b.isMobile;
+                        b.Cancel = true;
+                        HttpResponseData httpResponseData = new HttpResponseData();
+                        httpResponseData.Additional = "Content-Type: text/plain" + Environment.NewLine + "Accept-Ranges: bytes";
+                        var RealUrl = URLConventor.Convert(b.requestUrl.Trim(), isMobile);
+                        var fi = FileUtilities.GetFileFromURL(RealUrl, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder);
+                        httpResponseData.Additional += Environment.NewLine + $"Content-Disposition: inline; filename=\"{fi.Name}\"";
                         if (b.Range.Ranges.Count > 0)
                         {
                             //SendFileInRange
@@ -197,6 +239,9 @@ namespace BinaryFileTransmission
             fileType.AddItem("Binary", "xz");
             fileType.AddItem("Binary", "rpm");
             fileType.AddItem("Binary", "mkv");
+            fileType.AddItem("Binary", "src");
+            fileType.AddItem("Text", "txt");
+            fileType.AddItem("Text", "ini");
             fileType.SaveToFile("./Configs/BinFileTransModule.ini");
 
         }

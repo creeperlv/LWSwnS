@@ -10,6 +10,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using System.Web;
 using System.Xml.Serialization;
 
 namespace AdvancedModuleManagement
@@ -19,7 +20,7 @@ namespace AdvancedModuleManagement
         public readonly static Version version = new Version(0, 0, 1, 0);
         public static Dictionary<DirectoryInfo, Package> InstalledModules = new Dictionary<DirectoryInfo, Package>();
         public static Dictionary<string, Package> ActivatedModules = new Dictionary<string, Package>();
-        public static List<Source> Sources=new List<Source>();
+        public static List<Source> Sources = new List<Source>();
         public static DirectoryInfo CurrentModuleDir;
         public static DirectoryInfo LWSwnSDir;
         public ModuleDescription InitModule()
@@ -105,35 +106,37 @@ namespace AdvancedModuleManagement
                 }
             }
             #region ReadSource
+            LoadSource();
+            #endregion
+            return moduleDescription;
+        }
+        void LoadSource()
+        {
+            var SourceLstDir = new DirectoryInfo(Path.Combine(CurrentModuleDir.FullName, "Source.List.Cache"));
+            if (!SourceLstDir.Exists) SourceLstDir.Create();
+            foreach (var item in SourceLstDir.EnumerateFiles("*.src"))
             {
-                var SourceLstDir=new DirectoryInfo( Path.Combine(CurrentModuleDir.FullName, "Source.List.Cache"));
-                if (!SourceLstDir.Exists) SourceLstDir.Create();
-                foreach (var item in SourceLstDir.EnumerateFiles("*.src")) 
+                //EncryptProvider.RSAEncrypt()
+                if (item.FullName.ToUpper().EndsWith(".src".ToUpper()))
                 {
-                    //EncryptProvider.RSAEncrypt()
-                    if (item.FullName.ToUpper().EndsWith(".src".ToUpper()))
-                    {
 
-                        var key = new FileInfo(item.FullName + ".key");
-                        XmlSerializer xmlSerializer = new XmlSerializer(typeof(Source));
-                        if (key.Exists)
-                        {
-                            var KeyStr = File.ReadAllText(key.FullName);
-                            var Content = EncryptProvider.RSADecrypt(KeyStr, File.ReadAllText(item.FullName));
-                            Sources.Add(xmlSerializer.Deserialize(new StringReader(Content)) as Source);
-                        }
-                        else
+                    var key = new FileInfo(item.FullName + ".key");
+                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(Source));
+                    if (key.Exists)
+                    {
+                        var KeyStr = File.ReadAllText(key.FullName);
+                        var Content = EncryptProvider.RSADecrypt(KeyStr, File.ReadAllText(item.FullName));
+                        Sources.Add(xmlSerializer.Deserialize(new StringReader(Content)) as Source);
+                    }
+                    else
                         using (var a = item.OpenRead())
                         {
                             Sources.Add(xmlSerializer.Deserialize(a) as Source);
                         }
-                    }
                 }
             }
-            #endregion
-            return moduleDescription;
         }
-        void UpdateSource(string s,bool b)
+        void UpdateSource(string s, bool b)
         {
             var SourceLstDir = new DirectoryInfo(Path.Combine(CurrentModuleDir.FullName, "Source.List.d"));
             if (!SourceLstDir.Exists) SourceLstDir.Create();
@@ -145,13 +148,34 @@ namespace AdvancedModuleManagement
                     var listFile = File.ReadAllLines(item.FullName);
                     foreach (var line in listFile)
                     {
-                        if (!line.StartsWith('#'))
+                        try
                         {
-
+                            if (!line.StartsWith('#'))
+                            {
+                                double p = 0.0;
+                                var name = line.Substring(line.LastIndexOf('/') + 1);
+                                Console.Write("Getting: ");
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.Write(name);
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.Write(" from ");
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.WriteLine(line);
+                                Console.ForegroundColor = ConsoleColor.White;
+                                var a = LiteManagedHttpDownload.Downloader.DownloadToFileWithProgressBuffered(line, Path.Combine(CurrentModuleDir.FullName, "Source.List.Cache", name), ref p, 10240);
+                                Console.WriteLine(a);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Debugger.currentDebugger.Log(e.Message, MessageType.Error);
                         }
                     }
                 }
             }
+            Console.WriteLine("Download Sources Completed.");
+            Console.WriteLine("Resolving...");
+            LoadSource();
         }
         void InstallModule(string s, bool b)
         {
@@ -173,7 +197,9 @@ namespace AdvancedModuleManagement
                     {
                         if (SingleSource.PackageVersion[i].ToUpper().StartsWith(Version.ToUpper()))
                         {
-
+                            var Url = SingleSource.PackageFile[i];
+                            double p = 0.0;
+                            LiteManagedHttpDownload.Downloader.DownloadToFileWithProgressBuffered(Url, Path.Combine(CurrentModuleDir.FullName, "Caches", $"{SingleSource.PackageName[i]}-{SingleSource.PackageVersion[i]}-{SingleSource.Name}.pkg"), ref p, 10240);
                         }
                     }
                 }
