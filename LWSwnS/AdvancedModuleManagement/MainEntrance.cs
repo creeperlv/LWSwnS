@@ -15,7 +15,7 @@ using System.Xml.Serialization;
 
 namespace AdvancedModuleManagement
 {
-    public class MainEntrance : ExtModule
+    public partial class MainEntrance : ExtModule
     {
         public readonly static Version version = new Version(0, 0, 1, 0);
         public static Dictionary<DirectoryInfo, Package> InstalledModules = new Dictionary<DirectoryInfo, Package>();
@@ -30,28 +30,23 @@ namespace AdvancedModuleManagement
             moduleDescription.version = version;
             LocalShell.Register("install-module", InstallModule);
             LocalShell.Register("deploy-module", DeployModule);
-            LocalShell.Register("update-module", (s, b) =>
-            {
-            });
+            LocalShell.Register("update-module", UpdateModule);
+            LocalShell.Register("update-all-modules", UpdateAllModules);
             LocalShell.Register("activate-module", (s, b) =>
             {
             });
-            LocalShell.Register("unload-module", (s, b) =>
-            {
-            });
+            LocalShell.Register("unload-module", UnloadModule);
             LocalShell.Register("deactivate-module", (s, b) =>
             {
             });
             LocalShell.Register("update-source", UpdateSource);
-            LocalShell.Register("check-update", (s, b) =>
-            {
-            });
+            LocalShell.Register("check-update", CheckUpdate);
             LocalShell.Register("uninstall-module", (s, b) =>
             {
             });
             Debugger.currentDebugger.Log("Loading modules...");
             CurrentModuleDir = FileUtilities.GetFolderFromAssembly(typeof(MainEntrance));
-            LWSwnSDir = FileUtilities.GetFolderFromAssembly(typeof(LWSwnS.Configuration.ConfigurationLoader));
+            LWSwnSDir = FileUtilities.GetFolderFromAssembly(typeof(ConfigurationLoader));
             {
                 string ModuleInstallationDir = Path.Combine(CurrentModuleDir.FullName, "AMM.Modules");
                 DirectoryInfo directoryInfo = new DirectoryInfo(ModuleInstallationDir);
@@ -176,6 +171,7 @@ namespace AdvancedModuleManagement
             Console.WriteLine("Download Sources Completed.");
             Console.WriteLine("Resolving...");
             LoadSource();
+            CheckUpdate(null, false);
         }
         void InstallModule(string s, bool b)
         {
@@ -199,12 +195,18 @@ namespace AdvancedModuleManagement
                         {
                             var Url = SingleSource.PackageFile[i];
                             double p = 0.0;
+                            Console.WriteLine("Downloading package...");
                             LiteManagedHttpDownload.Downloader.DownloadToFileWithProgressBuffered(Url, Path.Combine(CurrentModuleDir.FullName, "Caches", $"{SingleSource.PackageName[i]}-{SingleSource.PackageVersion[i]}-{SingleSource.Name}.pkg"), ref p, 10240);
+                            DeployModule(Path.Combine(CurrentModuleDir.FullName, "Caches", $"{SingleSource.PackageName[i]}-{SingleSource.PackageVersion[i]}-{SingleSource.Name}.pkg"), false);
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("Complete");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            return;
                         }
                     }
                 }
             }
-            DeployModule("", false);
+            Console.WriteLine($"Failed.");
         }
         void DeployModule(string s, bool b)
         {
@@ -217,7 +219,7 @@ namespace AdvancedModuleManagement
             }
             var target = Path.Combine(CurrentModuleDir.FullName, "AMM.Modules", new FileInfo(s).Name);
             var origin = new FileInfo(s);
-            Debugger.currentDebugger.Log($"Extract \"{origin.FullName}\" to ");
+            Debugger.currentDebugger.Log($"Extract \"{origin.FullName}\" to \"{target}\"");
             ZipFile.ExtractToDirectory(origin.FullName, target);
         }
     }
