@@ -93,6 +93,30 @@ namespace BinaryFileTransmission
                     {
                     }
                 });
+                LocalShell.Register("Add-Bin-File-Type", (string s, bool b) => {
+                    try
+                    {
+                        fileType.AddItem("Binary",s.Trim());
+                        fileType.SaveToFile("./Configs/BinFileTransModule.ini");
+                        WebServer.AddExemptFileType(s.Trim());
+                        Console.WriteLine("Target type has been added to the configuration file.");
+                    }
+                    catch
+                    {
+                    }
+                });
+                LocalShell.Register("Add-Text-File-Type", (string s, bool b) => {
+                    try
+                    {
+                        fileType.AddItem("Text",s.Trim());
+                        fileType.SaveToFile("./Configs/BinFileTransModule.ini");
+                        WebServer.AddExemptFileType(s.Trim());
+                        Console.WriteLine("Target type has been added to the configuration file.");
+                    }
+                    catch
+                    {
+                    }
+                });
                 LocalShell.Register("BFT-Update-Basic-File-Type", (string s, bool b) => {
                     try
                     {
