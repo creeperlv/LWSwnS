@@ -23,6 +23,7 @@ namespace AdvancedModuleManagement
         public static List<Source> Sources = new List<Source>();
         public static DirectoryInfo CurrentModuleDir;
         public static DirectoryInfo LWSwnSDir;
+        public static UniversalConfigurationMark2 conf = new UniversalConfigurationMark2();
         public ModuleDescription InitModule()
         {
             ModuleDescription moduleDescription = new ModuleDescription();
@@ -32,21 +33,43 @@ namespace AdvancedModuleManagement
             LocalShell.Register("deploy-module", DeployModule);
             LocalShell.Register("update-module", UpdateModule);
             LocalShell.Register("update-all-modules", UpdateAllModules);
-            LocalShell.Register("activate-module", (s, b) =>
+            LocalShell.Register("set-module-to-active", (s, b) =>
             {
+                conf.AddItem("PackageID", s);
+                conf.SaveToFile(conf.ConfFile);
             });
             LocalShell.Register("unload-module", UnloadModule);
-            LocalShell.Register("deactivate-module", (s, b) =>
+            LocalShell.Register("set-module-to-deactivate", (s, b) =>
             {
+                conf.RemoveItemAt("PackageID", conf.GetValues("PackageID").IndexOf(s));
+                conf.SaveToFile(conf.ConfFile);
             });
             LocalShell.Register("update-source", UpdateSource);
             LocalShell.Register("check-update", CheckUpdate);
             LocalShell.Register("uninstall-module", (s, b) =>
             {
+                UnloadModule(s, b);
+                for(int i=0;i<InstalledModules.Count;i++)
+                {
+                    if (InstalledModules.ElementAt(i).Value.Name == s)
+                    {
+
+                        try
+                        {
+                            LocalShell.Invoke("set-module-to-deactivate "+InstalledModules.ElementAt(i).Value.ID);
+                        }
+                        catch (Exception)
+                        {
+                        }
+                        InstalledModules.ElementAt(i).Key.Delete(true);
+                        InstalledModules.Remove(InstalledModules.ElementAt(i).Key);
+                    }
+                }
             });
             Debugger.currentDebugger.Log("Loading modules...");
             CurrentModuleDir = FileUtilities.GetFolderFromAssembly(typeof(MainEntrance));
             LWSwnSDir = FileUtilities.GetFolderFromAssembly(typeof(ConfigurationLoader));
+            string confF = Path.Combine(LWSwnSDir.FullName, "Configs", "AMM.ActivatedModules.ini");
             {
                 string ModuleInstallationDir = Path.Combine(CurrentModuleDir.FullName, "AMM.Modules");
                 DirectoryInfo directoryInfo = new DirectoryInfo(ModuleInstallationDir);
@@ -64,8 +87,6 @@ namespace AdvancedModuleManagement
                 }
             }
             {
-                string confF = Path.Combine(LWSwnSDir.FullName, "Configs", "AMM.ActivatedModules.ini");
-                UniversalConfigurationMark2 conf = new UniversalConfigurationMark2();
                 try
                 {
                     if (!File.Exists(confF)) File.Create(confF).Close();

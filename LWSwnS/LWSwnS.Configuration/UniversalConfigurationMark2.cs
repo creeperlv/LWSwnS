@@ -7,8 +7,10 @@ namespace LWSwnS.Configuration
 {
     public class UniversalConfigurationMark2 : Dictionary<string, List<string>>
     {
+        public string ConfFile { get; set; }
         public void SaveToFile(string path)
         {
+            ConfFile = path;
             List<string> Content = new List<string>();
             foreach (var item in this)
             {
@@ -57,6 +59,15 @@ namespace LWSwnS.Configuration
             vs.Add(Fallback);
             return vs;
         }
+        public void RemoveItemAt(string key,int id)
+        {
+            if (this.ContainsKey(key))
+            {
+                if(this[key].Count>id)
+                this[key].RemoveAt(id);
+            }
+
+        }
         public List<string> GetValuesSensitive(string key)
         {
             if (this.ContainsKey(key)) return this[key]; else return new List<string>();
@@ -75,6 +86,7 @@ namespace LWSwnS.Configuration
         public static UniversalConfigurationMark2 LoadFromFile(string path)
         {
             UniversalConfigurationMark2 config = new UniversalConfigurationMark2();
+            config.ConfFile =path;
             var lines = File.ReadAllLines(path);
             foreach (var item in lines)
             {
