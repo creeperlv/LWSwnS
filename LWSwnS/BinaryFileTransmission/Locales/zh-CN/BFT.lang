@@ -1,0 +1,3 @@
+﻿BFT.Error=BFT模块里发生了错误：
+BFT.AddedTo=目标类型已经被添加到了配置文件。
+BFT.UpdateType=配置文件已用最新的预定义类型更新。

@@ -1,0 +1,3 @@
+﻿BFT.Error=Something error happened in BFT:
+BFT.AddedTo=Target type has been added to the configuration file.
+BFT.UpdateType=Configuration file has been updated with the newest pre-defined types.

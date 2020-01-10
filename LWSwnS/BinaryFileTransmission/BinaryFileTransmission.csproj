@@ -15,5 +15,13 @@
     <ProjectReference Include="..\LWSwnS.Api\LWSwnS.Api.csproj" />
     <ProjectReference Include="..\LWSwnS.Core\LWSwnS.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Locales\en-US\BFT.lang">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Locales\zh-CN\BFT.lang">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 
 </Project>

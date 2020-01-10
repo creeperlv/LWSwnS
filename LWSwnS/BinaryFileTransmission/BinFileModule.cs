@@ -5,6 +5,7 @@ using LWSwnS.Api.Web;
 using LWSwnS.Configuration;
 using LWSwnS.Core.Data;
 using LWSwnS.Diagnostic;
+using LWSwnS.Globalization;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,6 +21,18 @@ namespace BinaryFileTransmission
             Console.WriteLine("Generating file type configuration...");
             UniversalConfigurationMark2 fileType = new UniversalConfigurationMark2();
             BinFileModule.UpdateList(ref fileType);
+
+            Console.WriteLine("Copying Language Files...");
+
+            DirectoryInfo LanguageDir = new DirectoryInfo(Path.Combine((new FileInfo(Assembly.GetAssembly(typeof(BinFileModule)).Location)).Directory.FullName,"Locales"));
+            foreach (var lang in LanguageDir.EnumerateDirectories())
+            {
+                if (!Directory.Exists("./Locales/" + lang.Name)) Directory.CreateDirectory("./Locales/" + lang.Name);
+                foreach (var langF in lang.EnumerateFiles())
+                {
+                    langF.CopyTo("./Locales/" + lang.Name + "/" + langF.Name,true);
+                }
+            }
         }
     }
     public class BinFileModule : ExtModule
@@ -37,10 +50,11 @@ namespace BinaryFileTransmission
         {
             ModuleDescription description = new ModuleDescription();
             description.Name = "Binary-File-Transmission-Module";
-            description.version = new Version(0, 0, 2, 0);
+            description.version = new Version(0, 0, 3, 0);
             UniversalConfigurationMark2 fileType = new UniversalConfigurationMark2();
             var list = new  List<string>();
             var TextList = new  List<string>();
+            Language.LoadFile("BFT");
             Tasks.RegisterTask(() =>
             {
                 try
@@ -63,23 +77,6 @@ namespace BinaryFileTransmission
                 {
                 }
             });
-            //Task.Run(async () => {
-            //    await Task.Delay(1000);
-            //    Debugger.currentDebugger.Log("Auto configuration reload initialized.");
-            //    while (true)
-            //    {
-            //        try
-            //        {
-
-            //            fileType = UniversalConfigurationMark2.LoadFromFile("./Configs/BinFileTransModule.ini");
-
-            //        }
-            //        catch (Exception)
-            //        {
-            //        }
-            //        await Task.Delay(5000);
-            //    }
-            //});
             {
                 LocalShell.Register("BFT-Add-File-Type", (string s, bool b) => {
                     try
@@ -87,7 +84,7 @@ namespace BinaryFileTransmission
                         fileType.AddItem("Binary",s.Trim());
                         fileType.SaveToFile("./Configs/BinFileTransModule.ini");
                         WebServer.AddExemptFileType(s.Trim());
-                        Console.WriteLine("Target type has been added to the configuration file.");
+                        Console.WriteLine(Language.GetString("BFT", "BFT.AddedTo", "Target type has been added to the configuration file."));
                     }
                     catch
                     {
@@ -99,7 +96,7 @@ namespace BinaryFileTransmission
                         fileType.AddItem("Binary",s.Trim());
                         fileType.SaveToFile("./Configs/BinFileTransModule.ini");
                         WebServer.AddExemptFileType(s.Trim());
-                        Console.WriteLine("Target type has been added to the configuration file.");
+                        Console.WriteLine(Language.GetString("BFT", "BFT.AddedTo", "Target type has been added to the configuration file."));
                     }
                     catch
                     {
@@ -111,7 +108,7 @@ namespace BinaryFileTransmission
                         fileType.AddItem("Text",s.Trim());
                         fileType.SaveToFile("./Configs/BinFileTransModule.ini");
                         WebServer.AddExemptFileType(s.Trim());
-                        Console.WriteLine("Target type has been added to the configuration file.");
+                        Console.WriteLine(Language.GetString("BFT", "BFT.AddedTo", "Target type has been added to the configuration file."));
                     }
                     catch
                     {
@@ -121,7 +118,7 @@ namespace BinaryFileTransmission
                     try
                     {
                         UpdateList(ref fileType);
-                        Console.WriteLine("Target type has been added to the configuration file.");
+                        Console.WriteLine(Language.GetString("BFT", "BFT.UpdateType", "Configuration file has been updated with the newest pre-defined types."));
                     }
                     catch
                     {
@@ -161,7 +158,7 @@ namespace BinaryFileTransmission
                     }
                     catch (Exception err)
                     {
-                        Debugger.currentDebugger.Log("Something bad happened in BTF:"+err, MessageType.Error);
+                        Debugger.currentDebugger.Log(Language.GetString("BFT", "BFT.Error", "Something error happened in BFT:") + err, MessageType.Error);
                     }
                 }else
                 if (EndsWith(b.requestUrl.ToUpper(),TextList))
@@ -196,7 +193,7 @@ namespace BinaryFileTransmission
                     }
                     catch (Exception err)
                     {
-                        Debugger.currentDebugger.Log("Something bad happened in BTF:"+err, MessageType.Error);
+                        Debugger.currentDebugger.Log(Language.GetString("BFT", "BFT.Error", "Something error happened in BFT:") + err, MessageType.Error);
                     }
                 }
             };
