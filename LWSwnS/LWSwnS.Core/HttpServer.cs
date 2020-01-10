@@ -41,10 +41,10 @@ namespace LWSwnS.Core
             }
             if (ServerConfiguration.CurrentConfiguration.UseHttps == true)
             {
-                Debugger.currentDebugger.Log(Language.GetString("General", "ExperimentalFeature", "You are using experimental feature that is untested: {featureName}.").Replace("{featureName}","HTTPS"), MessageType.Warning);
+                Debugger.currentDebugger.Log(Language.GetString("General", "ExperimentalFeature", "You are using experimental feature that is untested: {featureName}.").Replace("{featureName}", "HTTPS"), MessageType.Warning);
                 serverCertificate = X509Certificate.CreateFromCertFile(ServerConfiguration.CurrentConfiguration.HttpsCert);
             }
-                //serverCertificate = X509Certificate.CreateFromCertFile(ServerConfiguration.CurrentConfiguration.HttpsCert);
+            //serverCertificate = X509Certificate.CreateFromCertFile(ServerConfiguration.CurrentConfiguration.HttpsCert);
             ApiManager.AddFunction("IgnoreUrl", (UniParamater a) =>
             {
                 URLPrefix.Add(a[0] as String);
@@ -356,6 +356,13 @@ namespace LWSwnS.Core
                         requestData.requestUrl = HttpUtility.UrlDecode(requestData.requestUrl);
                         requestData.RequestType = HttpRequestType.GET;
                     }
+                    else
+                    if (LS[i].StartsWith("PUT "))
+                    {
+                        requestData.requestUrl = LS[i].Substring("PUT ".Length, LS[i].Length - "PUT ".Length - " HTTP/1.1".Length);
+                        requestData.requestUrl = HttpUtility.UrlDecode(requestData.requestUrl);
+                        requestData.RequestType = HttpRequestType.PUT;
+                    }
                 }
                 else
                 {
@@ -390,6 +397,38 @@ namespace LWSwnS.Core
                             requestData.Range.Ranges.Add(SingleRange);
                         }
                     }
+                    else
+                    if (LS[i].StartsWith("Content-type: "))
+                    {
+                        requestData.ContentType = LS[i].Substring("Content-type: ".Length).Trim();
+                    }
+                    else
+                    if (LS[i].StartsWith("Content-length: "))
+                    {
+                        requestData.ContentLength = LS[i].Substring("Content-length:".Length).Trim();
+                    }
+                    else
+                    if (LS[i].StartsWith("Cookie: "))
+                    {
+                        var cookieStr = LS[i].Substring("Cookie:".Length).Trim();
+                        var cookiesSep = cookieStr.Split(';');
+                        foreach (var item in cookiesSep)
+                        {
+                            if (item != "")
+                            {
+                                try
+                                {
+
+                                    requestData.Cookies.Add(new Cookie() { name = item.Split('=')[0], value = item.Split('=')[1] });
+
+                                }
+                                catch (Exception)
+                                {
+                                }
+                            }
+                        }
+                        //requestData.Conte = LS[i].Substring("Content-length:".Length).Trim();
+                    }
                 }
             }
             requestData.streamWriter = this.streamWriter;
@@ -405,7 +444,7 @@ namespace LWSwnS.Core
                 {
                     var rec = ReceiveMessage();
                     rec.Processor = this;
-                    if (rec.requestUrl.Split('?')[0].ToUpper().EndsWith("dll".ToUpper())&&ServerConfiguration.CurrentConfiguration.isDLLPageEnabled==true)
+                    if (rec.requestUrl.Split('?')[0].ToUpper().EndsWith("dll".ToUpper()) && ServerConfiguration.CurrentConfiguration.isDLLPageEnabled == true)
                     {
                         string path = rec.requestUrl.Split('?')[0];
                         path = URLConventor.Convert(path); string p = "";

@@ -11,13 +11,22 @@ namespace LWSwnS.Core.Data
     {
         public TcpClientProcessor Processor;
         public string requestUrl;
-        public HttpRange Range=new HttpRange();
+        public string ContentType;
+        public string ContentLength;
+        public string ContentLocation;
+        public HttpRange Range = new HttpRange();
         public string UA;
         public HttpRequestType RequestType;
         public bool isMobile = false;
         public bool willCancelNextHandle = false;
         public StreamWriter streamWriter;
+        public List<Cookie> Cookies = new List<Cookie>();
     }
+    public class Cookie {
+        public string name;
+        public string value;
+    }
+
     public class HttpRange
     {
         public string type = "bytes";
@@ -63,7 +72,7 @@ namespace LWSwnS.Core.Data
             writer.BaseStream.Flush();
             writer.Flush();
         }
-        public void SendFileInRange(ref StreamWriter writer, FileStream reader,KeyValuePair<long,long> SingleRange,int speedLimit=int.MaxValue)
+        public void SendFileInRange(ref StreamWriter writer, FileStream reader, KeyValuePair<long, long> SingleRange, int speedLimit = int.MaxValue)
         {
             writer.WriteLine(StatusLine);
             writer.WriteLine(Date);
@@ -93,8 +102,8 @@ namespace LWSwnS.Core.Data
             bool StopImmediately = false;
             int count = 0;
             bool wait = false;
-            DateTime LastCompare=DateTime.Now;
-            while (retireValue != 0&&StopImmediately==false)
+            DateTime LastCompare = DateTime.Now;
+            while (retireValue != 0 && StopImmediately == false)
             {
                 if (wait == false)
                 {
@@ -126,7 +135,8 @@ namespace LWSwnS.Core.Data
                     writer.BaseStream.Write(buffer, 0, buffer.Length);
                     writer.BaseStream.Flush();
                     writer.Flush();
-                }else
+                }
+                else
                 {
                     if (count >= speedLimit)
                     {
@@ -145,6 +155,6 @@ namespace LWSwnS.Core.Data
     }
     public enum HttpRequestType
     {
-        GET, POST
+        GET, POST, PUT
     }
 }
