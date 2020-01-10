@@ -10,6 +10,7 @@ namespace LWSwnS.Configuration
         public static ServerConfiguration CurrentConfiguration = new ServerConfiguration();
         public string WebContentRoot = ".";
         public string Page404 = "./404.html";
+        public string WebPageDLLAlternativeTypeName = "dll";
         public string OverrideWorkingDirectory = "NONE";
         public string IP = "0.0.0.0";
         public string ShellPassword = "";
@@ -44,6 +45,11 @@ namespace LWSwnS.Configuration
                 if (item.StartsWith("MobileWebRoot="))
                 {
                     serverConfiguration.MobileWebContentRoot = item.Substring("MobileWebRoot=".Length);
+                }
+                else
+                if (item.StartsWith("WebPageDLLAlternativeTypeName="))
+                {
+                    serverConfiguration.WebPageDLLAlternativeTypeName = item.Substring("WebPageDLLAlternativeTypeName=".Length);
                 }
                 else
                 if (item.StartsWith("OverrideWorkingDirectory="))

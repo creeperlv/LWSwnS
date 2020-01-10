@@ -403,7 +403,7 @@ namespace LWSwnS.Core
                         requestData.ContentType = LS[i].Substring("Content-type: ".Length).Trim();
                     }
                     else
-                    if (LS[i].StartsWith("Content-length: "))
+                    if (LS[i].ToUpper().StartsWith("Content-length: ".ToUpper()))
                     {
                         requestData.ContentLength = LS[i].Substring("Content-length:".Length).Trim();
                     }
@@ -444,7 +444,7 @@ namespace LWSwnS.Core
                 {
                     var rec = ReceiveMessage();
                     rec.Processor = this;
-                    if (rec.requestUrl.Split('?')[0].ToUpper().EndsWith("dll".ToUpper()) && ServerConfiguration.CurrentConfiguration.isDLLPageEnabled == true)
+                    if (rec.requestUrl.Split('?')[0].ToUpper().EndsWith(ServerConfiguration.CurrentConfiguration.WebPageDLLAlternativeTypeName.ToUpper()) && ServerConfiguration.CurrentConfiguration.isDLLPageEnabled == true)
                     {
                         string path = rec.requestUrl.Split('?')[0];
                         path = URLConventor.Convert(path); string p = "";

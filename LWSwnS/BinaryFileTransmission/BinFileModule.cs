@@ -263,6 +263,11 @@ namespace BinaryFileTransmission
             fileType.AddItem("Binary", "src");
             fileType.AddItem("Text", "txt");
             fileType.AddItem("Text", "ini");
+            fileType.AddItem("Text", "inf");
+            fileType.AddItem("Text", "cs");
+            fileType.AddItem("Text", "java");
+            fileType.AddItem("Text", "cpp");
+            fileType.AddItem("Text", "h");
             fileType.SaveToFile("./Configs/BinFileTransModule.ini");
 
         }
