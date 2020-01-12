@@ -354,7 +354,7 @@ namespace LWSwnS.Core
                     {
                         requestData.requestUrl = LS[i].Substring("POST ".Length, LS[i].Length - "POST ".Length - " HTTP/1.1".Length);
                         requestData.requestUrl = HttpUtility.UrlDecode(requestData.requestUrl);
-                        requestData.RequestType = HttpRequestType.GET;
+                        requestData.RequestType = HttpRequestType.POST;
                     }
                     else
                     if (LS[i].StartsWith("PUT "))

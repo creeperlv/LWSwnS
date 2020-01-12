@@ -261,6 +261,16 @@ namespace BinaryFileTransmission
             fileType.AddItem("Binary", "rpm");
             fileType.AddItem("Binary", "mkv");
             fileType.AddItem("Binary", "src");
+            fileType.AddItem("Binary", "glsl");
+            fileType.AddItem("Binary", "fsh");
+            fileType.AddItem("Binary", "vsh");
+            fileType.AddItem("Binary", "meta");
+            fileType.AddItem("Binary", "unity");
+            fileType.AddItem("Binary", "mat");
+            fileType.AddItem("Binary", "shader");
+            fileType.AddItem("Binary", "asset");
+            fileType.AddItem("Binary", "hlsl");
+            fileType.AddItem("Binary", "resx");
             fileType.AddItem("Text", "txt");
             fileType.AddItem("Text", "ini");
             fileType.AddItem("Text", "inf");
@@ -268,6 +278,9 @@ namespace BinaryFileTransmission
             fileType.AddItem("Text", "java");
             fileType.AddItem("Text", "cpp");
             fileType.AddItem("Text", "h");
+            fileType.AddItem("Text", "sh");
+            fileType.AddItem("Text", "ps1");
+            fileType.AddItem("Text", "bat");
             fileType.SaveToFile("./Configs/BinFileTransModule.ini");
 
         }
