@@ -363,6 +363,12 @@ namespace LWSwnS.Core
                         requestData.requestUrl = HttpUtility.UrlDecode(requestData.requestUrl);
                         requestData.RequestType = HttpRequestType.PUT;
                     }
+                    if (LS[i].StartsWith("DEL "))
+                    {
+                        requestData.requestUrl = LS[i].Substring("DEL ".Length, LS[i].Length - "DEL ".Length - " HTTP/1.1".Length);
+                        requestData.requestUrl = HttpUtility.UrlDecode(requestData.requestUrl);
+                        requestData.RequestType = HttpRequestType.DEL;
+                    }
                 }
                 else
                 {

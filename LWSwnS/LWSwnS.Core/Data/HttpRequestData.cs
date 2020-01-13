@@ -155,6 +155,6 @@ namespace LWSwnS.Core.Data
     }
     public enum HttpRequestType
     {
-        GET, POST, PUT
+        GET, POST, PUT,DEL
     }
 }
