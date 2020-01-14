@@ -30,6 +30,8 @@ namespace AdvancedModuleManagement
             moduleDescription.Name = "AdvModMan";
             moduleDescription.version = version;
             LocalShell.Register("install-module", InstallModule);
+            LocalShell.Register("pack-module", PackModule);
+            LocalShell.Register("Generate-module-list", GenerateList);
             LocalShell.Register("deploy-module", DeployModule);
             LocalShell.Register("update-module", UpdateModule);
             LocalShell.Register("update-all-modules", UpdateAllModules);

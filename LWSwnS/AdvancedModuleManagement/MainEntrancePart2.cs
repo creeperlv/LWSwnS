@@ -54,6 +54,14 @@ namespace AdvancedModuleManagement
                 ;
             }
         }
+        void PackModule(string s,bool b)
+        {
+
+        }
+        void GenerateList(string s,bool b)
+        {
+
+        }
         void UnloadModule(string s, bool b)
         {
 
