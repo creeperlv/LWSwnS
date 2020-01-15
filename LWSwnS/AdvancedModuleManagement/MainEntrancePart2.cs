@@ -1,10 +1,13 @@
 ﻿using LWSwnS.Api.Modules;
+using LWSwnS.Core.Data;
 using LWSwnS.Diagnostic;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace AdvancedModuleManagement
 {
@@ -56,11 +59,42 @@ namespace AdvancedModuleManagement
         }
         void PackModule(string s,bool b)
         {
-
+            Console.WriteLine("Where to store package?");
+            string location = Console.ReadLine();
+            if (!location.ToUpper().EndsWith(".AMP")) location += ".AMP";
+            ZipFile.CreateFromDirectory(s, location);
+            Console.WriteLine("Completed");
+            
         }
         void GenerateList(string s,bool b)
         {
+            Console.WriteLine("Where to store list?");
+            string location = Console.ReadLine();
+            if (!location.StartsWith("/"))
+            {
+                location = "/" + location;
+            }
+            if (!s.StartsWith("/"))
+            {
+                s= "/" + s;
+            }
+            var l=URLConventor.Convert(location);
+            
+            var d=URLConventor.Convert(s);
 
+            DirectoryInfo directoryInfo = new DirectoryInfo(d);
+            Source source;
+            foreach (var item in directoryInfo.EnumerateFiles())
+            {
+                if (item.Name.ToUpper().EndsWith(".AMP"))
+                {
+                    var arc=ZipFile.Open(item.FullName, ZipArchiveMode.Read);
+                    var manifest=arc.GetEntry("Package.manifest");
+                    XmlSerializer xmlSerializer = new XmlSerializer(typeof(Package));
+                    Package package = xmlSerializer.Deserialize(manifest.Open()) as Package;
+                    
+                }
+            }
         }
         void UnloadModule(string s, bool b)
         {

@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LWSwnS.Api\LWSwnS.Api.csproj" />
+    <ProjectReference Include="..\LWSwnS.Core\LWSwnS.Core.csproj" />
     <ProjectReference Include="..\LWSwnS.Diagnostic\LWSwnS.Diagnostic.csproj" />
   </ItemGroup>
 
