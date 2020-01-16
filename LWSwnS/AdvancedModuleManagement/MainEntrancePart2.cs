@@ -1,4 +1,5 @@
 ﻿using LWSwnS.Api.Modules;
+using LWSwnS.Configuration;
 using LWSwnS.Core.Data;
 using LWSwnS.Diagnostic;
 using System;
@@ -68,6 +69,8 @@ namespace AdvancedModuleManagement
         }
         void GenerateList(string s,bool b)
         {
+            Console.WriteLine("Please enter a name:");
+            string name = Console.ReadLine();
             Console.WriteLine("Where to store list?");
             string location = Console.ReadLine();
             if (!location.StartsWith("/"))
@@ -83,7 +86,8 @@ namespace AdvancedModuleManagement
             var d=URLConventor.Convert(s);
 
             DirectoryInfo directoryInfo = new DirectoryInfo(d);
-            Source source;
+            Source source=new Source();
+            source.Name = name;
             foreach (var item in directoryInfo.EnumerateFiles())
             {
                 if (item.Name.ToUpper().EndsWith(".AMP"))
@@ -92,7 +96,9 @@ namespace AdvancedModuleManagement
                     var manifest=arc.GetEntry("Package.manifest");
                     XmlSerializer xmlSerializer = new XmlSerializer(typeof(Package));
                     Package package = xmlSerializer.Deserialize(manifest.Open()) as Package;
-                    
+                    source.PackageName.Add(package.Name);
+                    source.PackageVersion.Add(package.Version);
+                    source.PackageFile.Add(item.FullName.Substring((new DirectoryInfo(ServerConfiguration.CurrentConfiguration.WebContentRoot).FullName.Length)));
                 }
             }
         }
