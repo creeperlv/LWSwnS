@@ -63,9 +63,18 @@ namespace AdvancedModuleManagement
             Console.WriteLine("Where to store package?");
             string location = Console.ReadLine();
             if (!location.ToUpper().EndsWith(".AMP")) location += ".AMP";
-            ZipFile.CreateFromDirectory(s, location);
-            Console.WriteLine("Completed");
-            
+            DirectoryInfo contentDir = new DirectoryInfo(s);
+            foreach (var item in contentDir.EnumerateFiles())
+            {
+                if (item.Name.ToUpper() == ("Package.manifest").ToUpper())
+                {
+
+                    ZipFile.CreateFromDirectory(s, location);
+                    Console.WriteLine("Completed");
+                    return;
+                }
+            }
+            Console.WriteLine("Manifest file does not exist in given folder.");
         }
         void GenerateList(string s,bool b)
         {
@@ -100,6 +109,12 @@ namespace AdvancedModuleManagement
                     source.PackageVersion.Add(package.Version);
                     source.PackageFile.Add(item.FullName.Substring((new DirectoryInfo(ServerConfiguration.CurrentConfiguration.WebContentRoot).FullName.Length)));
                 }
+            }
+            {
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(Source));
+                var fi = new FileInfo(URLConventor.Convert(location));
+                if (!fi.Exists) fi.Create().Close();
+                xmlSerializer.Serialize((fi.OpenWrite()), source);
             }
         }
         void UnloadModule(string s, bool b)
