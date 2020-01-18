@@ -18,6 +18,11 @@ namespace LWSwnS.WebPage
     public class CodeEmbededPage
     {
         string PageFile;
+        static Type LWSwnSCore;
+        public static void SetLWSwnSCore(Type type)
+        {
+            LWSwnSCore = type;
+        }
         public CodeEmbededPage(string pathToFile)
         {
             PageFile = pathToFile;
@@ -28,7 +33,7 @@ namespace LWSwnS.WebPage
             var c = Resolve();
             string content = "";
             string[] imports = { "System" , "System.IO"  , "System.Collections.Generic" , "System.Linq", "System.Text" };
-            Assembly[] assemblies = {  Assembly.GetAssembly(typeof(ApiManager)) , Assembly.GetAssembly(typeof(IDebugger)) };
+            Assembly[] assemblies = {  Assembly.GetAssembly(typeof(ApiManager)) , Assembly.GetAssembly(typeof(IDebugger)), Assembly.GetAssembly(typeof(Console)),Assembly.GetAssembly(LWSwnSCore )};
             if (parameter == null) parameter = new Parameter();
             ScriptState state = null;
             string para = "";

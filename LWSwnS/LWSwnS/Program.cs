@@ -161,6 +161,13 @@ namespace LWSwnS
         static void InitApis()
         {
             FileUtilities.InitLocation(typeof(Program));
+            try
+            {
+                LWSwnS.WebPage.CodeEmbededPage.SetLWSwnSCore(typeof(HttpServer));
+            }
+            catch
+            {
+            }
             ApiManager.AddFunction("REGCMD", (UniParamater p) =>
             {
                 var name = p[0] as string;
