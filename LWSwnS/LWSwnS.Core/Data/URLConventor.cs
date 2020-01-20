@@ -14,6 +14,14 @@ namespace LWSwnS.Core.Data
         public static string MobileRootFolder = ".";
         //static Dictionary<string, string> Rule = new Dictionary<string, string>();
         static UniversalConfiguration Rule = new UniversalConfiguration();
+        public static void AddRule(string url,string route)
+        {
+            Rule.Add(url, route);
+        }
+        public static void SaveRule()
+        {
+            Rule.SaveToFile("./Configs/URLRules.ini");
+        }
         public static void InitRules()
         {
             try
