@@ -3,6 +3,7 @@ using LWSwnS.Api.Shell.Local;
 using LWSwnS.Api.Web;
 using LWSwnS.Configuration;
 using LWSwnS.Core;
+using LWSwnS.Core.Data;
 using System;
 using System.IO;
 
@@ -43,6 +44,7 @@ namespace BasicCommandModule
             {
                 LocalShell.Register("cls", ClearScreen);
                 LocalShell.Register("clear", ClearScreen);
+                LocalShell.Register("add-rule", AddRule);
                 LocalShell.Register("list-all-commands", listcmds);
                 LocalShell.Register("set-preset", SetPreset);
                 LocalShell.Register("change-working-directory", ChangeWorkingDirectory);
@@ -51,6 +53,11 @@ namespace BasicCommandModule
             }
 
             return moduleDescription;
+        }
+        void AddRule(string s,bool b)
+        {
+            URLConventor.AddRule(s.Split('|')[0], s.Split('|')[1]);
+            URLConventor.SaveRule();
         }
         void Load()
         {
