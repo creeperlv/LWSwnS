@@ -34,6 +34,7 @@ namespace AdvancedModuleManagement
             LocalShell.Register("Generate-module-list", GenerateList);
             LocalShell.Register("deploy-module", DeployModule);
             LocalShell.Register("update-module", UpdateModule);
+            LocalShell.Register("list-modules", ShowList);
             LocalShell.Register("update-all-modules", UpdateAllModules);
             LocalShell.Register("set-module-to-active", (s, b) =>
             {

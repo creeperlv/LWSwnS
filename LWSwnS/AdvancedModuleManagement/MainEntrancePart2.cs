@@ -117,6 +117,36 @@ namespace AdvancedModuleManagement
                 xmlSerializer.Serialize((fi.OpenWrite()), source);
             }
         }
+        void ShowList(string s,bool b)
+        {
+            switch (s.ToUpper())
+            {
+                case "--INSTALLED":
+                    {
+
+                        foreach (var item in InstalledModules)
+                        {
+                            Console.WriteLine($"{item.Value.Name}/{item.Value.Version}");
+                        }
+                    }
+                    break;
+                default:
+                    {
+                        foreach (var item in Sources)
+                        {
+                            for (int i = 0; i < item.PackageName.Count; i++)
+                            {
+                                Console.Write($"{item.PackageName[i]}/{item.PackageVersion[i]}:");
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.WriteLine($"{item.Name}");
+                                Console.ForegroundColor = ConsoleColor.White;
+                            }
+                        }
+                    }
+                    break;
+            }
+
+        }
         void UnloadModule(string s, bool b)
         {
 
