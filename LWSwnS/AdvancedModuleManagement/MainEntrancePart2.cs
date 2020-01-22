@@ -126,7 +126,12 @@ namespace AdvancedModuleManagement
 
                         foreach (var item in InstalledModules)
                         {
-                            Console.WriteLine($"{item.Value.Name}/{item.Value.Version}");
+                            Console.Write($"{item.Value.Name}/{item.Value.Version}");
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.Write($"{item.Value.OriginalSource}");
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            Console.WriteLine($"(Local)");
+                            Console.ForegroundColor = ConsoleColor.White;
                         }
                     }
                     break;
