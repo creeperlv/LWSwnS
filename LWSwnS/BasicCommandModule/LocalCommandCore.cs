@@ -43,6 +43,7 @@ namespace BasicCommandModule
             }
             {
                 LocalShell.Register("cls", ClearScreen);
+                LocalShell.Register("bc-get-help", ShowHelp);
                 LocalShell.Register("clear", ClearScreen);
                 LocalShell.Register("add-rule", AddRule);
                 LocalShell.Register("list-all-commands", listcmds);
@@ -53,6 +54,20 @@ namespace BasicCommandModule
             }
 
             return moduleDescription;
+        }
+        void ShowHelp(string s, bool b)
+        {
+            ShowMessage("cls\r\nclear", "Clear screen.");
+            ShowMessage("Add-Rule", "Add a rule.");
+            ShowMessage("Change-Working-Directory", "Set working directory to a specified path.");
+            ShowMessage("version\r\nver", "Display the version of LWSwnS.");
+        }
+        void ShowMessage(string title,string msg)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine(title);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("\t"+msg);
         }
         void AddRule(string s,bool b)
         {
