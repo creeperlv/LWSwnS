@@ -54,7 +54,13 @@ namespace BinaryFileTransmission
             UniversalConfigurationMark2 fileType = new UniversalConfigurationMark2();
             var list = new  List<string>();
             var TextList = new  List<string>();
-            Language.LoadFile("BFT");
+            try
+            {
+                Language.LoadFile("BFT");
+            }
+            catch
+            {
+            }
             Tasks.RegisterTask(() =>
             {
                 try
@@ -122,6 +128,29 @@ namespace BinaryFileTransmission
                     }
                     catch
                     {
+                    }
+                });
+                LocalShell.Register("bc-get-help", (string s, bool b) => {
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("BFT-Add-File-Type <FileType>");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine("\tAdd given file type into configuration file.");
+                    }{
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Add-Bin-File-Type <FileType>");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine("\tAdd given file type into configuration file as binary file type.");
+                    }{
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Add-Text-File-Type <FileType>");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine("\tAdd given file type into configuration file as pure-text file type.");
+                    }{
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("BFT-Update-Basic-File-Type");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.WriteLine("\tUpdate the configuration file with embedded file type list.");
                     }
                 });
             }

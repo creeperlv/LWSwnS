@@ -44,6 +44,7 @@ namespace BasicCommandModule
             {
                 LocalShell.Register("cls", ClearScreen);
                 LocalShell.Register("bc-get-help", ShowHelp);
+                LocalShell.Register("cmd-help", TotalHelp);
                 LocalShell.Register("clear", ClearScreen);
                 LocalShell.Register("add-rule", AddRule);
                 LocalShell.Register("list-all-commands", listcmds);
@@ -54,6 +55,19 @@ namespace BasicCommandModule
             }
 
             return moduleDescription;
+        }
+        void TotalHelp(string s,bool b)
+        {
+            foreach (var item in LocalShell.Commands)
+            {
+                foreach (var cmd in item.Value)
+                {
+                    if (cmd.Key.ToUpper()=="BC-GET-HELP")
+                    {
+                        cmd.Value("", true);
+                    }
+                }
+            }
         }
         void ShowHelp(string s, bool b)
         {
