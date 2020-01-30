@@ -68,7 +68,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicCommandModule", "Basic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DirectoryModule", "DirectoryModule\DirectoryModule.csproj", "{7662A9F3-3A6B-47C7-B85D-3522B35C1EB1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedModuleManagement", "AdvancedModuleManagement\AdvancedModuleManagement.csproj", "{1183B2AD-1AD3-49A9-AA49-A946ED33F869}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AdvancedModuleManagement", "AdvancedModuleManagement\AdvancedModuleManagement.csproj", "{1183B2AD-1AD3-49A9-AA49-A946ED33F869}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RemoteShell", "RemoteShell\RemoteShell.csproj", "{9D61D182-996A-4D3F-B303-1DD7872D8CF4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -160,6 +162,10 @@ Global
 		{1183B2AD-1AD3-49A9-AA49-A946ED33F869}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1183B2AD-1AD3-49A9-AA49-A946ED33F869}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1183B2AD-1AD3-49A9-AA49-A946ED33F869}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D61D182-996A-4D3F-B303-1DD7872D8CF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D61D182-996A-4D3F-B303-1DD7872D8CF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D61D182-996A-4D3F-B303-1DD7872D8CF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D61D182-996A-4D3F-B303-1DD7872D8CF4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -179,6 +185,7 @@ Global
 		{32272F6F-317A-4BDC-9A03-4174DA43C73B} = {270630FB-A7E2-455E-952B-38DCEA02AB14}
 		{7662A9F3-3A6B-47C7-B85D-3522B35C1EB1} = {270630FB-A7E2-455E-952B-38DCEA02AB14}
 		{1183B2AD-1AD3-49A9-AA49-A946ED33F869} = {270630FB-A7E2-455E-952B-38DCEA02AB14}
+		{9D61D182-996A-4D3F-B303-1DD7872D8CF4} = {270630FB-A7E2-455E-952B-38DCEA02AB14}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C8C4AB2E-6906-4A7D-AF56-C45397F946CC}
