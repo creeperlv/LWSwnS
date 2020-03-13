@@ -54,7 +54,6 @@ namespace DirectoryModule
                                         string items = "";
                                         items += TemplateItem.Replace("[ItemLink]", (b.requestUrl.EndsWith("/") ? "" : "./" + dirInfo.Name + "/") + "../").Replace("[ItemName]", "" + "..")
                                             .Replace("[ItemDate]", "TimeNotApplicable").Replace("[ItemSize]", "-");
-
                                         foreach (var dirs in dirInfo.EnumerateDirectories())
                                         {
                                             items += TemplateItem.Replace("[ItemLink]", (b.requestUrl.EndsWith("/") ? "" : "./" + dirInfo.Name + "/") + dirs.Name + "/").Replace("[ItemName]", "" + dirs.Name + "")
@@ -102,6 +101,40 @@ namespace DirectoryModule
                                     else if (!dir.EndsWith("/"))
                                     {
                                         FileInfo f;
+                                        if (dir.EndsWith("/list"))
+                                        {
+                                            //Send as pure text.
+                                            var realLocation = b.requestUrl.Substring(0, b.requestUrl.Length - "/list".Length);
+                                            {
+                                                dir = URLConventor.Convert(realLocation);
+                                                if (FileUtilities.DirectoryExist(dir, URLConventor.RootFolder))
+                                                {
+                                                    Debugger.currentDebugger.Log("Browsing:" + item + ":" + dir + "," + URLConventor.RootFolder);
+                                                    var dirInfo = FileUtilities.GetFolderFromURL(dir, URLConventor.RootFolder);
+                                                    Console.WriteLine("Real Folder:" + dirInfo.FullName);
+                                                    string items = "";
+                                                    foreach (var dirs in dirInfo.EnumerateDirectories())
+                                                    {
+                                                        items += dirs.Name + "/" + Environment.NewLine;
+                                                    }
+                                                    foreach (var file in dirInfo.EnumerateFiles())
+                                                    {
+                                                        if (file.Name == "Folder.Info")
+                                                        {
+                                                            continue;
+                                                        }
+                                                        items += file.Name + Environment.NewLine;
+                                                    }
+                                                    string content = items;
+                                                    WebPagePresets.ApplyPreset(ref content);
+                                                    b.Cancel = true;
+                                                    HttpResponseData httpResponseData = new HttpResponseData();
+                                                    httpResponseData.content = Encoding.UTF8.GetBytes(content);
+                                                    httpResponseData.Additional = "Content-Type : text; charset=utf-8";
+                                                    httpResponseData.Send(ref b.streamWriter);
+                                                }
+                                            }
+                                        }else
                                         if ((f = FileUtilities.GetFileFromURL(dir, URLConventor.RootFolder)) != null)
                                         {
                                             if (f.Name.EndsWith("html") || f.Name.EndsWith("htm"))
@@ -114,8 +147,7 @@ namespace DirectoryModule
                                                 httpResponseData.Additional = "Content-Type : text/html; charset=utf-8";
                                                 httpResponseData.Send(ref b.streamWriter);
                                             }
-                                        }
-                                        else
+                                        }else
                                         {
                                             HttpResponseData httpResponseData = new HttpResponseData();
                                             httpResponseData.content = Encoding.UTF8.GetBytes(SpecialPages.GetSpecialPage(KnownSpecialPages.Page404));

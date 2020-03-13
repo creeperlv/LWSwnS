@@ -185,7 +185,9 @@ namespace LWSwnS.Core
                     {
 
                         httpResponseData.Additional = "Content-Type: application/icon";
-                        using (var fs = (FileUtilities.GetFileFromURL(RealUrl, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder)).Open(FileMode.Open))
+                        var f = FileUtilities.GetFileFromURL(RealUrl, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder);
+                        if(f!=null)
+                        using (var fs = (f).Open(FileMode.Open))
                         {
                             httpResponseData.SendFile(ref b.streamWriter, fs);
                         }
@@ -450,6 +452,11 @@ namespace LWSwnS.Core
                 {
                     var rec = ReceiveMessage();
                     rec.Processor = this;
+                    if (rec.requestUrl == null)
+                    {
+                        rec.Processor.StopImmediately();
+                        continue;
+                    }
                     if (rec.requestUrl.Split('?')[0].ToUpper().EndsWith(ServerConfiguration.CurrentConfiguration.WebPageDLLAlternativeTypeName.ToUpper()) && ServerConfiguration.CurrentConfiguration.isDLLPageEnabled == true)
                     {
                         string path = rec.requestUrl.Split('?')[0];

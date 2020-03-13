@@ -31,8 +31,22 @@ namespace MarkdownFileModule
                                 isMobile = b.isMobile;
 
                             HttpResponseData httpResponseData = new HttpResponseData();
-                            var RealUrl = URLConventor.Convert(b.requestUrl.Trim(),isMobile);
-                            var MDContent = File.ReadAllText(FileUtilities.GetFileFromURL(RealUrl, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder).FullName);
+                            var RealUrl = URLConventor.Convert(b.requestUrl.Trim(), isMobile);
+                            var MDContent = "";
+
+                            try
+                            {
+                                var mdf = FileUtilities.GetFileFromURL(RealUrl, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder);
+                                if (mdf != null)
+                                    MDContent = File.ReadAllText(mdf.FullName);
+                                else
+                                {
+                                    MDContent = "# File Not Found";
+                                }
+                            }
+                            catch (Exception)
+                            {
+                            }
                             var content = File.ReadAllText(Path.Combine(modDirectory.FullName, "ContentTemplate.html")).Replace("[FileName]", (new FileInfo(RealUrl)).Name).Replace("[MDContent]", Markdig.Markdown.ToHtml(MDContent));
                             WebPagePresets.ApplyPreset(ref content);
                             httpResponseData.content = System.Text.Encoding.UTF8.GetBytes(content);

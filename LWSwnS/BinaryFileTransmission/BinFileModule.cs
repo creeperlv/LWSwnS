@@ -24,25 +24,27 @@ namespace BinaryFileTransmission
 
             Console.WriteLine("Copying Language Files...");
 
-            DirectoryInfo LanguageDir = new DirectoryInfo(Path.Combine((new FileInfo(Assembly.GetAssembly(typeof(BinFileModule)).Location)).Directory.FullName,"Locales"));
+            DirectoryInfo LanguageDir = new DirectoryInfo(Path.Combine((new FileInfo(Assembly.GetAssembly(typeof(BinFileModule)).Location)).Directory.FullName, "Locales"));
             foreach (var lang in LanguageDir.EnumerateDirectories())
             {
-                if (!Directory.Exists("./Locales/" + lang.Name)) Directory.CreateDirectory("./Locales/" + lang.Name);
+                if (!Directory.Exists("./Locales/" + lang.Name))
+                    Directory.CreateDirectory("./Locales/" + lang.Name);
                 foreach (var langF in lang.EnumerateFiles())
                 {
-                    langF.CopyTo("./Locales/" + lang.Name + "/" + langF.Name,true);
+                    langF.CopyTo("./Locales/" + lang.Name + "/" + langF.Name, true);
                 }
             }
         }
     }
     public class BinFileModule : ExtModule
     {
-        
-        public bool EndsWith(string s,List<string> list)
+
+        public bool EndsWith(string s, List<string> list)
         {
             foreach (var item in list)
             {
-                if (s.EndsWith(item.ToUpper())) return true;
+                if (s.EndsWith(item.ToUpper()))
+                    return true;
             }
             return false;
         }
@@ -52,8 +54,8 @@ namespace BinaryFileTransmission
             description.Name = "Binary-File-Transmission-Module";
             description.version = new Version(0, 0, 3, 0);
             UniversalConfigurationMark2 fileType = new UniversalConfigurationMark2();
-            var list = new  List<string>();
-            var TextList = new  List<string>();
+            var list = new List<string>();
+            var TextList = new List<string>();
             try
             {
                 Language.LoadFile("BFT");
@@ -73,7 +75,7 @@ namespace BinaryFileTransmission
                     {
                         WebServer.AddExemptFileType(item);
                     }
-                    TextList= fileType.GetValues("Text-based");
+                    TextList = fileType.GetValues("Text-based");
                     foreach (var item in TextList)
                     {
                         WebServer.AddExemptFileType(item);
@@ -84,10 +86,11 @@ namespace BinaryFileTransmission
                 }
             });
             {
-                LocalShell.Register("BFT-Add-File-Type", (string s, bool b) => {
+                LocalShell.Register("BFT-Add-File-Type", (string s, bool b) =>
+                {
                     try
                     {
-                        fileType.AddItem("Binary",s.Trim());
+                        fileType.AddItem("Binary", s.Trim());
                         fileType.SaveToFile("./Configs/BinFileTransModule.ini");
                         WebServer.AddExemptFileType(s.Trim());
                         Console.WriteLine(Language.GetString("BFT", "BFT.AddedTo", "Target type has been added to the configuration file."));
@@ -96,10 +99,11 @@ namespace BinaryFileTransmission
                     {
                     }
                 });
-                LocalShell.Register("Add-Bin-File-Type", (string s, bool b) => {
+                LocalShell.Register("Add-Bin-File-Type", (string s, bool b) =>
+                {
                     try
                     {
-                        fileType.AddItem("Binary",s.Trim());
+                        fileType.AddItem("Binary", s.Trim());
                         fileType.SaveToFile("./Configs/BinFileTransModule.ini");
                         WebServer.AddExemptFileType(s.Trim());
                         Console.WriteLine(Language.GetString("BFT", "BFT.AddedTo", "Target type has been added to the configuration file."));
@@ -108,10 +112,11 @@ namespace BinaryFileTransmission
                     {
                     }
                 });
-                LocalShell.Register("Add-Text-File-Type", (string s, bool b) => {
+                LocalShell.Register("Add-Text-File-Type", (string s, bool b) =>
+                {
                     try
                     {
-                        fileType.AddItem("Text",s.Trim());
+                        fileType.AddItem("Text", s.Trim());
                         fileType.SaveToFile("./Configs/BinFileTransModule.ini");
                         WebServer.AddExemptFileType(s.Trim());
                         Console.WriteLine(Language.GetString("BFT", "BFT.AddedTo", "Target type has been added to the configuration file."));
@@ -120,7 +125,8 @@ namespace BinaryFileTransmission
                     {
                     }
                 });
-                LocalShell.Register("BFT-Update-Basic-File-Type", (string s, bool b) => {
+                LocalShell.Register("BFT-Update-Basic-File-Type", (string s, bool b) =>
+                {
                     try
                     {
                         UpdateList(ref fileType);
@@ -130,23 +136,27 @@ namespace BinaryFileTransmission
                     {
                     }
                 });
-                LocalShell.Register("bc-get-help", (string s, bool b) => {
+                LocalShell.Register("bc-get-help", (string s, bool b) =>
+                {
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("BFT-Add-File-Type <FileType>");
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.WriteLine("\tAdd given file type into configuration file.");
-                    }{
+                    }
+                    {
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("Add-Bin-File-Type <FileType>");
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.WriteLine("\tAdd given file type into configuration file as binary file type.");
-                    }{
+                    }
+                    {
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("Add-Text-File-Type <FileType>");
                         Console.ForegroundColor = ConsoleColor.White;
                         Console.WriteLine("\tAdd given file type into configuration file as pure-text file type.");
-                    }{
+                    }
+                    {
                         Console.ForegroundColor = ConsoleColor.Green;
                         Console.WriteLine("BFT-Update-Basic-File-Type");
                         Console.ForegroundColor = ConsoleColor.White;
@@ -154,8 +164,9 @@ namespace BinaryFileTransmission
                     }
                 });
             }
-            EventHandler<HttpRequestData> e= (a,b) => {
-                if (EndsWith(b.requestUrl.ToUpper(),list))
+            EventHandler<HttpRequestData> e = (a, b) =>
+            {
+                if (EndsWith(b.requestUrl.ToUpper(), list))
                 {
                     try
                     {
@@ -168,7 +179,8 @@ namespace BinaryFileTransmission
                         httpResponseData.Additional = "Content-Type: Application/Binary" + Environment.NewLine + "Accept-Ranges: bytes";
                         var RealUrl = URLConventor.Convert(b.requestUrl.Trim(), isMobile);
                         var fi = FileUtilities.GetFileFromURL(RealUrl, isMobile ? URLConventor.MobileRootFolder : URLConventor.RootFolder);
-                        httpResponseData.Additional += Environment.NewLine + $"Content-Disposition: attachment; filename=\"{fi.Name}\"";
+                        if (fi != null)
+                            httpResponseData.Additional += Environment.NewLine + $"Content-Disposition: attachment; filename=\"{fi.Name}\"";
                         if (b.Range.Ranges.Count > 0)
                         {
                             //SendFileInRange
@@ -180,17 +192,21 @@ namespace BinaryFileTransmission
                             }
                         }
                         else
-                            using (var fs = fi.OpenRead())
-                            {
-                                httpResponseData.SendFile(ref b.streamWriter, fs);
-                            }
+                        {
+                            if (fi != null)
+                                using (var fs = fi.OpenRead())
+                                {
+                                    httpResponseData.SendFile(ref b.streamWriter, fs);
+                                }
+                        }
                     }
                     catch (Exception err)
                     {
                         Debugger.currentDebugger.Log(Language.GetString("BFT", "BFT.Error", "Something error happened in BFT:") + err, MessageType.Error);
                     }
-                }else
-                if (EndsWith(b.requestUrl.ToUpper(),TextList))
+                }
+                else
+                if (EndsWith(b.requestUrl.ToUpper(), TextList))
                 {
                     try
                     {
