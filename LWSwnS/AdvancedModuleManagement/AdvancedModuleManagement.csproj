@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,10 +21,10 @@
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\LWSwnS\bin\Debug\netcoreapp3.0\Modules\AMM</OutputPath>
+    <OutputPath>..\LWSwnS\bin\Debug\net5.0\Modules\AMM</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\LWSwnS\bin\Release\netcoreapp3.0\Modules\AMM</OutputPath>
+    <OutputPath>..\LWSwnS\bin\Release\net5.0\Modules\AMM</OutputPath>
   </PropertyGroup>
 </Project>

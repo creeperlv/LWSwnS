@@ -117,6 +117,15 @@ namespace LWSwnS.Api.Modules
                         TaskEvery30Seconds[Identifier].Add(a);
                     }
                     break;
+                case TaskType.AfterAllModuleLoaded:
+                    {
+                        if (!AfterAllModulesLoaded.ContainsKey(Identifier))
+                        {
+                            AfterAllModulesLoaded.Add(Identifier, new List<Action>());
+                        }
+                        AfterAllModulesLoaded[Identifier].Add(a);
+                    }
+                    break;
                 default:
                     break;
             }

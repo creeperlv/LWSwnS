@@ -163,7 +163,7 @@ namespace LWSwnS
             FileUtilities.InitLocation(typeof(Program));
             try
             {
-                LWSwnS.WebPage.CodeEmbededPage.SetLWSwnSCore(typeof(HttpServer));
+                WebPage.CodeEmbededPage.SetLWSwnSCore(typeof(HttpServer));
             }
             catch
             {
@@ -222,7 +222,7 @@ namespace LWSwnS
                         {
                             foreach (var singleCMD in moduleCMD.Value)
                             {
-                                if (subbed == (singleCMD.Key.ToUpper()))
+                                if (subbed == singleCMD.Key.ToUpper())
                                 {
                                     singleCMD.Value(cmd.Substring(subbed.Length).Trim(), InvokeFromCode);
                                     Find = true;
@@ -253,7 +253,7 @@ namespace LWSwnS
             });
             ApiManager.AddFunction("MODULE_INIT", (UniParamater p) =>
             {
-                Modules modules = new Modules((new FileInfo("./Modules/" + p[0])).DirectoryName);
+                Modules modules = new Modules(new FileInfo("./Modules/" + p[0]).DirectoryName);
                 var asm = modules.LoadFromAssemblyPath((new FileInfo("./Modules/" + p[0])).FullName);
                 var types = asm.GetTypes();
                 Console.Write("\tLoad: ");
@@ -314,8 +314,8 @@ namespace LWSwnS
             ApiManager.AddFunction("MODULE_LOAD", (UniParamater p) =>
             {
                 List<ModuleDescription> result = new List<ModuleDescription>();
-                Modules modules = new Modules((new FileInfo("./Modules/" + p[0])).DirectoryName);
-                var asm = modules.LoadFromAssemblyPath((new FileInfo("./Modules/" + p[0])).FullName);
+                Modules modules = new Modules(new FileInfo("./Modules/" + p[0]).DirectoryName);
+                var asm = modules.LoadFromAssemblyPath(new FileInfo("./Modules/" + p[0]).FullName);
                 var types = asm.GetTypes();
                 Console.Write("\tLoad: ");
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -851,12 +851,19 @@ namespace LWSwnS
                 FirstInitialize();
             });
             {
-                //FINALIZE LASR STEP
+                //FINALIZE LAST STEP
                 foreach (var item in Tasks.AfterAllModulesLoaded)
                 {
                     foreach (var action in item.Value)
                     {
-                        action();
+                        try
+                        {
+                            action();
+                        }
+                        catch (Exception e)
+                        {
+                            Debugger.currentDebugger.Log("" + e, MessageType.Error);
+                        }
                     }
                 }
                 Tasks.ClearTask_AfterAllModulesLoaded();

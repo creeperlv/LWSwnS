@@ -5,10 +5,10 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\LWSwnS\bin\Debug\netcoreapp3.0\Modules\SimpleGitViewer</OutputPath>
+    <OutputPath>..\LWSwnS\bin\Debug\net5.0\Modules\SimpleGitViewer</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\LWSwnS\bin\Release\netcoreapp3.0\Modules\SimpleGitViewer</OutputPath>
+    <OutputPath>..\LWSwnS\bin\Release\net5.0\Modules\SimpleGitViewer</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="LibGit2Sharp" Version="0.27.0-preview-0034" />

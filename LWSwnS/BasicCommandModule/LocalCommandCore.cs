@@ -24,8 +24,8 @@ namespace BasicCommandModule
             moduleDescription.Name = "BasicCommandModule";
             moduleDescription.version = version;
             Load();
-            if(Flags.AutoReLoad)
-            Tasks.RegisterTask(Load, Tasks.TaskType.Every10Seconds);
+            if (Flags.AutoReLoad)
+                Tasks.RegisterTask(Load, Tasks.TaskType.Every10Seconds);
             if (Flags.AutoRun)
             {
                 Tasks.RegisterTask(() =>
@@ -41,6 +41,14 @@ namespace BasicCommandModule
                     }
                 }, Tasks.TaskType.AfterAllModuleLoaded);
             }
+            Tasks.RegisterTask(() =>
+            {
+                Console.Write("Type '");
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.Write("List-All-Commands");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("' to show all available commands.");
+            }, Tasks.TaskType.AfterAllModuleLoaded);
             {
                 LocalShell.Register("cls", ClearScreen);
                 LocalShell.Register("bc-get-help", ShowHelp);
@@ -56,13 +64,13 @@ namespace BasicCommandModule
 
             return moduleDescription;
         }
-        void TotalHelp(string s,bool b)
+        void TotalHelp(string s, bool b)
         {
             foreach (var item in LocalShell.Commands)
             {
                 foreach (var cmd in item.Value)
                 {
-                    if (cmd.Key.ToUpper()=="BC-GET-HELP")
+                    if (cmd.Key.ToUpper() == "BC-GET-HELP")
                     {
                         cmd.Value("", true);
                     }
@@ -76,14 +84,14 @@ namespace BasicCommandModule
             ShowMessage("Change-Working-Directory", "Set working directory to a specified path.");
             ShowMessage("version\r\nver", "Display the version of LWSwnS.");
         }
-        void ShowMessage(string title,string msg)
+        void ShowMessage(string title, string msg)
         {
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(title);
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("\t"+msg);
+            Console.WriteLine("\t" + msg);
         }
-        void AddRule(string s,bool b)
+        void AddRule(string s, bool b)
         {
             URLConventor.AddRule(s.Split('|')[0], s.Split('|')[1]);
             URLConventor.SaveRule();
@@ -94,25 +102,25 @@ namespace BasicCommandModule
             {
                 config = UniversalConfigurationMark2.LoadFromFile("./Configs/BasicCommand.ini");
             }
-            catch{}
+            catch { }
             try
             {
-                var a=bool.Parse(config.GetValues("Flags.AutoReload","False")[0]);
+                var a = bool.Parse(config.GetValues("Flags.AutoReload", "False")[0]);
                 Flags.AutoReLoad = a;
             }
-            catch{}
+            catch { }
             try
             {
-                var a=bool.Parse(config.GetValues("Flags.AutoRun","False")[0]);
+                var a = bool.Parse(config.GetValues("Flags.AutoRun", "False")[0]);
                 Flags.AutoRun = a;
             }
-            catch{}
+            catch { }
 
         }
-        void SetPreset(string s,bool b)
+        void SetPreset(string s, bool b)
         {
-            var key = s.Substring(0,s.IndexOf('='));
-            var value = s.Substring(s.IndexOf('=')+1);
+            var key = s.Substring(0, s.IndexOf('='));
+            var value = s.Substring(s.IndexOf('=') + 1);
             WebPagePresets.AddPreset(key, value);
         }
         void ChangeWorkingDirectory(string s, bool b)
