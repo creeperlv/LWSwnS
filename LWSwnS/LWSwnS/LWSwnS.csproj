@@ -37,4 +37,12 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="CLUNL">
+      <HintPath>..\..\Creeper-Lv-s-Universal-dotNet-Library\Creeper Lv's Universal dotNet Library\bin\Release\netstandard2.0\CLUNL.dll</HintPath>
+    </Reference>
+    <Reference Include="CLUNL.Pipeline">
+      <HintPath>..\..\Creeper-Lv-s-Universal-dotNet-Library\CLUNL.Pipeline\bin\Release\netstandard2.0\CLUNL.Pipeline.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>
