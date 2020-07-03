@@ -1,4 +1,5 @@
-﻿using LWSwnS.Api.Modules;
+﻿using CLUNL.Pipeline;
+using LWSwnS.Api.Modules;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +18,29 @@ namespace LWSwnS.Api.Web
             UniParamater uniParamater = new UniParamater();
             uniParamater.Add(s);
             ApiManager.Functions["AddPersistentIgnoreUrlPrefix"](uniParamater);
+        }
+        public static void RegisterPipeline(IPipedProcessUnit PipelineUnit, out string FinalID, string ID = "#")
+        {
+            string ResultID = ID;
+            {
+                if (ResultID == "#")
+                {
+                    ResultID = Guid.NewGuid().ToString();
+                }
+                UniParamater uniParamater = new UniParamater();
+                uniParamater.Add(ResultID);
+                uniParamater.Add(PipelineUnit);
+                ApiManager.Functions["RegPipeline"](uniParamater);
+
+            }
+            FinalID = ResultID;
+        }
+        public static void UnregisterPipeline(string ID)
+        {
+            UniParamater uniParamater = new UniParamater();
+            uniParamater.Add(ID);
+            ApiManager.Functions["UnregPipeline"](uniParamater);
+
         }
         public static void AddPersistentIgnoreSuffix(string s)
         {

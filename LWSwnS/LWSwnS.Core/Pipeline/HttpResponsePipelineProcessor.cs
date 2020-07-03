@@ -7,7 +7,8 @@ namespace LWSwnS.Core.Pipeline
 {
     public class HttpResponsePipelineProcessor : IPipelineProcessor
     {
-        List<IPipedProcessUnit> pipedProcessUnits = new List<IPipedProcessUnit>();
+        //List<IPipedProcessUnit> pipedProcessUnits = new List<IPipedProcessUnit>();
+        Dictionary<string, IPipedProcessUnit> Units = new Dictionary<string, IPipedProcessUnit>();
         public void Init()
         {
             throw new NotImplementedException();
@@ -15,18 +16,18 @@ namespace LWSwnS.Core.Pipeline
 
         public void Init(ProcessUnitManifest manifest)
         {
-            pipedProcessUnits=manifest.GetUnitInstances();
+            //pipedProcessUnits=manifest.GetUnitInstances();
         }
 
         public PipelineData Process(PipelineData Input, bool IgnoreError)
         {
             //HttpPipelineData
-            foreach (var item in pipedProcessUnits)
+            foreach (var item in Units)
             {
-                var outdata=item.Process(Input);
+                var outdata=item.Value.Process(Input);
                 if (!outdata.CheckContinuity(Input))
                 {
-                    throw new PipelineDataContinuityException(item);
+                    throw new PipelineDataContinuityException(item.Value);
                 }
             }
             return null;
