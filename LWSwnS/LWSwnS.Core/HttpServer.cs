@@ -4,6 +4,7 @@ using LWSwnS.Api.Web;
 using LWSwnS.Configuration;
 using LWSwnS.Core.Data;
 using LWSwnS.Core.Extenstion;
+using LWSwnS.Core.Pipeline;
 using LWSwnS.Diagnostic;
 using LWSwnS.Globalization;
 using System;
@@ -30,6 +31,7 @@ namespace LWSwnS.Core
         public static UniversalConfigurationMark2 urlRules = new UniversalConfigurationMark2();
         TcpListener TCPListener;
         public event EventHandler<HttpRequestData> OnRequest;
+        public HttpResponsePipelineProcessor pipelineProcessor = new HttpResponsePipelineProcessor();
         public HttpServer(TcpListener listener)
         {
             try
@@ -82,6 +84,11 @@ namespace LWSwnS.Core
             ApiManager.AddFunction("RmOnReq", (UniParamater p) =>
             {
                 OnRequest -= p[0] as EventHandler<HttpRequestData>;
+                return new UniResult();
+            });
+            ApiManager.AddFunction("RegPipeline", (UniParamater p) =>
+            {
+                string ID = (string)p[0];
                 return new UniResult();
             });
             TCPListener = listener;

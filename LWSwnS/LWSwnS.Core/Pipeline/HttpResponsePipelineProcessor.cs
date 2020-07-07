@@ -18,7 +18,22 @@ namespace LWSwnS.Core.Pipeline
         {
             //pipedProcessUnits=manifest.GetUnitInstances();
         }
-
+        public void Remove(string ID)
+        {
+            if(Units.ContainsKey(ID))
+            Units.Remove(ID);
+        }
+        public void Add(string ID,IPipedProcessUnit pipedProcessUnit)
+        {
+            if (Units.ContainsKey(ID))
+            {
+                throw new PipelineUnitDuplicatedException();
+            }
+            else
+            {
+                Units.Add(ID, pipedProcessUnit);
+            }
+        }
         public PipelineData Process(PipelineData Input, bool IgnoreError)
         {
             //HttpPipelineData
@@ -37,5 +52,16 @@ namespace LWSwnS.Core.Pipeline
         {
             return Process(Input, false);
         }
+    }
+
+    [Serializable]
+    public class PipelineUnitDuplicatedException : Exception
+    {
+        public PipelineUnitDuplicatedException() { }
+        public PipelineUnitDuplicatedException(string message) : base(message) { }
+        public PipelineUnitDuplicatedException(string message, Exception inner) : base(message, inner) { }
+        protected PipelineUnitDuplicatedException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 }

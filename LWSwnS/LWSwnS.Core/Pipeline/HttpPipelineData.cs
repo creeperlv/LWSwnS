@@ -7,6 +7,7 @@ namespace LWSwnS.Core.Pipeline
     {
         public HttpPipelineData(object PrimaryData, object SecondaryData, HttpRequestData Options) : base(PrimaryData, SecondaryData, Options)
         {
+
         }
     }
 }
