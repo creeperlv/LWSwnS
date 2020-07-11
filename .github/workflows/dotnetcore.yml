@@ -1,6 +1,6 @@
 name: .NET Core
 
-#on: [push]
+on: [push]
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@master
       with:
-        dotnet-version: '5.0.0-preview.6.20305.6'
+        dotnet-version: '5.0.0-preview.6'
     - name: Build with dotnet
       run: |
         cd LWSwnS
