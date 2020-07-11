@@ -1,4 +1,5 @@
-﻿using LWSwnS.Api;
+﻿using CLUNL.Pipeline;
+using LWSwnS.Api;
 using LWSwnS.Api.Data;
 using LWSwnS.Api.Web;
 using LWSwnS.Configuration;
@@ -89,7 +90,15 @@ namespace LWSwnS.Core
             ApiManager.AddFunction("RegPipeline", (UniParamater p) =>
             {
                 string ID = (string)p[0];
-                return new UniResult();
+                IPipedProcessUnit unit = (IPipedProcessUnit)p[1];
+                pipelineProcessor.Add(ID, unit);
+                return null;
+            });
+            ApiManager.AddFunction("UnregPipeline", (UniParamater p) =>
+            {
+                string ID = (string)p[0];
+                pipelineProcessor.Remove(ID);
+                return null;
             });
             TCPListener = listener;
             OnRequest += (a, b) =>

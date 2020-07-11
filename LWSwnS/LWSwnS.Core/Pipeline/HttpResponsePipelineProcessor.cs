@@ -44,6 +44,10 @@ namespace LWSwnS.Core.Pipeline
                 {
                     throw new PipelineDataContinuityException(item.Value);
                 }
+                if((outdata.Options as HttpRequestPipelineData).Flag_Block_FollowedPipe == true)
+                {
+                    return null;
+                }
             }
             return null;
         }
