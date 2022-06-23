@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\LWSwnS\bin\Debug\net5.0\Modules\RemoteShell</OutputPath>
+    <OutputPath>..\LWSwnS\bin\Debug\net6.0\Modules\RemoteShell</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\LWSwnS\bin\Release\net5.0\Modules\RemoteShell</OutputPath>
+    <OutputPath>..\LWSwnS\bin\Release\net6.0\Modules\RemoteShell</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
